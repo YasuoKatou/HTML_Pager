@@ -1,7 +1,8 @@
 
 
-function func1(event) {
+function loginFunc(event) {
     console.log('execute func1');
+    _pager.funcKeys("visible");
     _pager.changePage("page002");
 }
 
@@ -11,5 +12,6 @@ function func2(event) {
 }
 
 _pager.openningPage = "page001";
-_pager.addClickEvent("p1_btn1", func1);
+_pager.openningFKey = false;
+_pager.addClickEvent("p1_btn1", loginFunc);
 _pager.addClickEvent("p2_btn1", func2);

@@ -90,6 +90,47 @@ label {
     text-align: right;
 }
 
+#f_keys {
+    visibility: visible;
+}
+
+.f_key_wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.f_key_group {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.f_key_wrapper ul, li {
+    list-style: none;
+    flex-grow: 1;
+}
+
+.f_key_wrapper li {
+    text-align: center;
+    flex-grow: 1;
+    height: 3em;
+    margin-left: 0.25em;
+    margin-right: 0.25em;
+}
+
+/*
+    F5 - F8 の左右にスペースを空ける
+ */
+.f_key_wrapper ul:nth-of-type(2) {
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.f_key_group {
+    display: flex;
+}
+
 #footer {
     margin-bottom: 10px;
 }

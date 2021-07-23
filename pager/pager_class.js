@@ -21,6 +21,12 @@ class PagerCore extends PagerBase {
     set openningPage(pageId) { this.openningPagr = pageId; }
     get openningPage() { return this.openningPagr;}
 
+    set openningFKey(visible) { this.FKeyVisible = visible; }
+    funcKeys(visible) {
+        var x = document.getElementById("f_keys");
+        x.style.visibility = visible;
+    }
+
     _page_hidden(tag) {
         tag.classList.remove("page_show");
         tag.classList.add("page_hidden");
@@ -67,6 +73,8 @@ class PagerCore extends PagerBase {
         //初期表示するページ
         x = document.getElementById(this.openningPage);
         this._page_show(x);
+        //Function キー非表示
+        if (!this.FKeyVisible) { this.funcKeys("hidden"); }
 
         //クリックイベントの設定
         this.clickEventList.forEach(info => {
