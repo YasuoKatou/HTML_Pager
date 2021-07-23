@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="pager/pager.css">
+        <script type="text/javascript" src="pager/pager_class.js"></script>
+        <script type="text/javascript" src="pager/pager_config.js"></script>
+        <script type="text/javascript" src="pager/pager.js"></script>
+    </head>
+    <body>
+        <section id="header">
+            <h1>hoge サービス</h1>
+        </section>
+        <section id="page_root">
+            <div id="page001">
+                <div class="popup_wrapper">
+                    <div class="popup_form">
+                        <h1>ログイン</h1>
+                        <div class="popup_body">
+                            <ul>
+                                <li>
+                                    <label for="user_id">ログインID</label>
+                                    <input id="user_id" type="text" name="user_id">
+                                </li>
+                                <li>
+                                    <label for="password">パスワード</label>
+                                    <input id="password" type="password" name="password">
+                                </li>
+                            </ul>
+                            <div class="popup_one_button">
+                                <p id="p1_btn1" class="popup_button">ログイン</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page002">
+                <p>２ページ目の内容</p>
+                <div id="p2_btn1">page 1 へ</div>
+            </div>
+        </section>
+        <section id="footer">
+            <h5>footer</h5>
+        </section>
+    </body>
+</html>
