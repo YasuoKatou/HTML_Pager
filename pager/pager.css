@@ -109,6 +109,7 @@ label {
 .f_key_wrapper ul, li {
     list-style: none;
     flex-grow: 1;
+    width: 100%;
 }
 
 .f_key_wrapper li {
