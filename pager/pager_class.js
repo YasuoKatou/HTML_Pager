@@ -41,7 +41,7 @@ class PagerFunctionKey extends PagerBase {
     static KEY_ID_ALT = 4;
     static FKEY_ID_PREFIX = "fkey";
     static FKEY_COUNT = 12;
-
+/*
     constructor(modifier_keys, label_list, func_key_list) {
         super();
         this._labelList    = label_list;
@@ -59,5 +59,6 @@ class PagerFunctionKey extends PagerBase {
     get modifierKeyMask() { return this._modifierKeyMask; }
     get labelList() { return this._labelList; }
     get funcKeyList() { return this._funcKeyList; }
+*/
 }
  
