@@ -1,94 +1,63 @@
-class PagerBase {
+/**
+ * Pager基本クラス.
+ * 
+ * @version 0.0.1
+ * @since 0.0.1
+ * 
+ * @author Y.Katou <yasuokatou@gmail.com>
+ */
+ class PagerBase {}
 
-}
+ /**
+  * クリックイベント情報クラス.
+  * 
+  * @version 0.0.1
+  * @since 0.0.1
+  * 
+  * @author Y.Katou <yasuokatou@gmail.com>
+  */
+  class PagerClickEvent extends PagerBase {
+     constructor(tag_id, event_func) {
+         super();
+         this._tagId = tag_id;
+         this._eventFunc = event_func;
+     }
+     get tagId() { return this._tagId; }
+     get eventFunc() { return this._eventFunc; }
+ }
 
-class PagerClickEvent extends PagerBase {
-    constructor(id, func) {
+/**
+ * ファンクションキー情報クラス.
+ * 
+ * @version 0.0.1
+ * @since 0.0.1
+ * 
+ * @author Y.Katou <yasuokatou@gmail.com>
+ */
+class PagerFunctionKey extends PagerBase {
+    static KEY_ID_NO_MODIFIRE = 0;    
+    static KEY_ID_SHIFT = 1;
+    static KEY_ID_CONTRIL = 2;
+    static KEY_ID_ALT = 4;
+    static FKEY_ID_PREFIX = "fkey";
+    static FKEY_COUNT = 12;
+
+    constructor(modifier_keys, label_list, func_key_list) {
         super();
-        this.id = id;
-        this.func = func;
+        this._labelList    = label_list;
+        this._funcKeyList  = func_key_list;
+        _setModifierKeyPattern(modifier_keys);
     }
-    get tagId() { return this.id; }
-    get eventFunc() { return this.func;}
+    _setModifierKeyPattern(modifier_keys) {
+        this._modifierKeys = modifier_keys;
+        var ptn = modifier_keys.toLowerCase();
+        this._modifierKeyMask = 0;
+        if (ptn.indexOf("shift") > -1) this._modifierKeyMask += KEY_ID_SHIFT;
+        if (ptn.indexOf("ctrl")  > -1) this._modifierKeyMask += KEY_ID_CONTRIL;
+        if (ptn.indexOf("alt")   > -1) this._modifierKeyMask += KEY_ID_ALT;
+    }
+    get modifierKeyMask() { return this._modifierKeyMask; }
+    get labelList() { return this._labelList; }
+    get funcKeyList() { return this._funcKeyList; }
 }
-
-class PagerCore extends PagerBase {
-    constructor() {
-        super();
-        this.clickEventList = [];
-    }
-
-    set openningPage(pageId) { this.openningPagr = pageId; }
-    get openningPage() { return this.openningPagr;}
-
-    set openningFKey(visible) { this.FKeyVisible = visible; }
-    funcKeys(visible) {
-        var x = document.getElementById("f_keys");
-        x.style.visibility = visible;
-    }
-
-    _page_hidden(tag) {
-        tag.classList.remove("page_show");
-        tag.classList.add("page_hidden");
-    }
-
-    _page_show(tag) {
-        tag.classList.remove("page_hidden");
-        tag.classList.add("page_show");
-    }
-
-    changePage(tag) {
-        var x = document.getElementById(tag);
-        if (x === null) {
-            console.error("'" + tag + "' page not found ...")
-            return;
-        }
-        this._page_show(x);
-        x = document.querySelectorAll("#page_root > div");
-        for(var i = 0; i < x.length; ++i) {
-            if (x[i].id !== tag) {
-                this._page_hidden(x[i]);
-            }
-        }
-    }
-
-    _click_event(self) {
-        return function(event) {
-            var id = event.target.id;
-            for(var i = 0; i < _pager.clickEventList.length; ++i) {
-                if (self.clickEventList[i].id === id) {
-                    self.clickEventList[i].func(event);
-                    break;
-                }
-            }
-        }
-        }
-
-    initPage() {
-        //全てのページを非表示に設定
-        var x = document.querySelectorAll("#page_root > div");
-        for(var i = 0; i < x.length; ++i) {
-            this._page_hidden(x[i]);
-        }
-        //初期表示するページ
-        x = document.getElementById(this.openningPage);
-        this._page_show(x);
-        //Function キー非表示
-        if (!this.FKeyVisible) { this.funcKeys("hidden"); }
-
-        //クリックイベントの設定
-        this.clickEventList.forEach(info => {
-            var tag = document.getElementById(info.tagId);
-            if (tag !== null) {
-                tag.addEventListener('click', this._click_event(this));
-            } else {
-                console.log("'" + info.tagId + "' is not found ...")
-            }
-        });
-    }
-
-    addClickEvent(tagId, eventFunc) {
-        this.clickEventList.push(new PagerClickEvent(tagId, eventFunc));
-    }
-}
-window._pager = new PagerCore();
+ 

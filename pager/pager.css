@@ -131,6 +131,19 @@ label {
     display: flex;
 }
 
+#fkey01::before { content: "F1\A"; white-space: pre; }
+#fkey02::before { content: "F2\A"; white-space: pre; }
+#fkey03::before { content: "F3\A"; white-space: pre; }
+#fkey04::before { content: "F4\A"; white-space: pre; }
+#fkey05::before { content: "F5\A"; white-space: pre; }
+#fkey06::before { content: "F6\A"; white-space: pre; }
+#fkey07::before { content: "F7\A"; white-space: pre; }
+#fkey08::before { content: "F8\A"; white-space: pre; }
+#fkey09::before { content: "F9\A"; white-space: pre; }
+#fkey10::before { content: "F10\A"; white-space: pre; }
+#fkey11::before { content: "F11\A"; white-space: pre; }
+#fkey12::before { content: "F12\A"; white-space: pre; }
+
 #footer {
     margin-bottom: 10px;
 }
