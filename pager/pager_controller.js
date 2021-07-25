@@ -18,6 +18,8 @@ class PagerController extends PagerBase {
     get funcKeyLabelsWithCtrl() { return []; }
     get funcKeyLabelsWithAlt() { return []; }
 
+    static FUNC_KEY_PROC_PREFIX = "fkey";
+    static FUNC_KEY_PROC_SUFFIX_NO_MODIFIRE = "";
     fkey1(event) {}
     fkey2(event) {}
     fkey3(event) {}
@@ -31,6 +33,7 @@ class PagerController extends PagerBase {
     fkey11(event) {}
     fkey12(event) {}
 
+    static FUNC_KEY_PROC_SUFFIX_SHIFT = "_S";
     fkey1_S(event) {}
     fkey2_S(event) {}
     fkey3_S(event) {}
@@ -44,6 +47,7 @@ class PagerController extends PagerBase {
     fkey11_S(event) {}
     fkey12_S(event) {}
 
+    static FUNC_KEY_PROC_SUFFIX_CTRL = "_C";
     fkey1_C(event) {}
     fkey2_C(event) {}
     fkey3_C(event) {}
@@ -57,6 +61,7 @@ class PagerController extends PagerBase {
     fkey11_C(event) {}
     fkey12_C(event) {}
 
+    static FUNC_KEY_PROC_SUFFIX_ALT = "_A";
     fkey1_A(event) {}
     fkey2_A(event) {}
     fkey3_A(event) {}

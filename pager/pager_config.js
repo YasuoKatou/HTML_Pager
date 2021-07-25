@@ -29,7 +29,7 @@ function func2(event) {
     _pager.changePage(page001);
 }
 
-_pager.openningPage = "page001";
+_pager.openningPage = page001;
 _pager.openningFKey = false;
 _pager.addClickEvent(new PagerClickEvent("p1_btn1", loginFunc));
 _pager.addClickEvent(new PagerClickEvent("p2_btn1", func2));

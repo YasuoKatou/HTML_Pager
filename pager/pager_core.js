@@ -13,8 +13,8 @@
         this._functionKeyList = [];
     }
 
-    set openningPage(pageId) { this.openningPagr = pageId; }
-    get openningPage() { return this.openningPagr;}
+    set openningPage(p) { this._pageController = p; }
+    get openningPage() { return this._pageController; }
 
     set openningFKey(visible) { this.FKeyVisible = visible; }
     funcKeys(visible) {
@@ -94,24 +94,33 @@
 
     _funcKeyLabels(self, event) {
         var mask = PagerFunctionKey.KEY_ID_NO_MODIFIRE;
+        var suffix = PagerController.FUNC_KEY_PROC_SUFFIX_NO_MODIFIRE;
         if (event.ctrlKey) {
             //console.log('Control key down');
-            mask += PagerFunctionKey.KEY_ID_CONTRIL;
-        }
-        if (event.shiftKey) {
+            mask = PagerFunctionKey.KEY_ID_CONTRIL;
+            suffix = PagerController.FUNC_KEY_PROC_SUFFIX_CTRL;
+        } else if (event.shiftKey) {
             //console.log('Shift key down');
-            mask += PagerFunctionKey.KEY_ID_SHIFT;
-        }
-        if (event.altKey) {
+            mask = PagerFunctionKey.KEY_ID_SHIFT;
+            suffix = PagerController.FUNC_KEY_PROC_SUFFIX_SHIFT;
+        } else if (event.altKey) {
             //console.log('Alt key down');
-            mask += PagerFunctionKey.KEY_ID_ALT;
+            mask = PagerFunctionKey.KEY_ID_ALT;
+            suffix = PagerController.FUNC_KEY_PROC_SUFFIX_ALT;
         }
         self._funcKeysLabel(mask);
+        return suffix;
     }
 
     _keyDown_event(self) {
         return function(event) {
-            self._funcKeyLabels(self, event);
+            var suffix = self._funcKeyLabels(self, event);
+            if (event.code.startsWith("F")) {
+                var f = PagerController.FUNC_KEY_PROC_PREFIX + event.code.substr(1) + suffix;
+                setTimeout(function() {
+                    eval("self._pageController." + f + "(event)");
+                }, 0);
+            }
         }
     }
 
@@ -128,7 +137,7 @@
             this._page_hidden(x[i]);
         }
         //初期表示するページ
-        x = document.getElementById(this.openningPage);
+        x = document.getElementById(this.openningPage.pageId);
         this._page_show(x);
         //Function キー非表示
         if (!this.FKeyVisible) { this.funcKeys("hidden"); }
