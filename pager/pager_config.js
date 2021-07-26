@@ -14,6 +14,14 @@ class SamplePage002 extends PagerController {
     get funcKeyLabels() { return ['Help']; }
     get funcKeyLabelsWithShift() { return ["","","","","","","","","","","","log out"]; }
     get funcKeyLabelsWithCtrl() { return ["Help","","","","","","","","","","","log out"]; }
+
+    _logout() {
+        console.log('execute logout');
+        _pager.changePage(page001);
+    }
+
+    fkey12_S(event) { this._logout(); }
+    fkey12_C(event) { this._logout(); }
 }
 
 var page001 = new SamplePage001("page001");
