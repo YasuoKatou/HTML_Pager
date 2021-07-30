@@ -24,12 +24,20 @@ class SamplePage002 extends PagerController {
     fkey12_C(event) { this._logout(); }
 }
 
+class SamplePage003 extends PagerController {
+    constructor(p) {
+        super(p);
+    }
+    get funcKeyDisplay() { return "hidden"; }
+}
+
 var page001 = new SamplePage001("page001");
 var page002 = new SamplePage002("page002");
+var page003 = new SamplePage002("page003");
 
 function loginFunc(event) {
     console.log('execute func1');
-    _pager.changePage(page002);
+    _pager.changePage(page003);
 }
 
 function func2(event) {
