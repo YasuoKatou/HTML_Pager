@@ -59,6 +59,11 @@ label {
     border: solid 2px #364e96;
     border-radius: 3px;
 }
+.popup_form_list {
+    min-height: 80%;
+    display: flex;
+    flex-direction: column;
+}
 .popup_form > h1 {
     color: white;
     background-color: #364e96;
@@ -70,6 +75,11 @@ label {
 
 .popup_body {
     padding: 10px;
+}
+.popup_body_list {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .popup_body ul, li {
@@ -93,8 +103,21 @@ label {
     text-align: right;
 }
 
+.popup_multi_button {
+    margin-top: 2em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+.popup_multi_button p {
+    flex-grow: 1;
+    text-align: center;
+    max-width: 5em;
+}
+
 .popup-table {
     border: 1px solid #ccc;
+    flex-grow: 1;
 }
 .popup-table thead {
     color: #fff;
@@ -103,6 +126,9 @@ label {
 .popup-table thead tr th,
 .popup-table tbody tr td {
     padding: .5em;
+}
+.popup-table tbody tr:hover {
+    background: #c4cde9;
 }
 
 #f_keys {
