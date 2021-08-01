@@ -18,10 +18,6 @@ body {
     font-size: 12px;
 }
 
-label {
-    margin-right: 1em;
-}
-
 #header > h1 {
     text-align: center;
     color: #364e96;
@@ -73,7 +69,7 @@ label {
 }
 
 .popup_body {
-    padding: 10px;
+    padding: 15px 10px 10px 10px;
 }
 .popup_body_list {
     flex-grow: 1;
@@ -86,7 +82,14 @@ label {
 }
 
 .popup_body li {
-    margin-top: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.popup_body label {
+    display: block;
+    float: left;
+    width: 7em;
 }
 
 .popup_button {
@@ -98,12 +101,12 @@ label {
 }
 
 .popup_one_button {
-    margin-top: 2em;
+    margin-top: 1.5em;
     text-align: right;
 }
 
 .popup_multi_button {
-    margin-top: 2em;
+    margin-top: 1.5em;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
@@ -114,29 +117,50 @@ label {
     max-width: 5em;
 }
 
-.popup-table {
-    border: 1px solid #ccc;
-    flex-grow: 1;
-}
-.popup-table thead {
-    display: block;
+.popup-table-head {
+    display: flex;
+    flex-direction: row;
     color: #fff;
     background: #009485;
 }
-.popup-table tbody {
-    display: block;
-    height: 50vh;
+
+.popup-table-body {
+    border: 1px solid #ccc;
+    flex-grow: 1;
     overflow: auto;
+    flex:1 1 0;
 }
-.popup-table thead tr th,
-.popup-table tbody tr td {
-    padding: .5em;
+
+.popup-table-head p,
+.popup-table-body p {
+    display: inline-block;
+    flex-direction: row;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
 }
-.popup-table tbody tr:hover {
+
+.popup-table-body li:hover {
     background: #c4cde9;
 }
-.popup-table tbody tr {
-    height: 10%;
+
+.popup-table-head p {
+    text-align: center;
+}
+
+.popup-table-col-no-3digit {
+    width: 3em;
+}
+
+.popup-table-col-name1 {
+    width: 6em;
+}
+
+.popup-table-col-tel {
+    width: 8em;
+}
+
+.popup-table-col-date {
+    width: 6em;
 }
 
 #f_keys {
