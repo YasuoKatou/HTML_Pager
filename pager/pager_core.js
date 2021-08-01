@@ -148,7 +148,7 @@
             if (tag !== null) {
                 tag.addEventListener('click', this._click_event(this));
             } else {
-                console.log("'" + clickEvent.tagId + "' is not found ...")
+                console.error("'" + clickEvent.tagId + "' is not found ...")
             }
         });
         //キーボードイベントの設定
