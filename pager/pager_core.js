@@ -27,9 +27,29 @@
         tag.classList.add("page_hidden");
     }
 
-    _page_show(tag) {
+    _initPopupTable(pc, tag) {
+        if (pc.dataModel === null) return;
+        if (pc.dataModel.headerTitles === null) return;
+        var hTag = tag.querySelector(".popup-table-head");
+        if (hTag === null) {
+            console.error("not found table header tag");
+            return;
+        }
+        for (var i = 0; i < pc.dataModel.headerTitles.length; ++i) {
+            var hc = document.createElement("p");
+            hc.appendChild(document.createTextNode(pc.dataModel.headerTitles[i]));
+            if (pc.dataModel.headerStyles[i] !== "") {
+                hc.classList.add(pc.dataModel.headerStyles[i]);
+            }
+            hTag.appendChild(hc);
+        }
+    }
+
+    _page_show(pc, tag) {
         tag.classList.remove("page_hidden");
         tag.classList.add("page_show");
+
+        this._initPopupTable(pc, tag);
     }
 
     _funcKeysLabel(p) {
@@ -66,7 +86,7 @@
             console.error("'" + pageId + "' page not found ...")
             return;
         }
-        this._page_show(x);
+        this._page_show(p, x);
         this._pageController = p;
         x = document.querySelectorAll("#page_root > div");
         for(var i = 0; i < x.length; ++i) {
@@ -138,7 +158,7 @@
         }
         //初期表示するページ
         x = document.getElementById(this.openningPage.pageId);
-        this._page_show(x);
+        this._page_show(this.openningPage, x);
         //Function キー非表示
         if (!this.FKeyVisible) { this.funcKeys("hidden"); }
 

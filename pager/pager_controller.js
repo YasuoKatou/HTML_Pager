@@ -10,6 +10,7 @@ class PagerController extends PagerBase {
     constructor(p) {
         super();
         this._pageId = p;
+        this._dataModel = null;
     }
     get pageId() { return this._pageId; }
     get funcKeyDisplay() { return "visible"; }
@@ -74,4 +75,6 @@ class PagerController extends PagerBase {
     fkey10_A(event) {}
     fkey11_A(event) {}
     fkey12_A(event) {}
+
+    get dataModel() { return this._dataModel; }
 }

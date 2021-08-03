@@ -61,4 +61,14 @@ class PagerFunctionKey extends PagerBase {
     get funcKeyList() { return this._funcKeyList; }
 */
 }
- 
+
+class DataModelBase extends PagerBase {
+    constructor() {
+        super();
+        this._headerTitles = null;
+        this._headerStyles = null;
+    }
+    get headerTitles() { return this._headerTitles; }
+    get headerStyles() { return this._headerStyles; }
+    get dataStyles() { return null; }
+}
