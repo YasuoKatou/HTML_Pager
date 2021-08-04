@@ -27,21 +27,25 @@
         tag.classList.add("page_hidden");
     }
 
-    _initPopupTable(pc, tag) {
+    _initPopupTable(pc, pTag) {
         if (pc.dataModel === null) return;
         if (pc.dataModel.headerTitles === null) return;
-        var hTag = tag.querySelector(".popup-table-head");
-        if (hTag === null) {
-            console.error("not found table header tag");
-            return;
-        }
-        for (var i = 0; i < pc.dataModel.headerTitles.length; ++i) {
-            var hc = document.createElement("p");
-            hc.appendChild(document.createTextNode(pc.dataModel.headerTitles[i]));
-            if (pc.dataModel.headerStyles[i] !== "") {
-                hc.classList.add(pc.dataModel.headerStyles[i]);
+        for (var cls in pc.dataModel.headerTitles) {
+            var hTag = pTag.querySelector(cls);
+            if (hTag === null) {
+                console.error("'" + cls + "' not found table header tag");
+            } else {
+                var htj = pc.dataModel.headerTitles[cls];
+                var hcj = pc.dataModel.headerStyles[cls];
+                for (var i = 0; i < htj.length; ++i) {
+                    var hc = document.createElement("p");
+                    hc.appendChild(document.createTextNode(htj[i]));
+                    if (hcj[i] !== "") {
+                        hc.classList.add(hcj[i]);
+                    }
+                    hTag.appendChild(hc);
+                }
             }
-            hTag.appendChild(hc);
         }
     }
 
