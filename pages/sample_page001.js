@@ -7,8 +7,10 @@ class SamplePage001 extends PagerController {
     }
     get funcKeyDisplay() { return "hidden"; }
 
-    clicked_p1_btn1(event) {
-        // console.log('clicked');
-        _pager.changePageById("page002");
+    clicked_p1_btn1(self) {
+        return function(event) {
+            console.log(self.pageId + ' click event start');
+            _pager.changePageById("page002");
+        }
     }
 }

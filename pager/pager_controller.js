@@ -27,12 +27,12 @@ class PagerController extends PagerBase {
                 // ID で検索
                 var e = pTag.querySelector("#" + n);
                 if (e !== null) {
-                    _pager.addClickEvent(new PagerClickEvent(n, this[name]));
+                    _pager.addClickEvent(new PagerClickEvent(n, this[name](this)));
                 } else {
                     // css で検索
                     e = pTag.querySelector("." + n);
                     if (e !== null) {
-                        _pager.addClickEvent(new PagerClickEvent(n, this[name]));
+                        _pager.addClickEvent(new PagerClickEvent(n, this[name](this)));
                     } else {
                         console.error(name + " function not assign events");
                     }

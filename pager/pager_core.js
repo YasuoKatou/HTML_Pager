@@ -133,7 +133,9 @@
             var id = event.target.id;
             for(var i = 0; i < self._clickEventList.length; ++i) {
                 if (self._clickEventList[i].tagId === id) {
-                    self._clickEventList[i].eventFunc(event);
+                    setTimeout(function() {
+                        self._clickEventList[i].eventFunc(event);
+                    }, 0);
                     break;
                 }
             }
