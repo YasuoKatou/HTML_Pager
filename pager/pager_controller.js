@@ -11,7 +11,36 @@ class PagerController extends PagerBase {
         super();
         this._pageId = p;
         this._dataModel = null;
+        this._assignEvents();
     }
+    _assignEvents() {
+        var pTag = document.getElementById(this._pageId);
+        if (pTag === null) {
+            console.error("root tag ('" + this._pageId + "') is not found ...");
+            return;
+        }
+        Object.getOwnPropertyNames(this.__proto__).forEach(name => {
+            // console.log(name);
+            if (name.startsWith('clicked_')) {
+                // クリックイベントの登録
+                var n = name.substr(8);
+                // ID で検索
+                var e = pTag.querySelector("#" + n);
+                if (e !== null) {
+                    _pager.addClickEvent(new PagerClickEvent(n, this[name]));
+                } else {
+                    // css で検索
+                    e = pTag.querySelector("." + n);
+                    if (e !== null) {
+                        _pager.addClickEvent(new PagerClickEvent(n, this[name]));
+                    } else {
+                        console.error(name + " function not assign events");
+                    }
+                }
+            }
+        });
+    }
+
     get pageId() { return this._pageId; }
     get funcKeyDisplay() { return "visible"; }
     get funcKeyLabels() { return []; }

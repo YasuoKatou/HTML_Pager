@@ -11,9 +11,15 @@
         super();
         this._clickEventList = [];
         this._functionKeyList = [];
+        this._pageControllerList = [];
     }
 
-    set openningPage(p) { this._pageController = p; }
+    set openningPage(pid) { 
+        this._pageController = this._findPageController(pid);
+        if (this._pageController === null) {
+            console.error(pid + " not found at openningPage propertit")
+        }
+    }
     get openningPage() { return this._pageController; }
 
     set openningFKey(visible) { this.FKeyVisible = visible; }
@@ -79,11 +85,29 @@
         }
     }
 
+    _findPageController(pid) {
+        for (var i = 0; i < this._pageControllerList.length; ++i) {
+            if (this._pageControllerList[i].pageId === pid) {
+                return this._pageControllerList[i];
+            }
+        }
+        return null;
+    }
+
+    changePageById(pid) {
+        var pc = this._findPageController(pid);
+        if (pc !== null) {
+            this._changePage(pc);
+        } else {
+            console.error(pid + "not found at changePageById");
+        }
+    }
+
     /**
      * 表示するページを切替る.
      * @param {PagerController} p - 表示するページのコントローラ
      */
-    changePage(p) {
+    _changePage(p) {
         var pageId = p.pageId;
         var x = document.getElementById(pageId);
         if (x === null) {
@@ -179,6 +203,12 @@
         document.addEventListener('keydown', this._keyDown_event(this));
         document.addEventListener('keyup', this._keyUp_event(this));
     }
+
+    /**
+     * Pagerコントローラを登録する.
+     * @param {PagerController}} p - Pagerコントローラクラス
+     */
+    addPageController(p) { this._pageControllerList.push(p); }
 
     /**
      * クリックイベント情報を登録する.
