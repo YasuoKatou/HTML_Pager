@@ -10,7 +10,8 @@ class SamplePage001 extends PagerController {
     clicked_p1_btn1(self) {
         return function(event) {
             console.log(self.pageId + ' click event start');
-            _pager.changePageById("page002");
+            _pager.changePageById("page003");
+//            _pager.changePageById("pageT04");
         }
     }
 }

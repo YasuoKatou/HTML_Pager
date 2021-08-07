@@ -67,8 +67,11 @@ class DataModelBase extends PagerBase {
         super();
         this._headerTitles = null;
         this._headerStyles = null;
+        this._listDatas = null;
+        this._listDataStyles = null;
     }
     get headerTitles() { return this._headerTitles; }
     get headerStyles() { return this._headerStyles; }
-    get dataStyles() { return null; }
+    get listDatas() { return this._listDatas; }
+    get listDataStyles() { return this._listDataStyles; }
 }

@@ -33,14 +33,11 @@
         tag.classList.add("page_hidden");
     }
 
-    _initPopupTable(pc, pTag) {
-        if (pc.dataModel === null) return;
+    _initPopupTableHeader(pc, pTag) {
         if (pc.dataModel.headerTitles === null) return;
         for (var cls in pc.dataModel.headerTitles) {
             var hTag = pTag.querySelector(cls);
-            if (hTag === null) {
-                console.error("'" + cls + "' not found table header tag");
-            } else {
+            if (hTag !== null) {
                 var htj = pc.dataModel.headerTitles[cls];
                 var hcj = pc.dataModel.headerStyles[cls];
                 for (var i = 0; i < htj.length; ++i) {
@@ -51,6 +48,42 @@
                     }
                     hTag.appendChild(hc);
                 }
+            } else {
+                console.error("'" + cls + "' not found table header tag");
+            }
+        }
+    }
+
+    _makePopupTableRowData(colDatas, styles) {
+        var rowBody = document.createElement("li");
+        for (var i = 0; i < colDatas.length; ++i) {
+            var item = document.createElement("p");
+            item.appendChild(document.createTextNode(colDatas[i]));
+            if (styles !== null && styles[i] !== "") {
+                item.classList.add(styles[i]);
+            }
+            rowBody.appendChild(item);
+        }
+        return rowBody;
+    }
+
+    _initPopupTableData(pc, pTag) {
+        if (pc.dataModel.listDatas === null) return;
+        for (var cls in pc.dataModel.listDatas) {
+            var dTag = pTag.querySelector(cls);
+            if (dTag !== null) {
+                var rows = pc.dataModel.listDatas[cls];
+                if (rows.length === 0) {
+                    continue;
+                }
+                var rowStyles = pc.dataModel.listDataStyles[cls];
+                var bodyBase = document.createElement("ul");
+                dTag.appendChild(bodyBase);
+                for (var i = 0; i < rows.length; ++i) {
+                    bodyBase.appendChild(this._makePopupTableRowData(rows[i], rowStyles));
+                }
+            } else {
+                console.error("'" + cls + "' not found table data tag");
             }
         }
     }
@@ -59,7 +92,10 @@
         tag.classList.remove("page_hidden");
         tag.classList.add("page_show");
 
-        this._initPopupTable(pc, tag);
+        if (pc.dataModel !== null) {
+            this._initPopupTableHeader(pc, tag);
+            this._initPopupTableData(pc, tag);
+        }
     }
 
     _funcKeysLabel(p) {
