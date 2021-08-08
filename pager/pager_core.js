@@ -217,13 +217,8 @@
     }
 
     initPage() {
-        //全てのページを非表示に設定
-        var x = document.querySelectorAll("#page_root > div");
-        for(var i = 0; i < x.length; ++i) {
-            this._page_hidden(x[i]);
-        }
         //初期表示するページ
-        x = document.getElementById(this.openningPage.pageId);
+        var x = document.getElementById(this.openningPage.pageId);
         this._page_show(this.openningPage, x);
         //Function キー非表示
         if (!this.FKeyVisible) { this.funcKeys("hidden"); }
