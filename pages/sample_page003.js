@@ -58,4 +58,18 @@ class SamplePage003 extends PagerController {
         this._dataModel = new SamplePage003Data();
     }
     get funcKeyDisplay() { return "hidden"; }
+
+    clicked_p3_close(self) {
+        return function(event) {
+            console.log(self.pageId + ' close button click event start');
+            _pager.changePageById("page002");
+        }
+    }
+
+    clicked_p3_ok(self) {
+        return function(event) {
+            console.log(self.pageId + ' ok button click event start');
+            _pager.changePageById("page002");
+        }
+    }
 }
