@@ -14,6 +14,7 @@ class PagerController extends PagerBase {
         this._assignEvents();
     }
     _assignEvents() {
+        if (this._pageId === "non-page") return;
         var pTag = document.getElementById(this._pageId);
         if (pTag === null) {
             console.error("root tag ('" + this._pageId + "') is not found ...");
