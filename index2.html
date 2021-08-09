@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="pager/pager.css">
+        <link rel="stylesheet" href="pager/pager2.css">
+    </head>
+    <body>
+        <section class="tab_container">
+            <p id="tab_selector1" data-change_tag="tab01">タブ1</p>
+            <p id="tab_selector2" data-change_tag="tab02">タブ2</p>
+            <p id="tab_selector3" data-change_tag="tab03">タブ3</p>
+            <p id="tab_selector4" data-change_tag="tab04">タブ4</p>
+        </section>
+        <section id="page_root">
+            <div id="tab01" class="page_hidden">
+                <span>tab1 content</span>
+            </div>
+            <div id="tab02" class="page_hidden">
+                <span>tab2 content</span>
+            </div>
+            <div id="tab03" class="page_hidden">
+                <span>tab3 content</span>
+            </div>
+            <div id="tab04" class="page_hidden">
+                <span>tab4 content</span>
+            </div>
+        </section>
+        <script type="text/javascript" src="pager/pager_class.js"></script>
+        <script type="text/javascript" src="pager/pager_controller.js"></script>
+        <script type="text/javascript" src="pager/pager_core.js"></script>
+        <script type="text/javascript" src="pager/pager_config2.js"></script>
+        <script type="text/javascript" src="pager/pager.js"></script>
+    </body>
+</html>

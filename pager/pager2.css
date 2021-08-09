@@ -1,0 +1,11 @@
+
+.tab_container {
+    text-align: right;
+}
+
+.tab_container p {
+    display: inline-block;
+    width: 10em;
+    text-align: center;
+    border:1px solid #37beb0;
+}
