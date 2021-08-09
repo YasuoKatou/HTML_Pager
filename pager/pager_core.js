@@ -176,10 +176,12 @@
                 this._page_hidden(x[i]);
             }
         }
-        //ファンクションキーの表示／非表示
-        this._funcKeys(p.funcKeyDisplay);
-        //ファンクションキーラベルの表示
-        this._funcKeysLabel(PagerFunctionKey.KEY_ID_NO_MODIFIRE);
+        if (this._configFKey) {
+            //ファンクションキーの表示／非表示
+            this._funcKeys(p.funcKeyDisplay);
+            //ファンクションキーラベルの表示
+            this._funcKeysLabel(PagerFunctionKey.KEY_ID_NO_MODIFIRE);
+        }
     }
 
     _click_event(self) {
