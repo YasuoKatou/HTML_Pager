@@ -41,11 +41,19 @@
         tag.classList.add("page_hidden");
     }
 
+    _removeChildTag(pTag) {
+        var num = pTag.childElementCount;
+        for (var i = 0; i < num; ++i) {
+            pTag.children[0].remove();
+        }
+    }
+
     _initPopupTableHeader(pc, pTag) {
         if (pc.dataModel.headerTitles === null) return;
         for (var cls in pc.dataModel.headerTitles) {
             var hTag = pTag.querySelector(cls);
             if (hTag !== null) {
+                this._removeChildTag(hTag);
                 var htj = pc.dataModel.headerTitles[cls];
                 var hcj = pc.dataModel.headerStyles[cls];
                 for (var i = 0; i < htj.length; ++i) {
@@ -80,6 +88,7 @@
         for (var cls in pc.dataModel.listDatas) {
             var dTag = pTag.querySelector(cls);
             if (dTag !== null) {
+                this._removeChildTag(dTag);
                 var rows = pc.dataModel.listDatas[cls];
                 if (rows.length === 0) {
                     continue;
