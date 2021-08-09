@@ -12,6 +12,7 @@
         this._clickEventList = [];
         this._functionKeyList = [];
         this._pageControllerList = [];
+        this._configFKey = false;
     }
 
     set openningPage(pid) { 
@@ -22,8 +23,15 @@
     }
     get openningPage() { return this._pageController; }
 
-    set openningFKey(visible) { this.FKeyVisible = visible; }
-    funcKeys(visible) {
+    /**
+     * ファンクションキーの初期表示を設定する.<br>
+     * ファンクションキーが存在する場合のみ、このプロパティを設定すること.
+     */
+    set openningFKey(visible) {
+        this._FKeyVisible = visible;
+        this._configFKey  = true;
+    }
+    _funcKeys(visible) {
         var x = document.getElementById("f_keys");
         x.style.visibility = visible;
     }
@@ -99,6 +107,7 @@
     }
 
     _funcKeysLabel(p) {
+        if (!this._configFKey) return;
         var l;
         if (p === PagerFunctionKey.KEY_ID_NO_MODIFIRE) l = this._pageController.funcKeyLabels;
         else if (p === PagerFunctionKey.KEY_ID_SHIFT) l = this._pageController.funcKeyLabelsWithShift;
@@ -159,7 +168,7 @@
             }
         }
         //ファンクションキーの表示／非表示
-        this.funcKeys(p.funcKeyDisplay);
+        this._funcKeys(p.funcKeyDisplay);
         //ファンクションキーラベルの表示
         this._funcKeysLabel(PagerFunctionKey.KEY_ID_NO_MODIFIRE);
     }
@@ -221,7 +230,7 @@
         var x = document.getElementById(this.openningPage.pageId);
         this._page_show(this.openningPage, x);
         //Function キー非表示
-        if (!this.FKeyVisible) { this.funcKeys("hidden"); }
+        if (this._configFKey && !this._FKeyVisible) { this._funcKeys("hidden"); }
 
         //クリックイベントの設定
         this._clickEventList.forEach(clickEvent => {
