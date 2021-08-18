@@ -75,3 +75,67 @@ class DataModelBase extends PagerBase {
     get listDatas() { return this._listDatas; }
     get listDataStyles() { return this._listDataStyles; }
 }
+
+class PagerAjaxInfo extends PagerBase {
+    constructor() {
+        super();
+        this._httpRequestMethod = 'GET';
+        this._httpRequestUrl = '';
+        this._httpRequestAsync = true;
+        this._httpRequestHeaders = {};
+    }
+    get httpRequestMethod() { return this._httpRequestMethod; }
+    set httpRequestMethod(p) { this._httpRequestMethod = p; }
+    get httpRequestUrl() { return this._httpRequestUrl; }
+    set httpRequestUrl(p) { this._httpRequestUrl = p; }
+    get httpRequestAsync() { return this._httpRequestAsync; }
+    set httpRequestAsync(p) { this._httpRequestAsync = p; }
+
+    get httpRequestHeaders() { return this._httpRequestHeaders; }
+    addHttpRequestHeader(key, value) {
+        this._httpRequestHeaders[key] = value;
+    }
+}
+
+class PagerAjax extends PagerBase {
+    constructor(ajax_info) {
+        super();
+        this._ajax_info = ajax_info;
+        this._httpRequest = new XMLHttpRequest();
+        this._httpRequest.onreadystatechange = this.alertContents;
+    }
+
+    send() {
+        this._httpRequest._option = this._ajax_info.httpRequestHeaders;
+        this._httpRequest.open(this._ajax_info.httpRequestMethod, this._ajax_info.httpRequestUrl, this._ajax_info.httpRequestAsync);
+    }
+
+    alertContents() {
+        switch(this.readyState) {
+            case XMLHttpRequest.OPENED:
+                console.log('ajax opened');
+                var httpRequestHeaders = this._option;
+                for (let key in httpRequestHeaders) {
+                    this.setRequestHeader(key, httpRequestHeaders[key]);
+                }
+                this.send();
+                break;
+            case XMLHttpRequest.DONE:
+                if ((200 <= this.status && this.status < 300) || (this.status == 304)) {
+                    console.log('ajax normal end');
+                } else {
+                    console.error('ajax error end');
+                }
+                break;
+            case XMLHttpRequest.HEADERS_RECEIVED:
+                console.log('ajax header recieved');
+                break;
+            case XMLHttpRequest.LOADING:
+                console.log('ajax response recieving');
+                break;
+            default:
+                console.error('ajax error (' + this.readyState + ')');
+                break;
+        }
+    }
+}

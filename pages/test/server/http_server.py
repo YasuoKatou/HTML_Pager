@@ -1,15 +1,18 @@
 # -*- coding:utf-8 -*-
 
 import inspect
-from http.server import HTTPServer, ThreadingHTTPServer
-from http.server import BaseHTTPRequestHandler
+from http.server import HTTPServer
+from http.server import SimpleHTTPRequestHandler
 
 # https://docs.python.org/ja/3/library/http.server.html
 # https://kazuhira-r.hatenablog.com/entry/2019/08/12/220406
 
 # $ curl -X POST localhost:8082/get_sample
 
-class HttpHandlerBase(BaseHTTPRequestHandler):
+class HttpHandlerBase(SimpleHTTPRequestHandler):
+    def do_GET(self):
+        super().do_GET()
+
     def do_POST(self):
         print('POST response version : {}'.format(self.protocol_version))
         if len(self.path) < 1:
