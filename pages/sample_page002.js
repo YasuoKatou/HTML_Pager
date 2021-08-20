@@ -3,7 +3,7 @@ class SamplePage002 extends PagerController {
     constructor(p) {
         super(p);
     }
-    // get funcKeyDisplay() { return "visible"; }   #default
+    get funcKeyDisplay() { return "visible"; }
     get funcKeyLabels() { return ['Help']; }
     get funcKeyLabelsWithShift() { return ["","","","","","","","","","","","log out"]; }
     get funcKeyLabelsWithCtrl() { return ["Help","","","","","","","","","","","log out"]; }

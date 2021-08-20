@@ -33,7 +33,9 @@
     }
     _funcKeys(visible) {
         var x = document.getElementById("f_keys");
-        x.style.visibility = visible;
+        if (x.style.visibility !== visible) {
+            x.style.visibility = visible;
+        }
     }
 
     _page_hidden(tag) {
