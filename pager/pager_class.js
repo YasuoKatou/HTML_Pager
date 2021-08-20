@@ -76,44 +76,19 @@ class DataModelBase extends PagerBase {
     get listDataStyles() { return this._listDataStyles; }
 }
 
-class PagerAjaxInfo extends PagerBase {
-    constructor() {
-        super();
-        this._httpRequestMethod = 'GET';
-        this._httpRequestUrl = '';
-        this._httpRequestAsync = true;
-        this._httpRequestHeaders = {};
-        this._httpResponseReveived = null;
-        this._httpResponseTimeout = 10000;
-    }
-    get httpRequestMethod() { return this._httpRequestMethod; }
-    set httpRequestMethod(p) { this._httpRequestMethod = p; }
-    get httpRequestUrl() { return this._httpRequestUrl; }
-    set httpRequestUrl(p) { this._httpRequestUrl = p; }
-    get httpRequestAsync() { return this._httpRequestAsync; }
-    set httpRequestAsync(p) { this._httpRequestAsync = p; }
-
-    get httpRequestHeaders() { return this._httpRequestHeaders; }
-    addHttpRequestHeader(key, value) {
-        this._httpRequestHeaders[key] = value;
-    }
-    get httpResponseReveived() { return this._httpResponseReveived; }
-    set httpResponseReveived(p) { this._httpResponseReveived = p; }
-    get httpResponseTimeout() { return this._httpResponseTimeout; }
-    set httpResponseTimeout(p) { this._httpResponseTimeout = p; }
-}
-
 class PagerAjax extends PagerBase {
     constructor(ajax_info) {
         super();
         this._ajax_info = ajax_info;
         this._httpRequest = new XMLHttpRequest();
         this._httpRequest.onreadystatechange = this.alertContents(this);
-        this._httpRequest.timeout = this._ajax_info.httpResponseTimeout;
+        if (this._ajax_info.timeout) {
+            this._httpRequest.timeout = this._ajax_info.timeout;
+        }
     }
 
     send() {
-        this._httpRequest.open(this._ajax_info.httpRequestMethod, this._ajax_info.httpRequestUrl, this._ajax_info.httpRequestAsync);
+        this._httpRequest.open(this._ajax_info.method, this._ajax_info.url, this._ajax_info.async);
     }
 
     alertContents(self) {
@@ -121,16 +96,16 @@ class PagerAjax extends PagerBase {
             switch(this.readyState) {
                 case XMLHttpRequest.OPENED:
                     console.log('ajax opened');
-                    var httpRequestHeaders = self._ajax_info.httpRequestHeaders;
-                    for (let key in httpRequestHeaders) {
-                        this.setRequestHeader(key, httpRequestHeaders[key]);
+                    var requestHeaders = self._ajax_info.requestHeaders;
+                    for (let i = 0; i < requestHeaders.length; i += 2) {
+                        this.setRequestHeader(requestHeaders[i], requestHeaders[i+1]);
                     }
                     this.send();
                     break;
                 case XMLHttpRequest.DONE:
                     if ((200 <= this.status && this.status < 300) || (this.status == 304)) {
-                        if (self._ajax_info.httpResponseReveived !== null) {
-                            self._ajax_info.httpResponseReveived(this.response);
+                        if (self._ajax_info.responseReveived !== null) {
+                            self._ajax_info.responseReveived(this.response);
                         } else {
                             console.log('ajax normal end (no reveied function)');
                         }

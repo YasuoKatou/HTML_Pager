@@ -15,12 +15,16 @@ class SamplePage001 extends PagerController {
     }
 
     _login() {
-        var ajaxParam = new PagerAjaxInfo();
-        ajaxParam.httpRequestMethod = 'POST';
-        ajaxParam.httpRequestUrl = 'http://localhost:8082/get_sample';
-        ajaxParam.addHttpRequestHeader('Access-Control-Allow-Origin', '*');
-        ajaxParam.httpResponseReveived = this._loginResponse(this);
-        var ajax = new PagerAjax(ajaxParam);
+        var ajax = new PagerAjax({
+            async: true,
+            method: 'POST',
+            url: 'http://localhost:8082/get_sample',
+            requestHeaders: [
+                'Access-Control-Allow-Origin', '*'
+            ],
+            timeout: 10000,
+            responseReveived: this._loginResponse(this)
+        });
         ajax.send();
     }
     _loginResponse(self) {
