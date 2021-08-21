@@ -10,11 +10,15 @@ class SamplePage001 extends PagerController {
     clicked_p1_btn1(self) {
         return function(event) {
             console.log(self.pageId + ' click event start');
-            self._login();
+            self._login(event);
         }
     }
 
-    _login() {
+    _login(event) {
+        var prt = document.getElementById(this.pageId);
+        var uid = prt.querySelector('#user_id');
+        var pwd = prt.querySelector('#password');
+        var strJson = JSON.stringify({user_id:uid.value, password:pwd.value});
         var ajax = new PagerAjax({
             async: true,
             method: 'POST',
@@ -22,6 +26,7 @@ class SamplePage001 extends PagerController {
             requestHeaders: [
                 'Access-Control-Allow-Origin', '*'
             ],
+            txData: strJson,
             timeout: 10000,
             responseReveived: this._loginResponse(this)
         });

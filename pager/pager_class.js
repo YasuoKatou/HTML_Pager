@@ -81,9 +81,15 @@ class PagerAjax extends PagerBase {
         super();
         this._ajax_info = ajax_info;
         this._httpRequest = new XMLHttpRequest();
-        this._httpRequest.onreadystatechange = this.alertContents(this);
+        this._httpRequest.onreadystatechange = this._alertContents(this);
         if (this._ajax_info.timeout) {
             this._httpRequest.timeout = this._ajax_info.timeout;
+        }
+        if (this._ajax_info.transferFailed) {
+            this._httpRequest.addEventListener(this._transferFailed(this));
+        }
+        if (this._ajax_info.transferCanceled) {
+            this._httpRequest.addEventListener(this._transferCanceled(this));
         }
     }
 
@@ -91,16 +97,17 @@ class PagerAjax extends PagerBase {
         this._httpRequest.open(this._ajax_info.method, this._ajax_info.url, this._ajax_info.async);
     }
 
-    alertContents(self) {
+    _alertContents(self) {
         return function() {
             switch(this.readyState) {
                 case XMLHttpRequest.OPENED:
                     console.log('ajax opened');
+                    // setRequestHeader()は、OPENED の後に実行する必要がある
                     var requestHeaders = self._ajax_info.requestHeaders;
                     for (let i = 0; i < requestHeaders.length; i += 2) {
                         this.setRequestHeader(requestHeaders[i], requestHeaders[i+1]);
                     }
-                    this.send();
+                    this.send(self._ajax_info.txData);
                     break;
                 case XMLHttpRequest.DONE:
                     if ((200 <= this.status && this.status < 300) || (this.status == 304)) {
@@ -122,6 +129,24 @@ class PagerAjax extends PagerBase {
                 default:
                     console.error('ajax error (' + this.readyState + ')');
                     break;
+            }
+        }
+    }
+
+    _transferFailed(self) {
+        return function(event) {
+            console.error('transferFailed : ' + event);
+            if (self._ajax_info.transferFailed) {
+                self._ajax_info.transferFailed(event);
+            }
+        }
+    }
+
+    _transferCanceled(self) {
+        return function(event) {
+            console.error('_transferCanceled' + event);
+            if (self._ajax_info.transferCanceled) {
+                self._ajax_info.transferCanceled(event);
             }
         }
     }

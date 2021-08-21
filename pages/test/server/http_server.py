@@ -38,6 +38,10 @@ class MyHttpServer(HttpHandlerBase):
     def do_POST_get_sample(self):
         print('start do_POST_get_sample')
 
+        content_len  = int(self.headers.get("content-length"))
+        req_body = self.rfile.read(content_len).decode("utf-8")
+        print('request body : ({}) {}'.format(content_len, req_body.encode("utf-8")))
+
         self.send_response(200)
         self.send_header('Content-Type', 'application/json; charset=utf-8')
         self.end_headers()
