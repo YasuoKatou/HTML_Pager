@@ -168,7 +168,10 @@ class PagerAjax extends PagerBase {
         return function(event) {
             console.error('transferFailed : ' + event);
             if (self._ajax_info.transferFailed) {
-                self._ajax_info.transferFailed(event);
+                let obj = {};
+                if (event.isTrusted) obj.isTrusted = event.isTrusted;
+                if (event.type) obj.type = event.type;
+                self._ajax_info.transferFailed(obj);
             }
         }
     }
@@ -177,7 +180,10 @@ class PagerAjax extends PagerBase {
         return function(event) {
             console.error('_transferCanceled' + event);
             if (self._ajax_info.transferCanceled) {
-                self._ajax_info.transferCanceled(event);
+                let obj = {};
+                if (event.isTrusted) obj.isTrusted = event.isTrusted;
+                if (event.type) obj.type = event.type;
+                self._ajax_info.transferCanceled(objs);
             }
         }
     }
