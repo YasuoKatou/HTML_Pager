@@ -84,12 +84,13 @@ class PagerAjax extends PagerBase {
         this._httpRequest.onreadystatechange = this._alertContents(this);
         if (this._ajax_info.timeout) {
             this._httpRequest.timeout = this._ajax_info.timeout;
+            this._httpRequest.ontimeout = this._timeout(this)
         }
         if (this._ajax_info.transferFailed) {
-            this._httpRequest.addEventListener(this._transferFailed(this));
+            this._httpRequest.addEventListener('error', this._transferFailed(this));
         }
         if (this._ajax_info.transferCanceled) {
-            this._httpRequest.addEventListener(this._transferCanceled(this));
+            this._httpRequest.addEventListener('abort', this._transferCanceled(this));
         }
     }
 
@@ -104,10 +105,20 @@ class PagerAjax extends PagerBase {
                     console.log('ajax opened');
                     // setRequestHeader()は、OPENED の後に実行する必要がある
                     var requestHeaders = self._ajax_info.requestHeaders;
-                    for (let i = 0; i < requestHeaders.length; i += 2) {
-                        this.setRequestHeader(requestHeaders[i], requestHeaders[i+1]);
+                    if (requestHeaders) {
+                        for (let i = 0; i < requestHeaders.length; i += 2) {
+                            this.setRequestHeader(requestHeaders[i], requestHeaders[i+1]);
+                        }
                     }
-                    this.send(self._ajax_info.txData);
+                    try {
+                        if (self._ajax_info.txData) {
+                            this.send(self._ajax_info.txData);
+                        } else {
+                            this.send();
+                        }
+                    } catch (error) {
+                        console.error(error);
+                    }
                     break;
                 case XMLHttpRequest.DONE:
                     if ((200 <= this.status && this.status < 300) || (this.status == 304)) {
@@ -117,7 +128,15 @@ class PagerAjax extends PagerBase {
                             console.log('ajax normal end (no reveied function)');
                         }
                     } else {
-                        console.error('ajax error end');
+                        if (self._ajax_info.transferFailed) {
+                            let obj = {};
+                            if (this.status) obj.status = this.status;
+                            if (this.statusText) obj.statusText = this.statusText;
+                            if (this.responseText) obj.responseText = this.responseText;
+                            self._ajax_info.transferFailed(obj);
+                        } else {
+                            console.error('ajax error end');
+                        }
                     }
                     break;
                 case XMLHttpRequest.HEADERS_RECEIVED:
@@ -129,6 +148,18 @@ class PagerAjax extends PagerBase {
                 default:
                     console.error('ajax error (' + this.readyState + ')');
                     break;
+            }
+        }
+    }
+
+    _timeout(self) {
+        return function(event) {
+            console.error('timeout : ' + event);
+            if (self._ajax_info.transferFailed) {
+                let obj = {};
+                if (event.isTrusted) obj.isTrusted = event.isTrusted;
+                if (event.type) obj.type = event.type;
+                self._ajax_info.transferFailed(obj);
             }
         }
     }

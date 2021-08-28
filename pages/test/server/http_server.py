@@ -4,6 +4,8 @@ import inspect
 from http.server import HTTPServer
 from http.server import SimpleHTTPRequestHandler
 
+import time
+
 # https://docs.python.org/ja/3/library/http.server.html
 # https://kazuhira-r.hatenablog.com/entry/2019/08/12/220406
 
@@ -35,17 +37,52 @@ class HttpHandlerBase(SimpleHTTPRequestHandler):
             return
 
 class MyHttpServer(HttpHandlerBase):
+    def _getRequestData(self):
+        content_len  = int(self.headers.get("content-length"))
+        req_body = self.rfile.read(content_len).decode("utf-8")
+        data = req_body.encode("utf-8")
+        print('request body : ({}) {}'.format(content_len, data))
+        return data
+
     def do_POST_get_sample(self):
         print('start do_POST_get_sample')
 
-        content_len  = int(self.headers.get("content-length"))
-        req_body = self.rfile.read(content_len).decode("utf-8")
-        print('request body : ({}) {}'.format(content_len, req_body.encode("utf-8")))
+        self._getRequestData()
 
         self.send_response(200)
         self.send_header('Content-Type', 'application/json; charset=utf-8')
         self.end_headers()
-        self.wfile.write(b'{"status":"OK","message":"Hello Guillaume"}')
+        self.wfile.write(b'{"status":"OK"}')
+
+    def do_POST_get_postal_code_address(self):
+        print('start do_POST_get_postal_code_address')
+
+        self._getRequestData()
+
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json; charset=utf-8')
+        self.end_headers()
+        self.wfile.write('{"address1":"福岡県","address2":"春日市"}'.encode())
+
+    def do_POST_server_error(self):
+        print('start do_POST_server_error')
+        self.send_response(500)   # 500 Internal Server Error
+        self.end_headers()
+        self.wfile.write('サーバ内でエラーが発生しました.'.encode())
+
+    def do_POST_timeout(self):
+        print('start do_POST_timeout')
+
+        time.sleep(3)   # クライアントは、３秒以内にタイムアウトを検知すること
+
+        try:
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.end_headers()
+            self.wfile.write('{"result":"OK"'.encode())
+        except ConnectionAbortedError as ex:
+            print('レスポンスの送信失敗')
+            print(ex)
 
 def run(server_class=HTTPServer, handler_class=MyHttpServer):
     server_address = ('', 8082)

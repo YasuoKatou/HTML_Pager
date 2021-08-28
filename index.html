@@ -4,6 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <link rel="stylesheet" href="pager/pager.css">
+        <link rel="stylesheet" href="pages/ajax_test.css">
     </head>
     <body>
         <section id="header">
@@ -95,6 +96,31 @@
                 </div>
             </div>
 
+            <div id="ajax_test" class="page_hidden">
+                <p>Ajax Test</p>
+                <div>
+                    <label>郵便番号<input type="number" id="pat_pcode"></label>
+                    <input type="button" id="pat_btn1" value="検索">
+                    <span id="postal_code_result">検索結果を表示</span>
+                </div>
+                <div>
+                    <label>host エラーの確認<input type="button" id="pat_no_host" value="実行"></label>
+                    <span id="pat_no_host_result">結果を表示</span>
+                </div>
+                <div>
+                    <label>404 Not Foundの確認<input type="button" id="pat_not_found" value="実行"></label>
+                    <span id="pat_not_found_result">結果を表示</span>
+                </div>
+                <div>
+                    <label>サーバエラー(500)の確認<input type="button" id="pat_svr_err" value="実行"></label>
+                    <span id="pat_svr_err_result">結果を表示</span>
+                </div>
+                <div>
+                    <label>タイムアウトの確認<input type="button" id="pat_timeout" value="実行"></label>
+                    <span id="pat_timeout_result">結果を表示</span>
+                </div>
+            </div>
+
         </section>
         <section id="f_keys" style="visibility: hidden;">
             <div class="f_key_wrapper">
@@ -128,6 +154,7 @@
         <script type="text/javascript" src="pages/sample_page001.js"></script>
         <script type="text/javascript" src="pages/sample_page002.js"></script>
         <script type="text/javascript" src="pages/sample_page003.js"></script>
+        <script type="text/javascript" src="pages/ajax_test.js"></script>
         <script type="text/javascript" src="pager/pager_config.js"></script>
         <script type="text/javascript" src="pager/pager.js"></script>
     </body>
