@@ -19,10 +19,11 @@ class SamplePage001 extends PagerController {
         var uid = prt.querySelector('#user_id');
         var pwd = prt.querySelector('#password');
         var strJson = JSON.stringify({user_id:uid.value, password:pwd.value});
+        var url = location.protocol + '//' + location.host
         var ajax = new PagerAjax({
             async: true,
             method: 'POST',
-            url: 'http://localhost:8082/get_sample',
+            url: url + '/get_sample',
             requestHeaders: [
                 'Access-Control-Allow-Origin', '*'
             ],

@@ -29,6 +29,11 @@ class AjaxTest extends PagerController {
             self._timeoutTest(event);
         }
     }
+
+    _urlPrefix() {
+        return location.protocol + '//' + location.host
+    }
+
     /*
      * 通信が正常終了するパターン.
      */
@@ -39,7 +44,7 @@ class AjaxTest extends PagerController {
         var ajax = new PagerAjax({
             async: true,
             method: 'POST',
-            url: 'http://localhost:8082/get_postal_code_address',
+            url: this._urlPrefix() + '/get_postal_code_address',
             requestHeaders: [
                 'Access-Control-Allow-Origin', '*'
             ],
@@ -82,7 +87,7 @@ class AjaxTest extends PagerController {
         var ajax = new PagerAjax({
             async: true,
             method: 'POST',
-            url: 'http://localhost:8082/not_found_page',
+            url: this._urlPrefix() + '/not_found_page',
             timeout: 10000,
             transferFailed: this._transferFailed(this),
         });
@@ -97,7 +102,7 @@ class AjaxTest extends PagerController {
         var ajax = new PagerAjax({
             async: true,
             method: 'POST',
-            url: 'http://localhost:8082/server_error',
+            url: this._urlPrefix() + '/server_error',
             timeout: 10000,
             transferFailed: this._transferFailed(this),
         });
@@ -112,7 +117,7 @@ class AjaxTest extends PagerController {
         var ajax = new PagerAjax({
             async: true,
             method: 'POST',
-            url: 'http://localhost:8082/timeout',
+            url: this._urlPrefix() + '/timeout',
             timeout: 100,
             transferFailed: this._transferFailed(this),
         });
