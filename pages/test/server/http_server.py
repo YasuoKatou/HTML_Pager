@@ -9,8 +9,6 @@ import time
 # https://docs.python.org/ja/3/library/http.server.html
 # https://kazuhira-r.hatenablog.com/entry/2019/08/12/220406
 
-# $ curl -X POST localhost:8082/get_sample
-
 class HttpHandlerBase(SimpleHTTPRequestHandler):
     def do_GET(self):
         super().do_GET()
@@ -32,9 +30,14 @@ class HttpHandlerBase(SimpleHTTPRequestHandler):
         if not f:
             print('path : {} is not assigned'.format(self.path))
             self.send_response(404)     # Not Found
+            self._sendCorsHeader()
             self.end_headers()
             self.wfile.write('\n\n path {} is not found'.format(self.path).encode('utf-8'))
             return
+
+    def _sendCorsHeader(self):
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
 
 class MyHttpServer(HttpHandlerBase):
     def _getRequestData(self):
@@ -44,13 +47,14 @@ class MyHttpServer(HttpHandlerBase):
         print('request body : ({}) {}'.format(content_len, data))
         return data
 
-    def do_POST_get_sample(self):
-        print('start do_POST_get_sample')
+    def do_POST_do_login(self):
+        print('start do_POST_do_login')
 
         self._getRequestData()
 
         self.send_response(200)
         self.send_header('Content-Type', 'application/json; charset=utf-8')
+        super()._sendCorsHeader()
         self.end_headers()
         self.wfile.write(b'{"status":"OK"}')
 
@@ -61,12 +65,14 @@ class MyHttpServer(HttpHandlerBase):
 
         self.send_response(200)
         self.send_header('Content-Type', 'application/json; charset=utf-8')
+        super()._sendCorsHeader()
         self.end_headers()
         self.wfile.write('{"address1":"福岡県","address2":"春日市"}'.encode())
 
     def do_POST_server_error(self):
         print('start do_POST_server_error')
         self.send_response(500)   # 500 Internal Server Error
+        super()._sendCorsHeader()
         self.end_headers()
         self.wfile.write('サーバ内でエラーが発生しました.'.encode())
 
@@ -78,6 +84,7 @@ class MyHttpServer(HttpHandlerBase):
         try:
             self.send_response(200)
             self.send_header('Content-Type', 'application/json; charset=utf-8')
+            super()._sendCorsHeader()
             self.end_headers()
             self.wfile.write('{"result":"OK"'.encode())
         except ConnectionAbortedError as ex:

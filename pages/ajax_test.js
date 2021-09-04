@@ -31,7 +31,8 @@ class AjaxTest extends PagerController {
     }
 
     _urlPrefix() {
-        return location.protocol + '//' + location.host
+        // return location.protocol + '//' + location.host;
+        return 'http://localhost:8082';
     }
 
     /*
@@ -45,9 +46,7 @@ class AjaxTest extends PagerController {
             async: true,
             method: 'POST',
             url: this._urlPrefix() + '/get_postal_code_address',
-            requestHeaders: [
-                'Access-Control-Allow-Origin', '*'
-            ],
+            requestHeaders: [],
             txData: strJson,
             timeout: 10000,
             responseReveived: this._postalcodeResponse(this),
@@ -95,7 +94,7 @@ class AjaxTest extends PagerController {
     }
 
     /**
-     * 通信が異常(404)終了するパターン.
+     * 通信が異常(500)終了するパターン.
      */
      _serverErrorTest(event) {
         this._ajax_result_tag_id = 'pat_svr_err_result';
