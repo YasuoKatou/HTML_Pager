@@ -1,0 +1,54 @@
+summary {
+    font-size: large;
+}
+
+.todo-item {
+    border: 1px solid lightblue;
+}
+
+.todo-detail-dody {
+    margin-left: 3em;
+    margin-bottom: 1em;
+}
+
+.todo-detail-dody > p {
+    margin-top: 0.5em;
+    background-color: lightcyan;
+}
+
+.todo-detail-ope {
+    text-align: right;
+}
+
+.add-coment {
+    margin-top: 1em;
+    display: inline-block;
+    padding: 0 1em;
+    border: 1px solid lightgray;
+    border-radius: 11px;
+    background-color: lightgray;
+    color: white;
+    font-size: x-small;
+}
+
+.todo-tag {
+    margin-left: 1em;
+    padding: 0 1em;
+    display: inline-block;
+    color: #fff;
+    border: 1px solid #fa4141;
+    border-radius: 11px;
+    background-color: #fa4141;
+    font-size: x-small;
+}
+
+.add-todo-tag {
+    margin-left: 1em;
+    padding: 0 1em;
+    display: inline-block;
+    color: white;
+    border: 1px solid lightgray;
+    border-radius: 11px;
+    background-color: lightgray;
+    font-size: x-small;
+}

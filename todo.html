@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="pager/pager.css">
+        <link rel="stylesheet" href="pages/todo/todo.css">
+    </head>
+    <body>
+        <section id="header">
+            <h1>TODO アプリ</h1>
+        </section>
+        <section id="page_root">
+            <div id="todo_main" class="page_hidden">
+                <ul>
+                    <li>新規登録</li>
+                    <li class="todo-item"><details><summary>todo #1</summary>
+                        <div class="todo-detail-dody"><p>コメント1-1</p><p>コメント1-2</p>
+                        <div class="todo-detail-ope"><div class="add-coment">
+                            <p>+ comment</p>
+                        </div></div>
+                        <div>
+                            <p class="todo-tag">コンピュータ</p><p class="todo-tag">python</p>
+                            <p class="add-todo-tag">+ tag</p>
+                        </div></div>
+                    </details></li>
+                    <li class="todo-item"><details><summary>todo #2</summary>
+                        <div class="todo-detail-dody">
+                        <div class="todo-detail-ope"><div class="add-coment">
+                            <p>+ comment</p>
+                        </div></div>
+                        <div>
+                            <p class="add-todo-tag">+ tag</p>
+                        </div></div>
+                    </details></li>
+                    <li class="todo-item"><details><summary>todo #3</summary>
+                        <div class="todo-detail-dody"><p>コメント3-1</p>
+                        <div class="todo-detail-ope"><div class="add-coment">
+                            <p>+ comment</p>
+                        </div></div>
+                        <div>
+                            <p class="add-todo-tag">+ tag</p>
+                        </div></div>
+                    </details></li>
+                    <li class="todo-item"><details><summary>todo #4</summary>
+                        <div class="todo-detail-dody">
+                        <div class="todo-detail-ope"><div class="add-coment">
+                            <p>+ comment</p>
+                        </div></div>
+                        <div>
+                            <p class="add-todo-tag">+ tag</p>
+                        </div></div>
+                    </details></li>
+                </ul>
+            </div>
+        </section>
+        <section id="f_keys" style="visibility: hidden;">
+            <div class="f_key_wrapper">
+                <ul class="f_key_group">
+                    <li id="fkey01" class="popup_button"></li>
+                    <li id="fkey02" class="popup_button"></li>
+                    <li id="fkey03" class="popup_button"></li>
+                    <li id="fkey04" class="popup_button"></li>
+                </ul>
+                <ul class="f_key_group">
+                    <li id="fkey05" class="popup_button"></li>
+                    <li id="fkey06" class="popup_button"></li>
+                    <li id="fkey07" class="popup_button"></li>
+                    <li id="fkey08" class="popup_button"></li>
+                </ul>
+                <ul class="f_key_group">
+                    <li id="fkey09" class="popup_button"></li>
+                    <li id="fkey10" class="popup_button"></li>
+                    <li id="fkey11" class="popup_button"></li>
+                    <li id="fkey12" class="popup_button"></li>
+                </ul>
+            </div>
+        </section>
+
+        <script type="text/javascript" src="pager/pager_class.js"></script>
+        <script type="text/javascript" src="pager/pager_controller.js"></script>
+        <script type="text/javascript" src="pager/pager_core.js"></script>
+        <script type="text/javascript" src="pages/todo/todo_main_page.js"></script>
+        <script type="text/javascript" src="pages/todo/todo_config.js"></script>
+        <script type="text/javascript" src="pager/pager.js"></script>
+    </body>
+</html>
