@@ -1,5 +1,5 @@
-body {
-    overflow: scroll;
+#page_root {
+    overflow: auto;
 }
 
 summary {
@@ -22,6 +22,9 @@ summary {
 
 .todo-detail-ope {
     text-align: right;
+}
+
+.todo-comment {
 }
 
 .add-coment {

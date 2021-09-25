@@ -1,7 +1,10 @@
 class TodoMainPage extends PagerController {
     constructor(p) {
         super(p);
-        this.showTodo(this.test_data);
+        this._showTodo(this.test_data);
+
+        var myPage = document.getElementById(p);
+        myPage.addEventListener('click', this._myPage_click());
     }
 
     /**
@@ -15,8 +18,34 @@ class TodoMainPage extends PagerController {
         }
     }
 
-    showTodo(json) {
-        // this._removeAllTodo();
+    _myPage_click() {
+        var self = this;
+        return function(event) {
+            setTimeout(function() {
+                self._execute_event(event);
+            }, 0);
+        }
+    }
+
+    _execute_event(event) {
+        var tag = event.target;
+        if (tag.classList.contains('add-coment')) {
+            this._addComment(event)
+        } else if (tag.classList.contains('add-todo-tag')) {
+            this._addTodoTag(event)
+        }
+    }
+
+    _addComment(event) {
+
+    }
+
+    _addTodoTag(event) {
+
+    }
+
+    _showTodo(json) {
+        this._removeAllTodo();
         this._appendTodo(json);
     }
 
@@ -44,6 +73,7 @@ class TodoMainPage extends PagerController {
         var details = document.createElement('details');
         // タイトル
         var summary = document.createElement('summary');
+        summary.dataset.id = todoItem.summary.id;
         summary.innerText = todoItem.summary.title;
         details.appendChild(summary);
 
@@ -52,17 +82,17 @@ class TodoMainPage extends PagerController {
         // コメント部
         todoItem.comments.forEach(function(comment) {
             var p = document.createElement('p');
+            p.classList.add('todo-comment');
+            p.dataset.id = comment.id;
             p.innerText = comment.content;
             detailBody.appendChild(p);
         });
         // コメントを追加するボタン
         var opeDiv = document.createElement('div');
         opeDiv.classList.add('todo-detail-ope');
-        var addComment = document.createElement('div');
+        var addComment = document.createElement('p');
         addComment.classList.add('add-coment');
-        var p = document.createElement('p');
-        p.innerText = '+ comment';
-        addComment.appendChild(p);
+        addComment.innerText = '+ comment';
         opeDiv.appendChild(addComment)
         detailBody.appendChild(opeDiv);
         // タグ
@@ -70,6 +100,7 @@ class TodoMainPage extends PagerController {
         todoItem.tags.forEach(function(tag) {
             var p = document.createElement('p');
             p.classList.add('todo-tag');
+            p.dataset.id = tag.id;
             p.innerText = tag.name;
             tagDiv.appendChild(p);
         });
@@ -96,19 +127,19 @@ class TodoMainPage extends PagerController {
                 ]
             },
             {
-                "summary": {"id": 1, "title": "todo #2"},
+                "summary": {"id": 2, "title": "todo #2"},
                 "comments": [],
                 "tags": []
             },
             {
-                "summary": {"id": 1, "title": "todo #3"},
+                "summary": {"id": 3, "title": "todo #3"},
                 "comments": [
                     {"id": 1020, "content":"コメント3-1"}
                 ],
                 "tags": []
             },
             {
-                "summary": {"id": 1, "title": "todo #4"},
+                "summary": {"id": 4, "title": "todo #4"},
                 "comments": [],
                 "tags": [{"id": 11, "name": "C++"}]
             }
