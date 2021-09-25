@@ -1,9 +1,13 @@
+body {
+    overflow: scroll;
+}
+
 summary {
     font-size: large;
 }
 
 .todo-item {
-    border: 1px solid lightblue;
+    /*border: 1px solid lightblue;*/
 }
 
 .todo-detail-dody {
