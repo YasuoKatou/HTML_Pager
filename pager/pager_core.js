@@ -33,8 +33,10 @@
     }
     _funcKeys(visible) {
         var x = document.getElementById("f_keys");
-        if (x.style.visibility !== visible) {
-            x.style.visibility = visible;
+        if (x !== null) {
+            if (x.style.visibility !== visible) {
+                x.style.visibility = visible;
+            }
         }
     }
 
