@@ -59,3 +59,8 @@ summary {
     background-color: lightgray;
     font-size: x-small;
 }
+
+#new_todo_title {
+    width: 90%;
+    font-size: large;
+}

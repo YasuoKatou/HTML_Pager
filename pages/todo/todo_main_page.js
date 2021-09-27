@@ -1,10 +1,47 @@
 class TodoMainPage extends PagerController {
     constructor(p) {
         super(p);
+        this._createNewTodoTitle();
         this._showTodo(this.test_data);
 
         var myPage = document.getElementById(p);
         myPage.addEventListener('click', this._myPage_click());
+    }
+
+    _floatElementId = [
+        'new_todo_title'
+    ];
+
+    _restoreElements = [
+        'new_todo_label'
+    ]
+
+    _createNewTodoTitle() {
+        this._todoTitle = document.createElement('input');
+        this._todoTitle.id = 'new_todo_title';
+        this._todoTitle.setAttribute("type", "text");
+        this._todoTitle.placeholder = '新規のTODOを入力';
+        this._todoTitle.addEventListener('keydown', this._inputNewTodoTitle());
+    }
+
+    _inputNewTodoTitle() {
+        var self = this;
+        return function(event) {
+            if (event.keyCode != 13) return;
+            setTimeout(function() {
+                self._execute_inputNewTodoTitle(event);
+            }, 0);
+        }
+    }
+
+    _execute_inputNewTodoTitle(event) {
+        this._todoTitle.remove();
+        var newTodoLabel = document.getElementById('new_todo_label');
+        newTodoLabel.style.display = 'block';
+        if (this._todoTitle.value === '') return;
+
+        var todoItem = this._createTodoItem(this._todoTitle.value, 0);
+        newTodoLabel.parentNode.insertBefore(todoItem, newTodoLabel.nextElementSibling);
     }
 
     /**
@@ -12,9 +49,14 @@ class TodoMainPage extends PagerController {
      * @param {TodoMainPage} self 
      * @returns 
      */
-    clicked_new_todo(self) {
+    clicked_new_todo_label(self) {
         return function(event) {
-            console.log(self.pageId + ' click new_todo');
+            var newTodoLabel = document.getElementById('new_todo_label');
+            newTodoLabel.style.display = 'none';
+
+            var todoList = document.getElementById('todo_item_container');
+            self._todoTitle.value = '';
+            todoList.prepend(self._todoTitle);
         }
     }
 
@@ -115,8 +157,52 @@ class TodoMainPage extends PagerController {
         return details;
     }
 
+    _createTodoItem(title, id) {
+        var details = document.createElement('details');
+        // タイトル
+        var summary = document.createElement('summary');
+        summary.dataset.id = id;
+        summary.innerText = title;
+        details.appendChild(summary);
+
+        var detailBody = document.createElement('div');
+        detailBody.classList.add('todo-detail-dody');
+        // コメントを追加するボタン
+        var opeDiv = document.createElement('div');
+        opeDiv.classList.add('todo-detail-ope');
+        var addComment = document.createElement('p');
+        addComment.classList.add('add-coment');
+        addComment.innerText = '+ comment';
+        opeDiv.appendChild(addComment)
+        detailBody.appendChild(opeDiv);
+        // タグを追加するボタン
+        var tagDiv = document.createElement('div');
+        var addTag = document.createElement('p');
+        addTag.classList.add('add-todo-tag');
+        addTag.innerText = '+ tag';
+        tagDiv.appendChild(addTag);
+        detailBody.appendChild(tagDiv);
+
+        details.appendChild(detailBody);
+        return details;
+    }
+
     test_data = {
         "todo_list": [
+            {
+                "summary": {"id": 10, "title": "新規TODOの入力用にコンポーネントの作成を行う"},
+                "comments": [],
+                "tags": [
+                    {"id": 100, "name": "TODO アプリ"}
+                ]
+            },
+            {
+                "summary": {"id": 11, "title": "TODOの新規登録は、ボタンレイアウトにする"},
+                "comments": [{"id": 10001, "content":"コメントまたはタグと同じcssにする"}],
+                "tags": [
+                    {"id": 100, "name": "TODO アプリ"}
+                ]
+            },
             {
                 "summary": {"id": 1, "title": "todo #1"},
                 "comments": [
@@ -137,11 +223,6 @@ class TodoMainPage extends PagerController {
                     {"id": 1020, "content":"コメント3-1"}
                 ],
                 "tags": []
-            },
-            {
-                "summary": {"id": 4, "title": "todo #4"},
-                "comments": [],
-                "tags": [{"id": 11, "name": "C++"}]
             }
         ]
     }
