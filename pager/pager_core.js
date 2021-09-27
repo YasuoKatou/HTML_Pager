@@ -224,6 +224,7 @@
 
     _keyDown_event(self) {
         return function(event) {
+            if (!self._configFKey) return;
             var suffix = self._funcKeyLabels(self, event);
             if (event.code.startsWith("F")) {
                 var f = PagerController.FUNC_KEY_PROC_PREFIX + event.code.substr(1) + suffix;
@@ -236,6 +237,7 @@
 
     _keyUp_event(self) {
         return function(event) {
+            if (!self._configFKey) return;
             self._funcKeyLabels(self, event);
         }
     }
