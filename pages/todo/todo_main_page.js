@@ -40,24 +40,13 @@ class TodoMainPage extends PagerController {
         newTodoLabel.style.display = 'block';
         if (this._todoTitle.value === '') return;
 
-        var todoItem = this._createTodoItem(this._todoTitle.value, 0);
-        newTodoLabel.parentNode.insertBefore(todoItem, newTodoLabel.nextElementSibling);
-    }
-
-    /**
-     * 新規登録クリックイベント
-     * @param {TodoMainPage} self 
-     * @returns 
-     */
-    clicked_new_todo_label(self) {
-        return function(event) {
-            var newTodoLabel = document.getElementById('new_todo_label');
-            newTodoLabel.style.display = 'none';
-
-            var todoList = document.getElementById('todo_item_container');
-            self._todoTitle.value = '';
-            todoList.prepend(self._todoTitle);
+        var newTodo =             {
+            "summary": {"id": 0, "title": this._todoTitle.value},
+            "comments": [],
+            "tags": []
         }
+        var todoItem = this._createDetailsTag(newTodo);
+        newTodoLabel.parentNode.insertBefore(todoItem, newTodoLabel.nextElementSibling);
     }
 
     _myPage_click() {
@@ -71,11 +60,23 @@ class TodoMainPage extends PagerController {
 
     _execute_event(event) {
         var tag = event.target;
-        if (tag.classList.contains('add-coment')) {
+        if (tag.classList.contains('new-todo-label-content')) {
+            this._addTodoStart(event);
+        } else if (tag.classList.contains('add-coment')) {
             this._addComment(event)
         } else if (tag.classList.contains('add-todo-tag')) {
             this._addTodoTag(event)
         }
+    }
+
+    _addTodoStart(event) {
+        var newTodoLabel = document.getElementById('new_todo_label');
+        newTodoLabel.style.display = 'none';
+
+        var todoList = document.getElementById('todo_item_container');
+        this._todoTitle.value = '';
+        todoList.prepend(this._todoTitle);
+        this._todoTitle.focus();
     }
 
     _addComment(event) {
@@ -157,38 +158,15 @@ class TodoMainPage extends PagerController {
         return details;
     }
 
-    _createTodoItem(title, id) {
-        var details = document.createElement('details');
-        // タイトル
-        var summary = document.createElement('summary');
-        summary.dataset.id = id;
-        summary.innerText = title;
-        details.appendChild(summary);
-
-        var detailBody = document.createElement('div');
-        detailBody.classList.add('todo-detail-dody');
-        // コメントを追加するボタン
-        var opeDiv = document.createElement('div');
-        opeDiv.classList.add('todo-detail-ope');
-        var addComment = document.createElement('p');
-        addComment.classList.add('add-coment');
-        addComment.innerText = '+ comment';
-        opeDiv.appendChild(addComment)
-        detailBody.appendChild(opeDiv);
-        // タグを追加するボタン
-        var tagDiv = document.createElement('div');
-        var addTag = document.createElement('p');
-        addTag.classList.add('add-todo-tag');
-        addTag.innerText = '+ tag';
-        tagDiv.appendChild(addTag);
-        detailBody.appendChild(tagDiv);
-
-        details.appendChild(detailBody);
-        return details;
-    }
-
     test_data = {
         "todo_list": [
+            {
+                "summary": {"id": 11, "title": "TODOのステータスがわからない"},
+                "comments": [],
+                "tags": [
+                    {"id": 100, "name": "TODO アプリ"}
+                ]
+            },
             {
                 "summary": {"id": 10, "title": "新規TODOの入力用にコンポーネントの作成を行う"},
                 "comments": [],
@@ -198,7 +176,8 @@ class TodoMainPage extends PagerController {
             },
             {
                 "summary": {"id": 11, "title": "TODOの新規登録は、ボタンレイアウトにする"},
-                "comments": [{"id": 10001, "content":"コメントまたはタグと同じcssにする"}],
+                "comments": [{"id": 10001, "content":"コメントまたはタグと同じcssにする"},
+                             {"id": 10002, "content":"2021/9/28 対応完了"}],
                 "tags": [
                     {"id": 100, "name": "TODO アプリ"}
                 ]

@@ -49,6 +49,7 @@ summary {
     font-size: x-small;
 }
 
+.new-todo-label-content,
 .add-todo-tag {
     margin-left: 1em;
     padding: 0 1em;
