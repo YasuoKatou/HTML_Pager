@@ -2,6 +2,7 @@ class TodoMainPage extends PagerController {
     constructor(p) {
         super(p);
         this._createNewTodoTitle();
+        this._createNewComment()
         this._showTodo(this.test_data);
 
         var myPage = document.getElementById(p);
@@ -24,12 +25,30 @@ class TodoMainPage extends PagerController {
         this._todoTitle.addEventListener('keydown', this._inputNewTodoTitle());
     }
 
+    _createNewComment() {
+        this._todoComment = document.createElement('input');
+        this._todoComment.id = 'new_todo_comment';
+        this._todoComment.setAttribute("type", "text");
+        this._todoComment.placeholder = 'コメントを入力';
+        this._todoComment.addEventListener('keydown', this._inputNewTodoComment());
+    }
+
     _inputNewTodoTitle() {
         var self = this;
         return function(event) {
             if (event.keyCode != 13) return;
             setTimeout(function() {
                 self._execute_inputNewTodoTitle(event);
+            }, 0);
+        }
+    }
+
+    _inputNewTodoComment() {
+        var self = this;
+        return function(event) {
+            if (event.keyCode != 13) return;
+            setTimeout(function() {
+                self._execute_inputNewTodoComment(event);
             }, 0);
         }
     }
@@ -49,6 +68,19 @@ class TodoMainPage extends PagerController {
         newTodoLabel.parentNode.insertBefore(todoItem, newTodoLabel.nextElementSibling);
     }
 
+    _execute_inputNewTodoComment(event) {
+        var parent = event.target.parentNode;
+        var ope = parent.getElementsByClassName('todo-detail-ope');
+        this._todoComment.remove();
+        if (ope.length !== 1) return
+
+        var p = document.createElement('p');
+        p.classList.add('todo-comment');
+        p.dataset.id = 0;
+        p.innerText = this._todoComment.value;
+        parent.insertBefore(p, ope[0]);
+    }
+
     _myPage_click() {
         var self = this;
         return function(event) {
@@ -63,9 +95,9 @@ class TodoMainPage extends PagerController {
         if (tag.classList.contains('new-todo-label-content')) {
             this._addTodoStart(event);
         } else if (tag.classList.contains('add-coment')) {
-            this._addComment(event)
+            this._addCommentStart(event)
         } else if (tag.classList.contains('add-todo-tag')) {
-            this._addTodoTag(event)
+            this._addTodoTagStart(event)
         }
     }
 
@@ -79,11 +111,16 @@ class TodoMainPage extends PagerController {
         this._todoTitle.focus();
     }
 
-    _addComment(event) {
-
+    _addCommentStart(event) {
+        if (document.getElementById("new_todo_comment") != null) {
+            this._todoComment.remove();
+        }
+        this._todoComment.value = '';
+        event.target.parentNode.parentNode.insertBefore(this._todoComment, event.target.parentNode);
+        this._todoComment.focus();
     }
 
-    _addTodoTag(event) {
+    _addTodoTagStart(event) {
 
     }
 
