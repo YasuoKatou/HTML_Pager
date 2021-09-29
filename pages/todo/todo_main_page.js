@@ -1,4 +1,4 @@
-class TodoMainPage extends PagerController {
+class TodoMainPage extends TodoPagerController {
     constructor(p) {
         super(p);
         this._createNewTodoTitle();
@@ -60,7 +60,7 @@ class TodoMainPage extends PagerController {
         if (this._todoTitle.value === '') return;
 
         var newTodo =             {
-            "summary": {"id": 0, "title": this._todoTitle.value},
+            "summary": {"id": this._getTempId(), "title": this._todoTitle.value},
             "comments": [],
             "tags": []
         }
@@ -76,7 +76,7 @@ class TodoMainPage extends PagerController {
 
         var p = document.createElement('p');
         p.classList.add('todo-comment');
-        p.dataset.id = 0;
+        p.dataset.id = this._getTempId();
         p.innerText = this._todoComment.value;
         parent.insertBefore(p, ope[0]);
     }
@@ -193,6 +193,11 @@ class TodoMainPage extends PagerController {
 
         details.appendChild(detailBody);
         return details;
+    }
+
+    _getTempId() {
+        var now = new Date();
+        return super._formatDate(now, 'yyyyMMdd_HHmmss.SSS');
     }
 
     test_data = {
