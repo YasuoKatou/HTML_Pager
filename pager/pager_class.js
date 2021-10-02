@@ -122,8 +122,8 @@ class PagerAjax extends PagerBase {
                     break;
                 case XMLHttpRequest.DONE:
                     if ((200 <= this.status && this.status < 300) || (this.status == 304)) {
-                        if (self._ajax_info.responseReveived !== null) {
-                            self._ajax_info.responseReveived(this.response);
+                        if (self._ajax_info.responseReceived !== null) {
+                            self._ajax_info.responseReceived(this.response);
                         } else {
                             console.log('ajax normal end (no reveied function)');
                         }

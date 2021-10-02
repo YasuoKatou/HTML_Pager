@@ -28,7 +28,7 @@ class SamplePage001 extends PagerController {
             requestHeaders: [],
             txData: strJson,
             timeout: 10000,
-            responseReveived: this._loginResponse(this)
+            responseReceived: this._loginResponse(this)
         });
         ajax.send();
     }

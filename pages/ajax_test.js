@@ -49,7 +49,7 @@ class AjaxTest extends PagerController {
             requestHeaders: [],
             txData: strJson,
             timeout: 10000,
-            responseReveived: this._postalcodeResponse(this),
+            responseReceived: this._postalcodeResponse(this),
         });
         ajax.send();
     }
