@@ -4,10 +4,14 @@ class TodoMainPage extends TodoPagerController {
         this._setModeFree();
         this._createNewTodoTitle();
         this._createNewComment()
-        this._showTodo(this._test_data);
+        //this._showTodo(this._test_data);
 
         var myPage = document.getElementById(p);
         myPage.addEventListener('click', this._myPage_click());
+
+        setTimeout(function() {
+            this._loadTodo();
+        }, 0);
     }
 
     _floatElementId = [
@@ -17,6 +21,23 @@ class TodoMainPage extends TodoPagerController {
     _restoreElements = [
         'new_todo_label'
     ]
+
+    _urlPrefix() {
+        return 'http://localhost:8083';
+    }
+
+    _loadTodo() {
+        var ajax = new PagerAjax({
+            async: true,
+            method: 'POST',
+            url: this._urlPrefix() + '/read_todo',
+            requestHeaders: [],
+            txData: {},
+            timeout: 5000,
+            responseReveived: this._postalcodeResponse(this),
+        });
+        ajax.send();
+    }
 
     _createNewTodoTitle() {
         this._todoTitle = document.createElement('input');
@@ -247,7 +268,7 @@ class TodoMainPage extends TodoPagerController {
         ADD_TODO: 1, EDIt_TODO: 2,
         ADD_COMMENT: 11, EDIT_COMMENT:12
     }
-
+/*
     _test_data = {
         "todo_list": [
             {
@@ -295,4 +316,5 @@ class TodoMainPage extends TodoPagerController {
             }
         ]
     }
+*/
 }
