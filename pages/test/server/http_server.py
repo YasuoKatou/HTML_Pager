@@ -96,4 +96,5 @@ def run(server_class=HTTPServer, handler_class=MyHttpServer):
     httpd = server_class(server_address, handler_class)
     httpd.serve_forever()
 
-run()
+if __name__ == '__main__':
+    run()
