@@ -9,8 +9,9 @@ class TodoMainPage extends TodoPagerController {
         var myPage = document.getElementById(p);
         myPage.addEventListener('click', this._myPage_click());
 
+        var self = this;
         setTimeout(function() {
-            this._loadTodo();
+            self._createAjaxParam('read_todo', {}, self._execute_ShowTodo()).send();
         }, 0);
     }
 
@@ -26,17 +27,23 @@ class TodoMainPage extends TodoPagerController {
         return 'http://localhost:8083';
     }
 
-    _loadTodo() {
-        var ajax = new PagerAjax({
+    _createAjaxParam(func_id, req_data, resp_func) {
+        return new PagerAjax({
             async: true,
             method: 'POST',
-            url: this._urlPrefix() + '/read_todo',
+            url: this._urlPrefix() + '/' + func_id,
             requestHeaders: [],
-            txData: {},
+            txData: JSON.stringify(req_data),
             timeout: 5000,
-            responseReveived: this._postalcodeResponse(this),
+            responseReceived: resp_func,
         });
-        ajax.send();
+    }
+
+    _execute_ShowTodo() {
+        var self = this;
+        return function(respData) {
+            self._showTodo(JSON.parse(respData));
+        }
     }
 
     _createNewTodoTitle() {
@@ -82,13 +89,43 @@ class TodoMainPage extends TodoPagerController {
         newTodoLabel.style.display = 'block';
         if (this._todoTitle.value === '') return;
 
-        var newTodo =             {
-            "summary": {"id": this._getTempId(), "title": this._todoTitle.value},
+        var tmpId = this._getTempId();
+        var newTodo = {
+            "summary": {"id": tmpId, "title": this._todoTitle.value},
             "comments": [],
             "tags": []
+        };
+        var li = document.createElement('li');
+        li.classList.add('todo-item');
+        li.appendChild(this._createDetailsTag(newTodo));
+        newTodoLabel.parentNode.insertBefore(li, newTodoLabel.nextElementSibling);
+
+        // サーバ登録
+        var req = {'title': this._todoTitle.value, 'temp-id': tmpId};
+        this._createAjaxParam('add_todo', req, this._received_new_todo()).send();
+    }
+    _received_new_todo() {
+        var self = this;
+        return function(respData) {
+            var json = JSON.parse(respData);
+            // var liList = Array.from(document.getElementById('todo_item_container').getElementsByTagName('li'));
+            var liList = document.getElementById('todo_item_container').getElementsByTagName('li');
+            var num = liList.length;
+            for (var i = 0; i < num; ++i) {
+                var li = liList[i];
+                if (!li.classList.contains('todo-item')) continue;
+                var sumList = li.getElementsByTagName('summary');
+                if (sumList.length !== 1) {
+                    console.error('no summary tag');
+                    continue;
+                }
+                var sum = sumList[0];
+                if (json['temp-id'] === sum.dataset.id) {
+                    sum.dataset.id = json['id'];
+                    return;
+                }
+            }
         }
-        var todoItem = this._createDetailsTag(newTodo);
-        newTodoLabel.parentNode.insertBefore(todoItem, newTodoLabel.nextElementSibling);
     }
 
     _execute_inputTodoComment(event) {
