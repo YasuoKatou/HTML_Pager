@@ -45,13 +45,19 @@ class TodoHttpServer(HttpHandlerBase):
     def do_POST_read_todo(self):
         self._getRequestData()
         todoList = []
+        sql2 = ''' SELECT id, comment FROM TODO_COMMENT
+                   WHERE todo_id = ? ORDER BY id desc'''
         with self._getDBConnection() as con:
             con.row_factory = self._dict_factory
-            cur = con.cursor()
-            for row in cur.execute('SELECT * FROM TODO_TITLE ORDER BY id desc'):
-                item = {'summary':{'id': str(row['id']), 'title': row['title']},
+            cur1 = con.cursor()
+            cur2 = con.cursor()
+            for row1 in cur1.execute('SELECT id, title FROM TODO_TITLE ORDER BY id desc'):
+                todoId = str(row1['id'])
+                item = {'summary':{'id': todoId, 'title': row1['title']},
                         'comments': [],
                         'tags': []}
+                for row2 in cur2.execute(sql2, (todoId, )):
+                    item['comments'].append({'id': str(row2['id']), 'content': row2['comment']})
                 todoList.append(item)
         self._send_response({"todo_list": todoList})
 
@@ -67,6 +73,20 @@ class TodoHttpServer(HttpHandlerBase):
             con.commit()
             todo_id = cur.lastrowid
         respData = {'temp-id': reqData['temp-id'], 'id': todo_id}
+        self._send_response(respData)
+
+    def do_POST_add_comment(self):
+        reqData = json.loads(self._getRequestData())
+        now = self._getNow()
+        sql = ''' INSERT INTO TODO_COMMENT(todo_id, comment,create_ts,update_ts)
+                  VALUES(?,?,?,?)'''
+        todo_id = -1
+        with self._getDBConnection() as con:
+            cur = con.cursor()
+            cur.execute(sql, (reqData['todo-id'], reqData['comment'], now, now))
+            con.commit()
+            comment_id = cur.lastrowid
+        respData = {'todo-id': reqData['todo-id'], 'temp-id': reqData['temp-id'], 'id': comment_id}
         self._send_response(respData)
         
 

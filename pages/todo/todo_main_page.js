@@ -105,10 +105,8 @@ class TodoMainPage extends TodoPagerController {
         this._createAjaxParam('add_todo', req, this._received_new_todo()).send();
     }
     _received_new_todo() {
-        var self = this;
         return function(respData) {
             var json = JSON.parse(respData);
-            // var liList = Array.from(document.getElementById('todo_item_container').getElementsByTagName('li'));
             var liList = document.getElementById('todo_item_container').getElementsByTagName('li');
             var num = liList.length;
             for (var i = 0; i < num; ++i) {
@@ -125,7 +123,7 @@ class TodoMainPage extends TodoPagerController {
                     return;
                 }
             }
-        }
+        };
     }
 
     _execute_inputTodoComment(event) {
@@ -134,19 +132,60 @@ class TodoMainPage extends TodoPagerController {
         this._todoComment.remove();
         var isNewComment = this._mode === this._MODE.ADD_COMMENT;
         this._setModeFree();
-        if (ope.length !== 1 && isNewComment) return;
+        if (ope.length !== 1) return;
 
+        var details = ope[0].parentNode.parentNode;
+        var sumList = details.getElementsByTagName('summary');
+        if (sumList.length !== 1) {
+            console.error('no summary tag');
+            return;
+        }
+        var todoId = sumList[0].dataset.id;
+
+        var tmpId = this._getTempId();
         if (isNewComment) {
             var p = document.createElement('p');
             p.classList.add('todo-comment');
-            p.dataset.id = this._getTempId();
+            p.dataset.id = tmpId;
             p.innerText = this._todoComment.value;
             parent.insertBefore(p, ope[0]);
+
+            // サーバ登録
+            var req = {'todo-id': todoId,'comment': this._todoComment.value, 'temp-id': tmpId};
+            this._createAjaxParam('add_comment', req, this._received_new_comment()).send();
         } else {
             this._hiddenComment.innerText = this._todoComment.value;
             this._hiddenComment.style.display = 'block';
             this._hiddenComment = null;
         }
+    }
+    _received_new_comment() {
+        return function(respData) {
+            var json = JSON.parse(respData);
+            var liList = document.getElementById('todo_item_container').getElementsByTagName('li');
+            var num1 = liList.length;
+            for (var i = 0; i < num1; ++i) {
+                var li = liList[i];
+                if (!li.classList.contains('todo-item')) continue;      // TODO項目以外
+                var sumList = li.getElementsByTagName('summary');
+                if (sumList.length !== 1) {
+                    console.error('no summary tag');
+                    continue;
+                }
+                var sum = sumList[0];
+                if (json['todo-id'] !== sum.dataset.id) continue;       // TODOのIDが異なる
+                var comments = li.getElementsByClassName('todo-comment');
+                var num2 = comments.length;
+                if (num2 === 0) continue;                               // コメントが存在しない
+                for (var j = 0; j < num2; ++j) {
+                    var comment = comments[j];
+                    if (json['temp-id'] === comment.dataset.id) {
+                        comment.dataset.id = json['id'];
+                        return;
+                    }
+                }
+            }
+        };
     }
 
     _myPage_click() {
