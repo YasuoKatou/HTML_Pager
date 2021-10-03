@@ -75,6 +75,18 @@ class TodoHttpServer(HttpHandlerBase):
         respData = {'temp-id': reqData['temp-id'], 'id': todo_id}
         self._send_response(respData)
 
+    def do_POST_update_todo(self):
+        reqData = json.loads(self._getRequestData())
+        now = self._getNow()
+        sql = ''' UPDATE TODO_TITLE set title = ? , update_ts = ?)
+                  WHERE id = ?'''
+        with self._getDBConnection() as con:
+            cur = con.cursor()
+            cur.execute(sql, (reqData['title'], now, reqData['id']))
+            con.commit()
+        respData = {'id': reqData['id']}
+        self._send_response(respData)
+
     def do_POST_add_comment(self):
         reqData = json.loads(self._getRequestData())
         now = self._getNow()
@@ -88,7 +100,18 @@ class TodoHttpServer(HttpHandlerBase):
             comment_id = cur.lastrowid
         respData = {'todo-id': reqData['todo-id'], 'temp-id': reqData['temp-id'], 'id': comment_id}
         self._send_response(respData)
-        
+
+    def do_POST_update_comment(self):
+        reqData = json.loads(self._getRequestData())
+        now = self._getNow()
+        sql = ''' UPDATE TODO_COMMENT set comment = ? , update_ts = ?
+                  WHERE id = ?'''
+        with self._getDBConnection() as con:
+            cur = con.cursor()
+            cur.execute(sql, (reqData['comment'], now, reqData['id']))
+            con.commit()
+        respData = {'id': reqData['id']}
+        self._send_response(respData)
 
 def _existsDb(db_path):
     p = pathlib.Path(db_path)
