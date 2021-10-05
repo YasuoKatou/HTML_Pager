@@ -2,12 +2,42 @@
     overflow: auto;
 }
 
+/*
 summary {
+    font-size: large;
+}
+*/
+
+.todo-summary {
+    display: flex;
+    flex-direction: row;
+}
+
+.todo-li-icon-close {
+    background-image: url(./icons/arrow-right_64.png);
+}
+.todo-li-icon-open {
+    background-image: url(./icons/arrow-down_64.png);
+}
+.todo-li-icon {
+    font-size: large;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 0.5em;
+    width: 1.5em;
+}
+
+.summary-title {
+    flex-grow: 1;
     font-size: large;
 }
 
 .todo-item {
     /*border: 1px solid lightblue;*/
+}
+
+.todo-details-close {
+    display: none;
 }
 
 .todo-detail-dody {

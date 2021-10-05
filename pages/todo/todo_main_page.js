@@ -13,6 +13,8 @@ class TodoMainPage extends TodoPagerController {
         setTimeout(function() {
             self._createAjaxParam('read_todo', {}, self._execute_ShowTodo()).send();
         }, 0);
+        // TODO明細のopen/closeをハンドリングする
+        document.addEventListener('click', this._clickEvent());
     }
 
     _floatElementId = [
@@ -112,9 +114,9 @@ class TodoMainPage extends TodoPagerController {
             for (var i = 0; i < num; ++i) {
                 var li = liList[i];
                 if (!li.classList.contains('todo-item')) continue;
-                var sumList = li.getElementsByTagName('summary');
+                var sumList = li.getElementsByClassName('summary-title');
                 if (sumList.length !== 1) {
-                    console.error('no summary tag');
+                    console.error('no summary title tag');
                     continue;
                 }
                 var sum = sumList[0];
@@ -134,10 +136,10 @@ class TodoMainPage extends TodoPagerController {
         this._setModeFree();
         if (ope.length !== 1) return;
 
-        var details = ope[0].parentNode.parentNode;
-        var sumList = details.getElementsByTagName('summary');
+        var todoItem = ope[0].parentNode.parentNode;
+        var sumList = todoItem.getElementsByClassName('summary-title');
         if (sumList.length !== 1) {
-            console.error('no summary tag');
+            console.error('no summary title tag');
             return;
         }
         var todoId = sumList[0].dataset.id;
@@ -173,9 +175,9 @@ class TodoMainPage extends TodoPagerController {
             for (var i = 0; i < num1; ++i) {
                 var li = liList[i];
                 if (!li.classList.contains('todo-item')) continue;      // TODO項目以外
-                var sumList = li.getElementsByTagName('summary');
+                var sumList = li.getElementsByClassName('summary-title');
                 if (sumList.length !== 1) {
-                    console.error('no summary tag');
+                    console.error('no summary title tag');
                     continue;
                 }
                 var sum = sumList[0];
@@ -287,30 +289,40 @@ class TodoMainPage extends TodoPagerController {
         var todoContainer = document.getElementById('todo_item_container');
         var self = this;
         json.todo_list.forEach(function(todoItem) {
-            var li = document.createElement('li');
-            li.classList.add('todo-item');
-            li.appendChild(self._createDetailsTag(todoItem));
-            todoContainer.appendChild(li);
+            // var li = document.createElement('li');
+            // li.classList.add('todo-item');
+            // li.appendChild(self._createDetailsTag(todoItem));
+            // todoContainer.appendChild(li);
+            todoContainer.appendChild(self._createDetailsTag(todoItem));
         })
     }
 
-    _createDetailsTag(todoItem) {
-        var details = document.createElement('details');
-        // タイトル
-        var summary = document.createElement('summary');
-        summary.dataset.id = todoItem.summary.id;
-        summary.innerText = todoItem.summary.title;
-        details.appendChild(summary);
-
-        var detailBody = document.createElement('div');
-        detailBody.classList.add('todo-detail-dody');
-        // コメント部
-        todoItem.comments.forEach(function(comment) {
+    _createDetailsTag(todoItemJson) {
+        var todoItem = document.createElement('li');
+        todoItem.classList.add('todo-item');
+        // サマリー
+        var summaryDiv = document.createElement('div');
+        summaryDiv.classList.add('todo-summary');
+        var p = document.createElement('p');
+        p.classList.add('todo-li-icon');
+        p.classList.add('todo-li-icon-close');
+        summaryDiv.appendChild(p);
+        p = document.createElement('p');
+        p.classList.add('summary-title');
+        p.dataset.id = todoItemJson.summary.id;
+        p.innerText = todoItemJson.summary.title
+        summaryDiv.appendChild(p);
+        todoItem.appendChild(summaryDiv);
+        // コメント
+        var detail = document.createElement('div');
+        detail.classList.add('todo-detail-dody');
+        detail.classList.add('todo-details-close');
+        todoItemJson.comments.forEach(function(comment) {
             var p = document.createElement('p');
             p.classList.add('todo-comment');
             p.dataset.id = comment.id;
             p.innerText = comment.content;
-            detailBody.appendChild(p);
+            detail.appendChild(p);
         });
         // コメントを追加するボタン
         var opeDiv = document.createElement('div');
@@ -319,10 +331,10 @@ class TodoMainPage extends TodoPagerController {
         addComment.classList.add('add-comment');
         addComment.innerText = '+ comment';
         opeDiv.appendChild(addComment)
-        detailBody.appendChild(opeDiv);
+        detail.appendChild(opeDiv);
         // タグ
         var tagDiv = document.createElement('div');
-        todoItem.tags.forEach(function(tag) {
+        todoItemJson.tags.forEach(function(tag) {
             var p = document.createElement('p');
             p.classList.add('todo-tag');
             p.dataset.id = tag.id;
@@ -334,15 +346,44 @@ class TodoMainPage extends TodoPagerController {
         addTag.classList.add('add-todo-tag');
         addTag.innerText = '+ tag';
         tagDiv.appendChild(addTag);
-        detailBody.appendChild(tagDiv);
+        detail.appendChild(tagDiv);
 
-        details.appendChild(detailBody);
-        return details;
+        todoItem.appendChild(detail);
+
+        return todoItem;
     }
 
     _getTempId() {
         var now = new Date();
         return super._formatDate(now, 'yyyyMMdd_HHmmss.SSS');
+    }
+    _clickEvent() {
+        var self = this;
+        return function(event) {
+            if (event.target.classList.contains('todo-li-icon')) {
+                setTimeout(function() {
+                    self._clickSummary(event);
+                }, 0);
+            }
+        }
+    }
+    _clickSummary(event) {
+        //console.log(event.target);
+        var li = event.target.parentNode.parentNode;
+        var details = li.getElementsByClassName('todo-detail-dody');
+        if (details.length !== 1) {
+            console.error('no details');
+            return;
+        }
+        var detail = details[0];
+        if (detail.classList.contains('todo-details-close')) {
+            event.target.classList.remove('todo-li-icon-close');
+            event.target.classList.add('todo-li-icon-open');
+        } else {
+            event.target.classList.remove('todo-li-icon-open');
+            event.target.classList.add('todo-li-icon-close');
+        }
+        detail.classList.toggle('todo-details-close');
     }
 
     _setModeFree() {
