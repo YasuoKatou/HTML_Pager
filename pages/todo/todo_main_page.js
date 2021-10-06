@@ -53,7 +53,7 @@ class TodoMainPage extends TodoPagerController {
         this._todoTitle.id = 'new_todo_title';
         this._todoTitle.setAttribute("type", "text");
         this._todoTitle.placeholder = '新規のTODOを入力';
-        this._todoTitle.addEventListener('keydown', this._inputNewTodoTitle());
+        this._todoTitle.addEventListener('keydown', this._inputTodoTitle());
     }
 
     _createComment() {
@@ -64,12 +64,12 @@ class TodoMainPage extends TodoPagerController {
         this._todoComment.addEventListener('keydown', this._inputTodoComment());
     }
 
-    _inputNewTodoTitle() {
+    _inputTodoTitle() {
         var self = this;
         return function(event) {
             if (event.keyCode != 13) return;
             setTimeout(function() {
-                self._execute_inputNewTodoTitle(event);
+                self._execute_inputTodoTitle(event);
             }, 0);
         }
     }
@@ -84,27 +84,47 @@ class TodoMainPage extends TodoPagerController {
         }
     }
 
-    _execute_inputNewTodoTitle(event) {
+    _execute_inputTodoTitle(event) {
         this._todoTitle.remove();
+        var isNewTodo = this._mode === this._MODE.ADD_TODO;
         this._setModeFree();
         var newTodoLabel = document.getElementById('new_todo_label');
         newTodoLabel.style.display = 'block';
         if (this._todoTitle.value === '') return;
 
-        var tmpId = this._getTempId();
-        var newTodo = {
-            "summary": {"id": tmpId, "title": this._todoTitle.value},
-            "comments": [],
-            "tags": []
+        if (isNewTodo) {
+            var tmpId = this._getTempId();
+            var newTodo = {
+                "summary": {"id": tmpId, "title": this._todoTitle.value},
+                "comments": [],
+                "tags": []
+            };
+            var li = document.createElement('li');
+            li.classList.add('todo-item');
+            li.appendChild(this._createDetailsTag(newTodo));
+            newTodoLabel.parentNode.insertBefore(li, newTodoLabel.nextElementSibling);
+    
+            // サーバ登録
+            var req = {'title': this._todoTitle.value, 'temp-id': tmpId};
+            this._createAjaxParam('add_todo', req, this._received_new_todo()).send();
+        } else {
+            var changed = (this._hiddenTodo.innerText !== this._todoTitle.value);
+            this._hiddenTodo.innerText = this._todoTitle.value;
+            this._hiddenTodo.style.display = 'block';
+            if (changed) {
+                // サーバ更新
+                var req = {'id': this._hiddenTodo.dataset.id, 'title': this._hiddenTodo.innerText};
+                this._createAjaxParam('update_todo', req, this._received_update_todo()).send();
+            }
+            this._hiddenTodo = null;
+        }
+    }
+    _received_update_todo() {
+        return function(respData) {
+            // TODOタイトルの更新（レスポンス受信）では、特に何もしない
+            var json = JSON.parse(respData);
+            console.log('TODO updated(id:' + json['id'] + ')')
         };
-        var li = document.createElement('li');
-        li.classList.add('todo-item');
-        li.appendChild(this._createDetailsTag(newTodo));
-        newTodoLabel.parentNode.insertBefore(li, newTodoLabel.nextElementSibling);
-
-        // サーバ登録
-        var req = {'title': this._todoTitle.value, 'temp-id': tmpId};
-        this._createAjaxParam('add_todo', req, this._received_new_todo()).send();
     }
     _received_new_todo() {
         return function(respData) {
@@ -144,8 +164,8 @@ class TodoMainPage extends TodoPagerController {
         }
         var todoId = sumList[0].dataset.id;
 
-        var tmpId = this._getTempId();
         if (isNewComment) {
+            var tmpId = this._getTempId();
             var p = document.createElement('p');
             p.classList.add('todo-comment');
             p.dataset.id = tmpId;
@@ -218,11 +238,11 @@ class TodoMainPage extends TodoPagerController {
         if (tag.classList.contains('new-todo-label-content')) {
             this._addTodoStart(event);
         } else if (tag.classList.contains('add-comment')) {
-            this._addCommentStart(event)
+            this._addCommentStart(event);
         } else if (tag.classList.contains('todo-comment')) {
-            this._editCommentStart(event)
-        } else if (tag.classList.contains('add-todo-tag')) {
-            this._addTodoTagStart(event)
+            this._editCommentStart(event);
+        } else if (tag.classList.contains('summary-title')) {
+            this._editTodoTitleStart(event);
         }
     }
 
@@ -238,9 +258,9 @@ class TodoMainPage extends TodoPagerController {
     }
 
     _addCommentStart(event) {
-        if (document.getElementById("new_todo_comment") != null) {
-            this._restoreComment();
-        }
+        // 入力用のタグを非表示にする
+        this._removeInputTags();
+
         this._todoComment.value = '';
         event.target.parentNode.parentNode.insertBefore(this._todoComment, event.target.parentNode);
         this._todoComment.focus();
@@ -248,9 +268,9 @@ class TodoMainPage extends TodoPagerController {
     }
 
     _editCommentStart(event) {
-        if (document.getElementById("new_todo_comment") != null) {
-            this._restoreComment();
-        }
+        // 入力用のタグを非表示にする
+        this._removeInputTags();
+
         this._todoComment.value = event.target.textContent;
         event.target.style.display = 'none';
         event.target.parentNode.insertBefore(this._todoComment, event.target);
@@ -267,8 +287,35 @@ class TodoMainPage extends TodoPagerController {
         }
     }
 
-    _addTodoTagStart(event) {
+    _removeInputTags() {
+        if (document.getElementById("new_todo_title") != null) {
+            // TODOタイトル入力のコンポーネントを使っている
+            this._restoreTodoTitle();
+        }
+        if (document.getElementById("new_todo_comment") != null) {
+            // コメント入力のコンポーネントを使っている
+            this._restoreComment();
+        }
+    }
 
+    _editTodoTitleStart(event) {
+        // 入力用のタグを非表示にする
+        this._removeInputTags();
+
+        this._todoTitle.value = event.target.textContent;
+        event.target.style.display = 'none';
+        event.target.parentNode.insertBefore(this._todoTitle, event.target);
+        this._todoTitle.focus();
+        this._setMode(this._MODE.EDIT_COMMENT);
+        this._hiddenTodo = event.target;
+    }
+
+    _restoreTodoTitle() {
+        this._todoTitle.remove();
+        if (this._hiddenTodo) {
+            this._hiddenTodo.style.display = 'block';
+            this._hiddenTodo = null;
+        }
     }
 
     _showTodo(json) {
