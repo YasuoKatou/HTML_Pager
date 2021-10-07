@@ -19,6 +19,16 @@ summary {
 .todo-li-icon-open {
     background-image: url(./icons/arrow-down_64.png);
 }
+.trash-icon {
+    background-image: url(./icons/trash_64.png);
+}
+.trash-icon {
+    font-size: large;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 0.8em;
+    width: 1.5em;
+}
 .todo-li-icon {
     font-size: large;
     background-repeat: no-repeat;

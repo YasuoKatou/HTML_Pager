@@ -87,6 +87,18 @@ class TodoHttpServer(HttpHandlerBase):
         respData = {'id': reqData['id']}
         self._send_response(respData)
 
+    def do_POST_delete_todo(self):
+        reqData = json.loads(self._getRequestData())
+        delParam = (reqData['id'], )
+        with self._getDBConnection() as con:
+            cur = con.cursor()
+            cur.execute('delete from TODO_TITLE where id = ?', delParam)
+            cur.execute('delete from TODO_COMMENT where todo_id = ?', delParam)
+            cur.execute('delete from TODO_TAGS where todo_id = ?', delParam)
+
+        respData = {'id': reqData['id']}
+        self._send_response(respData)
+
     def do_POST_add_comment(self):
         reqData = json.loads(self._getRequestData())
         now = self._getNow()

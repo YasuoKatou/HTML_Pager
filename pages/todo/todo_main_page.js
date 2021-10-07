@@ -359,6 +359,9 @@ class TodoMainPage extends TodoPagerController {
         p.dataset.id = todoItemJson.summary.id;
         p.innerText = todoItemJson.summary.title
         summaryDiv.appendChild(p);
+        p = document.createElement('p');
+        p.classList.add('trash-icon');
+        summaryDiv.appendChild(p);
         todoItem.appendChild(summaryDiv);
         // コメント
         var detail = document.createElement('div');
@@ -411,6 +414,10 @@ class TodoMainPage extends TodoPagerController {
                 setTimeout(function() {
                     self._clickSummary(event);
                 }, 0);
+            } else if (event.target.classList.contains('trash-icon')) {
+                setTimeout(function() {
+                    self._deleteTodo(event);
+                }, 0);
             }
         }
     }
@@ -431,6 +438,41 @@ class TodoMainPage extends TodoPagerController {
             event.target.classList.add('todo-li-icon-close');
         }
         detail.classList.toggle('todo-details-close');
+    }
+
+    _deleteTodo(event) {
+        var parent = event.target.parentNode;
+        var titles = parent.getElementsByClassName('summary-title');
+        if (titles.length !== 1) {
+            console.error('no summary title tag');
+            return;
+        }
+        var title = titles[0];
+        var exec = confirm("「" + title.innerText + "」(id:" + title.dataset.id + ") を削除します");
+        if (!exec) return;
+        var req = {'id': title.dataset.id};
+        this._createAjaxParam('delete_todo', req, this._received_delete_todo()).send();
+    }
+
+    _received_delete_todo() {
+        var self = this;
+        return function(respData) {
+            self._execute_delete_todo(JSON.parse(respData));
+        }
+    }
+    _execute_delete_todo(json) {
+        var parent = document.getElementById('todo_item_container');
+        var todo_items = parent.getElementsByClassName('summary-title');
+        var num = todo_items.length;
+        for (var i = 0; i < num; ++i) {
+            var item = todo_items[i];
+            if (item.dataset.id === json.id) {
+                parent = item.parentNode.parentNode;
+                parent.remove();
+                return;
+            }
+        }
+        console.error('no delete todo');
     }
 
     _setModeFree() {
