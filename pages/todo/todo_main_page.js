@@ -57,8 +57,9 @@ class TodoMainPage extends TodoPagerController {
     }
 
     _createComment() {
-        this._todoComment = document.createElement('input');
+        this._todoComment = document.createElement('textarea');
         this._todoComment.id = 'new_todo_comment';
+        this._todoComment.rows = 5;
         this._todoComment.setAttribute("type", "text");
         this._todoComment.placeholder = 'コメントを入力';
         this._todoComment.addEventListener('keydown', this._inputTodoComment());
@@ -78,9 +79,11 @@ class TodoMainPage extends TodoPagerController {
         var self = this;
         return function(event) {
             if (event.keyCode != 13) return;
-            setTimeout(function() {
-                self._execute_todoComment(event);
-            }, 0);
+            if (event.ctrlKey) {
+                setTimeout(function() {
+                    self._execute_todoComment(event);
+                }, 0);
+            }
         }
     }
 
@@ -164,24 +167,25 @@ class TodoMainPage extends TodoPagerController {
         }
         var todoId = sumList[0].dataset.id;
 
+        var content = this._todoComment.value.replaceAll(/\n/g, '<br>');
         if (isNewComment) {
             var tmpId = this._getTempId();
             var p = document.createElement('p');
             p.classList.add('todo-comment');
             p.dataset.id = tmpId;
-            p.innerText = this._todoComment.value;
+            p.innerHTML = content;
             parent.insertBefore(p, ope[0]);
 
             // サーバ登録
-            var req = {'todo-id': todoId, 'comment': this._todoComment.value, 'temp-id': tmpId};
+            var req = {'todo-id': todoId, 'comment': content, 'temp-id': tmpId};
             this._createAjaxParam('add_comment', req, this._received_new_comment()).send();
         } else {
-            var changed = (this._hiddenComment.innerText !== this._todoComment.value);
-            this._hiddenComment.innerText = this._todoComment.value;
+            var changed = (this._hiddenComment.innerText !== this._todoComment.value.trim());
+            this._hiddenComment.innerHTML = content;
             this._hiddenComment.style.display = 'block';
             if (changed) {
                 // サーバ更新
-                var req = {'id': this._hiddenComment.dataset.id, 'comment': this._todoComment.value};
+                var req = {'id': this._hiddenComment.dataset.id, 'comment': content};
                 this._createAjaxParam('update_comment', req, this._received_update_comment()).send();
             }
             this._hiddenComment = null;
@@ -271,7 +275,7 @@ class TodoMainPage extends TodoPagerController {
         // 入力用のタグを非表示にする
         this._removeInputTags();
 
-        this._todoComment.value = event.target.textContent;
+        this._todoComment.value = event.target.innerHTML.replaceAll('<br>', '\n');
         event.target.style.display = 'none';
         event.target.parentNode.insertBefore(this._todoComment, event.target);
         this._todoComment.focus();
@@ -371,7 +375,7 @@ class TodoMainPage extends TodoPagerController {
             var p = document.createElement('p');
             p.classList.add('todo-comment');
             p.dataset.id = comment.id;
-            p.innerText = comment.content;
+            p.innerHTML = comment.content;
             detail.appendChild(p);
         });
         // コメントを追加するボタン

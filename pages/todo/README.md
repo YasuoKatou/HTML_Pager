@@ -191,9 +191,7 @@ create index TODO_TAGS_idx1 on TODO_TAGS(todo_id)
 
 ***
 ## 課題
-- コメントの登録
-- TODOタイトルの更新
-- TODOコメントの更新
+- コメントの複数行入力
 - TODOのステータスの変更
 - ラベルの登録
 - ラベルの選択
