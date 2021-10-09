@@ -39,6 +39,10 @@ body {
     left: 0;
 }
 
+.popup-block {
+    opacity: 0.4;
+}
+
 .popup_wrapper {
     position: relative;
     width: 100%;

@@ -12,6 +12,7 @@
         this._clickEventList = [];
         this._functionKeyList = [];
         this._pageControllerList = [];
+        this._popupSave = [];
         this._configFKey = false;
     }
 
@@ -154,11 +155,43 @@
 
     changePageById(pid) {
         var pc = this._findPageController(pid);
-        if (pc !== null) {
-            this._changePage(pc);
-        } else {
+        if (pc === null) {
             console.error(pid + "not found at changePageById");
+            return;
         }
+        this._changePage(pc);
+    }
+
+    popupPageById(pid) {
+        var pc = this._findPageController(pid);
+        if (pc === null) {
+            console.error(pid + "not found at changePageById");
+            return;
+        }
+
+        var pages = document.querySelectorAll("#page_root > div");
+        var num = pages.length
+        for (var i = 0; i < num; ++i) {
+            var page = pages[i];
+            if (page.classList.contains('page_show')) {
+                page.classList.add('popup-block');
+            }
+        }
+        this._popupSave.push(this._pageController);
+        this._pageController = pc;
+        var tag = document.getElementById(pid);
+        this._setFunctionKeys(pc);
+        this._page_show(pc, tag);
+    }
+
+    closePopupPage(pid) {
+        var page = document.getElementById(pid);
+        this._page_hidden(page);
+
+        this._pageController = this._popupSave.pop();
+        page = document.getElementById(this._pageController.pageId);
+        page.classList.remove('popup-block');
+        this._setFunctionKeys(this._pageController);
     }
 
     /**
@@ -180,9 +213,13 @@
                 this._page_hidden(x[i]);
             }
         }
+        this._setFunctionKeys(p);
+    }
+
+    _setFunctionKeys(pc) {
         if (this._configFKey) {
             //ファンクションキーの表示／非表示
-            this._funcKeys(p.funcKeyDisplay);
+            this._funcKeys(pc.funcKeyDisplay);
             //ファンクションキーラベルの表示
             this._funcKeysLabel(PagerFunctionKey.KEY_ID_NO_MODIFIRE);
         }
