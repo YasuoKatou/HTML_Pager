@@ -2,11 +2,13 @@
     overflow: auto;
 }
 
-/*
-summary {
-    font-size: large;
+#todo_main {
+    z-index: 1;
 }
-*/
+
+#PP0001 {
+    z-index: 10;
+}
 
 .todo-summary {
     display: flex;
@@ -109,4 +111,49 @@ summary {
 #new_todo_comment {
     width: 95%;
     margin-top: 0.5em;
+}
+
+.PP0001-form {
+    width: 20em;
+    background-color: white;
+    display: flex;
+}
+
+.PP0001-tag-list-container {
+    flex-grow: 1;
+}
+
+.PP0001-ope {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    padding-bottom: 0.3em;
+}
+
+.PP0001-ope > p {
+    width: 4em;
+    text-align: center;
+    background-color: lightgray;
+    border: solid 1px lightgray;
+    border-radius: 5px;
+}
+
+/*
+    チェックボックスを縦方向の中央に配置する（1/2）
+*/
+.PP0001-tag-list-item {
+    position: relative;
+    line-height: 2em;
+    padding-left: 1.3em;
+}
+
+/*
+    チェックボックスを縦方向の中央に配置する（2/2）
+*/
+.PP0001-tag-list-item > input {
+    position:absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    margin:auto;
 }
