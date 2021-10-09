@@ -13,8 +13,6 @@ class TodoMainPage extends TodoPagerController {
         setTimeout(function() {
             self._createAjaxParam('read_todo', {}, self._execute_ShowTodo()).send();
         }, 0);
-        // TODO明細のopen/closeをハンドリングする
-        document.addEventListener('click', this._clickEvent());
     }
 
     _floatElementId = [
@@ -244,6 +242,10 @@ class TodoMainPage extends TodoPagerController {
             this._editCommentStart(event);      // TODOコメントを編集
         } else if (tag.classList.contains('summary-title')) {
             this._editTodoTitleStart(event);    // TODOタイトルを編集
+        } else if (tag.classList.contains('todo-li-icon')) {
+            this._clickSummary(event);          // TODOタイトルを編集
+        } else if (tag.classList.contains('trash-icon')) {
+            this._deleteTodo(event);            // TODO削除
         }
     }
 
@@ -407,20 +409,6 @@ class TodoMainPage extends TodoPagerController {
     _getTempId() {
         var now = new Date();
         return super._formatDate(now, 'yyyyMMdd_HHmmss.SSS');
-    }
-    _clickEvent() {
-        var self = this;
-        return function(event) {
-            if (event.target.classList.contains('todo-li-icon')) {
-                setTimeout(function() {
-                    self._clickSummary(event);
-                }, 0);
-            } else if (event.target.classList.contains('trash-icon')) {
-                setTimeout(function() {
-                    self._deleteTodo(event);
-                }, 0);
-            }
-        }
     }
     _clickSummary(event) {
         //console.log(event.target);
