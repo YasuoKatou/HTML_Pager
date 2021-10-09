@@ -62,14 +62,14 @@ class SamplePage003 extends PagerController {
     clicked_p3_close(self) {
         return function(event) {
             console.log(self.pageId + ' close button click event start');
-            _pager.changePageById("page002");
+            _pager.closePopupPage(self.pageId);
         }
     }
 
     clicked_p3_ok(self) {
         return function(event) {
             console.log(self.pageId + ' ok button click event start');
-            _pager.changePageById("page002");
+            _pager.closePopupPage(self.pageId);
         }
     }
 }
