@@ -137,6 +137,16 @@ class TodoHttpServer(HttpHandlerBase):
         respData = {'id': reqData['id']}
         self._send_response(respData)
 
+    def do_POST_delete_comment(self):
+        reqData = json.loads(self._getRequestData())
+        delParam = (reqData['id'], )
+        with self._getDBConnection() as con:
+            cur = con.cursor()
+            cur.execute('delete from TODO_COMMENT where id = ?', delParam)
+
+        respData = {'todo-id': reqData['todo-id'], 'id': reqData['id']}
+        self._send_response(respData)
+
 def _existsDb(db_path):
     p = pathlib.Path(db_path)
     print('db full path: ' + str(p.absolute()))

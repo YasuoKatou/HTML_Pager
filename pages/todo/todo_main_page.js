@@ -102,10 +102,8 @@ class TodoMainPage extends TodoPagerController {
                 "comments": [],
                 "tags": []
             };
-            var li = document.createElement('li');
-            li.classList.add('todo-item');
-            li.appendChild(this._createDetailsTag(newTodo));
-            newTodoLabel.parentNode.insertBefore(li, newTodoLabel.nextElementSibling);
+            newTodoLabel.parentNode.insertBefore(this._createDetailsTag(newTodo),
+                                                 newTodoLabel.nextElementSibling);
     
             // サーバ登録
             var req = {'title': this._todoTitle.value, 'temp-id': tmpId};
@@ -116,7 +114,8 @@ class TodoMainPage extends TodoPagerController {
             this._hiddenTodo.style.display = 'block';
             if (changed) {
                 // サーバ更新
-                var req = {'id': this._hiddenTodo.dataset.id, 'title': this._hiddenTodo.innerText};
+                var parent = this._hiddenTodo.parentNode.parentNode;
+                var req = {'id': parent.dataset.id, 'title': this._hiddenTodo.innerText};
                 this._createAjaxParam('update_todo', req, this._received_update_todo()).send();
             }
             this._hiddenTodo = null;
@@ -137,17 +136,12 @@ class TodoMainPage extends TodoPagerController {
             for (var i = 0; i < num; ++i) {
                 var li = liList[i];
                 if (!li.classList.contains('todo-item')) continue;
-                var sumList = li.getElementsByClassName('summary-title');
-                if (sumList.length !== 1) {
-                    console.error('no summary title tag');
-                    continue;
-                }
-                var sum = sumList[0];
-                if (json['temp-id'] === sum.dataset.id) {
-                    sum.dataset.id = json['id'];
+                if (json['temp-id'] === li.dataset.id) {
+                    li.dataset.id = json['id'];
                     return;
                 }
             }
+            console.error('no new todo.\n' + json);
         };
     }
 
@@ -160,12 +154,7 @@ class TodoMainPage extends TodoPagerController {
         if (ope.length !== 1) return;
 
         var todoItem = ope[0].parentNode.parentNode;
-        var sumList = todoItem.getElementsByClassName('summary-title');
-        if (sumList.length !== 1) {
-            console.error('no summary title tag');
-            return;
-        }
-        var todoId = sumList[0].dataset.id;
+        var todoId = todoItem.dataset.id;
 
         var content = this._todoComment.value.replaceAll(/\n/g, '<br>');
         if (isNewComment) {
@@ -181,12 +170,17 @@ class TodoMainPage extends TodoPagerController {
             this._createAjaxParam('add_comment', req, this._received_new_comment()).send();
         } else {
             var changed = (this._hiddenComment.innerText !== this._todoComment.value.trim());
+            var empty = (this._todoComment.value.trim() === '');
             this._hiddenComment.innerHTML = content;
             this._hiddenComment.style.display = 'block';
-            if (changed) {
+            if (changed && !empty) {
                 // サーバ更新
                 var req = {'id': this._hiddenComment.dataset.id, 'comment': content};
                 this._createAjaxParam('update_comment', req, this._received_update_comment()).send();
+            } else if (empty) {
+                // サーバ削除
+                var req = {'todo-id': todoId, 'id': this._hiddenComment.dataset.id};
+                this._createAjaxParam('delete_comment', req, this._received_delete_comment()).send();
             }
             this._hiddenComment = null;
         }
@@ -199,13 +193,7 @@ class TodoMainPage extends TodoPagerController {
             for (var i = 0; i < num1; ++i) {
                 var li = liList[i];
                 if (!li.classList.contains('todo-item')) continue;      // TODO項目以外
-                var sumList = li.getElementsByClassName('summary-title');
-                if (sumList.length !== 1) {
-                    console.error('no summary title tag');
-                    continue;
-                }
-                var sum = sumList[0];
-                if (json['todo-id'] !== sum.dataset.id) continue;       // TODOのIDが異なる
+                if (json['todo-id'] !== li.dataset.id) continue;        // TODOのIDが異なる
                 var comments = li.getElementsByClassName('todo-comment');
                 var num2 = comments.length;
                 if (num2 === 0) continue;                               // コメントが存在しない
@@ -217,12 +205,21 @@ class TodoMainPage extends TodoPagerController {
                     }
                 }
             }
+            console.error('no todo comment\n' + json);
         };
     }
 
     _received_update_comment() {
         return function(respData) {
             // コメントの更新（レスポンス受信）では、特に何もしない
+            var json = JSON.parse(respData);
+            console.log('comment updated(id:' + json['id'] + ')')
+        };
+    }
+
+    _received_delete_comment() {
+        return function(respData) {
+            // コメントの削除（レスポンス受信）
             var json = JSON.parse(respData);
             console.log('comment updated(id:' + json['id'] + ')')
         };
@@ -240,13 +237,13 @@ class TodoMainPage extends TodoPagerController {
     _execute_event(event) {
         var tag = event.target;
         if (tag.classList.contains('new-todo-label-content')) {
-            this._addTodoStart(event);
+            this._addTodoStart(event);          // 新規にTODOを作成
         } else if (tag.classList.contains('add-comment')) {
-            this._addCommentStart(event);
+            this._addCommentStart(event);       // 新規にTODOコメントを作成
         } else if (tag.classList.contains('todo-comment')) {
-            this._editCommentStart(event);
+            this._editCommentStart(event);      // TODOコメントを編集
         } else if (tag.classList.contains('summary-title')) {
-            this._editTodoTitleStart(event);
+            this._editTodoTitleStart(event);    // TODOタイトルを編集
         }
     }
 
@@ -350,6 +347,7 @@ class TodoMainPage extends TodoPagerController {
 
     _createDetailsTag(todoItemJson) {
         var todoItem = document.createElement('li');
+        todoItem.dataset.id = todoItemJson.summary.id;
         todoItem.classList.add('todo-item');
         // サマリー
         var summaryDiv = document.createElement('div');
@@ -360,7 +358,6 @@ class TodoMainPage extends TodoPagerController {
         summaryDiv.appendChild(p);
         p = document.createElement('p');
         p.classList.add('summary-title');
-        p.dataset.id = todoItemJson.summary.id;
         p.innerText = todoItemJson.summary.title
         summaryDiv.appendChild(p);
         p = document.createElement('p');
@@ -452,9 +449,10 @@ class TodoMainPage extends TodoPagerController {
             return;
         }
         var title = titles[0];
-        var exec = confirm("「" + title.innerText + "」(id:" + title.dataset.id + ") を削除します");
+        var id = parent.parentNode.dataset.id;
+        var exec = confirm("「" + title.innerText + "」(id:" + id + ") を削除します");
         if (!exec) return;
-        var req = {'id': title.dataset.id};
+        var req = {'id': id};
         this._createAjaxParam('delete_todo', req, this._received_delete_todo()).send();
     }
 
@@ -466,13 +464,13 @@ class TodoMainPage extends TodoPagerController {
     }
     _execute_delete_todo(json) {
         var parent = document.getElementById('todo_item_container');
-        var todo_items = parent.getElementsByClassName('summary-title');
+        var todo_items = parent.getElementsByTagName('li');
         var num = todo_items.length;
         for (var i = 0; i < num; ++i) {
             var item = todo_items[i];
+            if (!item.classList.contains('todo-item')) continue;
             if (item.dataset.id === json.id) {
-                parent = item.parentNode.parentNode;
-                parent.remove();
+                item.remove();
                 return;
             }
         }
