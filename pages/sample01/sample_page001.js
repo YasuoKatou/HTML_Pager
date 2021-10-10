@@ -37,8 +37,6 @@ class SamplePage001 extends PagerController {
             console.log('response received at ' + self.pageId + ' : ' + respData);
             // _pager.changePageById("ajax_test");
             _pager.changePageById("page002");
-            // _pager.changePageById("page003");
-            //_pager.changePageById("pageT04");
         }
     }
 }

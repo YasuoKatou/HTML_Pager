@@ -4,22 +4,15 @@
 class SamplePage003Data extends DataModelBase {
     constructor() {
         super();
-        this._headerTitles = {
-            ".popup-table-head":
-                ["No", "品名", "電話番号", "出荷日", "生産者"]
-        };
-        this._headerStyles = {
-            ".popup-table-head":
-                ["popup-table-col-no-3digit",  // No
+        this._headerTitles = ["No", "品名", "電話番号", "出荷日", "生産者"];
+        this._headerStyles = [
+                 "popup-table-col-no-3digit",  // No
                  "popup-table-col-name1",      // 品名
                  "popup-table-col-tel",        // 電話番号
                  "popup-table-col-date",       // 出荷日
                  "popup-table-col-name1"       // 生産者
-                ]
-        };
-        this._listDatas = {
-            ".popup-table-body":
-                [
+                ];
+        this._listDatas = [
                     ["1", "りんご", "090-3126-6431", "2005/12/08", "金田 寿々花"],
                     ["2", "マンゴー", "080-9638-9940", "2010/10/09", "一木 璃奈子"],
                     ["3", "西瓜", "090-5288-6966", "2014/06/17", "伊丹 美佐子"],
@@ -35,18 +28,39 @@ class SamplePage003Data extends DataModelBase {
                     ["13", "もも", "090-7271-3274", "1974/6/14", "秋山 豊"],
                     ["14", "もも", "090-7271-3274", "1974/6/14", "秋山 豊"],
                     ["15", "もも", "090-7271-3274", "1974/6/14", "秋山 豊"],
-                ]
-        };
-        this._listDataStyles = {
-            ".popup-table-body":
-                [
+                ];
+        this._listDataStyles = [
                     "popup-table-col-no-3digit",    // No
                     "popup-table-col-name1",        // 品名
                     "popup-table-col-tel",          // 電話番号
                     "popup-table-col-date",         // 出荷日
                     "popup-table-col-name1"         // 生産者
-                ]
-        };
+                ];
+    }
+    get headerTagClassName() { return 'popup-table-head'; }
+    get headerColumns() {
+        var ret = [];
+        for (var i = 0; i < this._headerTitles.length; ++i) {
+            var hc = document.createElement("p");
+            hc.appendChild(document.createTextNode(this._headerTitles[i]));
+            hc.classList.add(this._headerStyles[i]);
+            ret.push(hc);
+        }
+        return ret;
+    }
+
+    get rowTagClassName() { return 'popup-table-body'; }
+    get rows() { return this._listDatas.length; }
+    rowColumns(index) {
+        var ret = [];
+        var rowData = this._listDatas[index];
+        for (var i = 0; i < rowData.length; ++i) {
+            var hc = document.createElement("p");
+            hc.appendChild(document.createTextNode(rowData[i]));
+            hc.classList.add(this._listDataStyles[i]);
+            ret.push(hc);
+        }
+        return ret;
     }
 }
 /**

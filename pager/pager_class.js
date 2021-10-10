@@ -70,10 +70,11 @@ class DataModelBase extends PagerBase {
         this._listDatas = null;
         this._listDataStyles = null;
     }
-    get headerTitles() { return this._headerTitles; }
-    get headerStyles() { return this._headerStyles; }
-    get listDatas() { return this._listDatas; }
-    get listDataStyles() { return this._listDataStyles; }
+    get headerTagClassName() { return null; }
+    get headerColumns() { return null; }
+    get rowTagClassName() { return null; }
+    get rows() { return 0; }
+    rowColumns(index) { return null; }
 }
 
 class PagerAjax extends PagerBase {
