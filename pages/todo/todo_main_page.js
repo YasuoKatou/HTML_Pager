@@ -246,6 +246,8 @@ class TodoMainPage extends TodoPagerController {
             this._clickSummary(event);          // TODOタイトルを編集
         } else if (tag.classList.contains('trash-icon')) {
             this._deleteTodo(event);            // TODO削除
+        } else if (tag.classList.contains('add-todo-tag')) {
+            this._addTodoTag(event);
         }
     }
 
@@ -463,6 +465,24 @@ class TodoMainPage extends TodoPagerController {
             }
         }
         console.error('no delete todo');
+    }
+
+    _getTodoID(tag) {
+        var pNode = tag.parentNode;
+        while (pNode.tagName.toLowerCase() !== 'li') {
+            pNode = pNode.parentNode;
+            if (pNode === null) {
+                console.error('no li(parent) tag');
+                return null;
+            }
+        }
+        return pNode.dataset.id;
+    }
+
+    _addTodoTag(event) {
+        var todoId = this._getTodoID(event.target);
+        console.log('start _addTodoTag todo(' + todoId + ')');
+        _pager.popupPageById('PP0001');
     }
 
     _setModeFree() {
