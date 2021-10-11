@@ -54,6 +54,7 @@
     }
 
     _initPopupTableHeader(pc, pTag) {
+        if (pc.dataModel.headerTagClassName === null) return;
         var hTag = pTag.querySelector('.' + pc.dataModel.headerTagClassName);
         if (hTag === null) {
             console.error('no popup table header class name');
@@ -130,7 +131,7 @@
     changePageById(pid) {
         var pc = this._findPageController(pid);
         if (pc === null) {
-            console.error(pid + "not found at changePageById");
+            console.error(pid + " not found at changePageById");
             return;
         }
         this._changePage(pc);
@@ -139,7 +140,7 @@
     popupPageById(pid) {
         var pc = this._findPageController(pid);
         if (pc === null) {
-            console.error(pid + "not found at changePageById");
+            console.error(pid + " not found at changePageById");
             return;
         }
 
