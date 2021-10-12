@@ -60,7 +60,7 @@ class TodoMainPage extends TodoPagerController {
         this._todoComment.rows = 5;
         this._todoComment.setAttribute("type", "text");
         this._todoComment.placeholder = 'コメントを入力';
-        this._todoComment.addEventListener('keydown', this._inputTodoComment());
+        this._todoComment.addEventListener('dblclick', this._inputTodoComment());
     }
 
     _inputTodoTitle() {
@@ -76,12 +76,9 @@ class TodoMainPage extends TodoPagerController {
     _inputTodoComment() {
         var self = this;
         return function(event) {
-            if (event.keyCode != 13) return;
-            if (event.ctrlKey) {
-                setTimeout(function() {
-                    self._execute_todoComment(event);
-                }, 0);
-            }
+            setTimeout(function() {
+                self._execute_todoComment(event);
+            }, 0);
         }
     }
 
@@ -146,13 +143,11 @@ class TodoMainPage extends TodoPagerController {
     _execute_todoComment(event) {
         var parent = event.target.parentNode;
         var ope = parent.getElementsByClassName('todo-detail-ope');
+        var todoId = this._getTodoID(event.target);
         this._todoComment.remove();
         var isNewComment = this._mode === this._MODE.ADD_COMMENT;
         this._setModeFree();
         if (ope.length !== 1) return;
-
-        var todoItem = ope[0].parentNode.parentNode;
-        var todoId = todoItem.dataset.id;
 
         var content = this._todoComment.value.replaceAll(/\n/g, '<br>');
         if (isNewComment) {
