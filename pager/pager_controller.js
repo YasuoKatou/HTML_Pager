@@ -14,17 +14,24 @@ class PagerController extends PagerBase {
         this._assignEvents();
     }
     _assignEvents() {
+        this._assignEventByType('clicked_');
+    }
+    _dynamicAssignEvent() {
+        this._assignEventByType('_clicked_');
+    }
+    _assignEventByType(eventType) {
         if (this._pageId === "non-page") return;
         var pTag = document.getElementById(this._pageId);
         if (pTag === null) {
             console.error("root tag ('" + this._pageId + "') is not found ...");
             return;
         }
+        var prefixSize = eventType.length;
         Object.getOwnPropertyNames(this.__proto__).forEach(name => {
             // console.log(name);
-            if (name.startsWith('clicked_')) {
+            if (name.startsWith(eventType)) {
                 // クリックイベントの登録
-                var n = name.substr(8);
+                var n = name.substr(prefixSize);
                 // ID で検索
                 var e = pTag.querySelector("#" + n);
                 if (e !== null) {
@@ -41,6 +48,19 @@ class PagerController extends PagerBase {
             }
         });
     }
+    _removeDynamicEvent() {
+        var eventType = '_clicked_';
+        var prefixSize = eventType.length;
+        Object.getOwnPropertyNames(this.__proto__).forEach(name => {
+            if (name.startsWith(eventType)) {
+                var n = name.substr(prefixSize);
+                _pager.removeClickEvent(n);
+            }
+        });
+    }
+
+    pageShown() {}
+    pageHidden() {}
 
     get pageId() { return this._pageId; }
     get funcKeyDisplay() { return "visible"; }

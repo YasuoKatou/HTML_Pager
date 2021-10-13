@@ -62,6 +62,24 @@ class SamplePage003Data extends DataModelBase {
         }
         return ret;
     }
+    get buttonsTagClassName() {
+        return 'popup_multi_button';
+    }
+    get buttons() {
+        var ret = [];
+        var p = document.createElement("p");
+        p.id = 'p3_close';
+        p.classList.add('popup_button');
+        p.innerText = '閉じる';
+        ret.push(p);
+
+        p = document.createElement("p");
+        p.id = 'p3_ok';
+        p.classList.add('popup_button');
+        p.innerText = 'OK';
+        ret.push(p);
+        return ret;
+    }
 }
 /**
  * ポップアップリスト画面のコントローラクラス.
@@ -73,14 +91,23 @@ class SamplePage003 extends PagerController {
     }
     get funcKeyDisplay() { return "hidden"; }
 
-    clicked_p3_close(self) {
+    pageShown() {
+        super._dynamicAssignEvent();
+        super.pageShown();
+    }
+    pageHidden() {
+        super._removeDynamicEvent();
+        super.pageHidden();
+    }
+
+    _clicked_p3_close(self) {
         return function(event) {
             console.log(self.pageId + ' close button click event start');
             _pager.closePopupPage(self.pageId);
         }
     }
 
-    clicked_p3_ok(self) {
+    _clicked_p3_ok(self) {
         return function(event) {
             console.log(self.pageId + ' ok button click event start');
             _pager.closePopupPage(self.pageId);

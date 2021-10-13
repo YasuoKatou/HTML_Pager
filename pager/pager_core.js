@@ -41,6 +41,10 @@
         }
     }
 
+    _is_page_shown(tag) {
+        return tag.classList.contains("page_show");
+    }
+
     _page_hidden(tag) {
         tag.classList.remove("page_show");
         tag.classList.add("page_hidden");
@@ -85,6 +89,18 @@
         dTag.appendChild(bodyBase);
     }
 
+    _initPopupButtons(pc, pTag) {
+        var bTag = pTag.querySelector('.' + pc.dataModel.buttonsTagClassName);
+        if (bTag === null) {
+            console.error('no popup buttons class name');
+            return;
+        }
+        while (bTag.firstChild) bTag.removeChild(bTag.firstChild);
+        pc.dataModel.buttons.forEach(button => {
+            bTag.appendChild(button);
+        });
+    }
+
     _page_show(pc, tag) {
         tag.classList.remove("page_hidden");
         tag.classList.add("page_show");
@@ -92,6 +108,7 @@
         if (pc.dataModel !== null) {
             this._initPopupTableHeader(pc, tag);
             this._initPopupTableData(pc, tag);
+            this._initPopupButtons(pc, tag);
         }
     }
 
@@ -135,12 +152,13 @@
             return;
         }
         this._changePage(pc);
+        pc.pageShown();
     }
 
     popupPageById(pid) {
         var pc = this._findPageController(pid);
         if (pc === null) {
-            console.error(pid + " not found at changePageById");
+            console.error(pid + " not found at popupPageById");
             return;
         }
 
@@ -157,11 +175,13 @@
         var tag = document.getElementById(pid);
         this._setFunctionKeys(pc);
         this._page_show(pc, tag);
+        pc.pageShown();
     }
 
     closePopupPage(pid) {
         var page = document.getElementById(pid);
         this._page_hidden(page);
+        this._pageController.pageHidden();
 
         this._pageController = this._popupSave.pop();
         page = document.getElementById(this._pageController.pageId);
@@ -184,8 +204,11 @@
         this._pageController = p;
         x = document.querySelectorAll("#page_root > div");
         for(var i = 0; i < x.length; ++i) {
-            if (x[i].id !== pageId) {
+            var pid = x[i].id;
+            if (pid !== pageId && this._is_page_shown(x[i])) {
                 this._page_hidden(x[i]);
+                var pc = this._findPageController(pid);
+                pc.pageHidden();
             }
         }
         this._setFunctionKeys(p);
@@ -203,7 +226,7 @@
     _click_event(self) {
         return function(event) {
             var id = event.target.id;
-            for(var i = 0; i < self._clickEventList.length; ++i) {
+            for (var i = 0; i < self._clickEventList.length; ++i) {
                 if (self._clickEventList[i].tagId === id) {
                     setTimeout(function() {
                         self._clickEventList[i].eventFunc(event);
@@ -262,14 +285,8 @@
         if (this._configFKey && !this._FKeyVisible) { this._funcKeys("hidden"); }
 
         //クリックイベントの設定
-        this._clickEventList.forEach(clickEvent => {
-            var tag = document.getElementById(clickEvent.tagId);
-            if (tag !== null) {
-                tag.addEventListener('click', this._click_event(this));
-            } else {
-                console.error("'" + clickEvent.tagId + "' is not found ...")
-            }
-        });
+        document.addEventListener('click', this._click_event(this));
+
         //キーボードイベントの設定
         document.addEventListener('keydown', this._keyDown_event(this));
         document.addEventListener('keyup', this._keyUp_event(this));
@@ -287,6 +304,12 @@
      * @since 0.0.1
      */
     addClickEvent(p) { this._clickEventList.push(p); }
+
+    removeClickEvent(id) {
+        this._clickEventList = this._clickEventList.filter((evtClass) => {
+            return (evtClass.tagId !== id);
+        });
+    }
 
     /**
      * ファンクションキー情報をクリアする.
