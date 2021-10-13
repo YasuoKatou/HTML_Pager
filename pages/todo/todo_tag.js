@@ -24,11 +24,52 @@ class TagData extends DataModelBase {
         ret.push(l);
         return ret;
     }
+    get buttonsTagClassName() {
+        return 'PP0001-ope';
+    }
+    get buttons() {
+        var ret = [];
+        var p = document.createElement("p");
+        p.id = 'btn_close';
+        p.classList.add('popup_button');
+        p.innerText = '閉じる';
+        ret.push(p);
+
+        p = document.createElement("p");
+        p.id = 'btn_ok';
+        p.classList.add('popup_button');
+        p.innerText = 'OK';
+        ret.push(p);
+        return ret;
+    }
 }
 
 class TodoTagPage extends TodoPagerController {
     constructor(p) {
         super(p);
         this._dataModel = new TagData();
+    }
+
+    pageShown() {
+        super._dynamicAssignEvent();
+        super.pageShown();
+    }
+    pageHidden() {
+        super._removeDynamicEvent();
+        super.pageHidden();
+    }
+
+    _clicked_btn_close(self) {
+        return function(event) {
+            console.log(self.pageId + ' close button click event start');
+            _pager.closePopupPage(self.pageId);
+        }
+    }
+
+    _clicked_btn_ok(self) {
+        return function(event) {
+            console.log(self.pageId + ' ok button click event start');
+            _pager.closePopupPage(self.pageId);
+        }
     }
 }
