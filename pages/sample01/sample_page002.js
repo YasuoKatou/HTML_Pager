@@ -15,9 +15,13 @@ class SamplePage002 extends PagerController {
 
     clicked_p2_button(self) {
         return function(event) {
-            console.log(self.pageId + ' click p2_button start');
-            _pager.popupPageById('page003');
+            // console.log(self.pageId + ' click p2_button start');
+            _pager.popupPageById('page003', 'test prepareShow');
         }
+    }
+    closedForm(pid, ifData = undefined) {
+        console.log(pid + ' closed : ' + ifData);
+        super.closedForm(ifData);
     }
 
     fkey12_S(event) { this._logout(); }

@@ -155,13 +155,14 @@
         pc.pageShown();
     }
 
-    popupPageById(pid) {
+    popupPageById(pid, ifData = undefined) {
         var pc = this._findPageController(pid);
         if (pc === null) {
             console.error(pid + " not found at popupPageById");
             return;
         }
 
+        pc.prepareShow(ifData);
         var pages = document.querySelectorAll("#page_root > div");
         var num = pages.length
         for (var i = 0; i < num; ++i) {
@@ -178,12 +179,13 @@
         pc.pageShown();
     }
 
-    closePopupPage(pid) {
+    closePopupPage(pid, ifData = undefined) {
         var page = document.getElementById(pid);
         this._page_hidden(page);
         this._pageController.pageHidden();
 
         this._pageController = this._popupSave.pop();
+        this._pageController.closedForm(pid, ifData);
         page = document.getElementById(this._pageController.pageId);
         page.classList.remove('popup-block');
         this._setFunctionKeys(this._pageController);
