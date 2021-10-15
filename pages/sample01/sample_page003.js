@@ -91,6 +91,11 @@ class SamplePage003 extends PagerController {
     }
     get funcKeyDisplay() { return "hidden"; }
 
+    prepareShow(ifData) {
+        console.log(ifData);
+        super.prepareShow(ifData);
+    }
+
     pageShown() {
         super._dynamicAssignEvent();
         super.pageShown();
@@ -102,15 +107,15 @@ class SamplePage003 extends PagerController {
 
     _clicked_p3_close(self) {
         return function(event) {
-            console.log(self.pageId + ' close button click event start');
+            // console.log(self.pageId + ' close button click event start');
             _pager.closePopupPage(self.pageId);
         }
     }
 
     _clicked_p3_ok(self) {
         return function(event) {
-            console.log(self.pageId + ' ok button click event start');
-            _pager.closePopupPage(self.pageId);
+            // console.log(self.pageId + ' ok button click event start');
+            _pager.closePopupPage(self.pageId, 'popup ok button.');
         }
     }
 }

@@ -59,8 +59,10 @@ class PagerController extends PagerBase {
         });
     }
 
+    prepareShow(ifData = undefined) {}
     pageShown() {}
     pageHidden() {}
+    closedForm(pid, ifData = undefined) {}
 
     get pageId() { return this._pageId; }
     get funcKeyDisplay() { return "visible"; }
