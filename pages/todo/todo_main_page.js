@@ -226,7 +226,7 @@ class TodoMainPage extends TodoPagerController {
         } else if (tag.classList.contains('trash-icon')) {
             this._deleteTodo(event);            // TODO削除
         } else if (tag.classList.contains('add-todo-tag')) {
-            this._addTodoTag(event);
+            this._addTodoTag(event);            // TODOにタグを設定
         }
     }
 
@@ -459,9 +459,63 @@ class TodoMainPage extends TodoPagerController {
     }
 
     _addTodoTag(event) {
-        var todoId = this._getTodoID(event.target);
-        console.log('start _addTodoTag todo(' + todoId + ')');
-        _pager.popupPageById('PP0001');
+        var pTag = event.target.parentNode;
+        var tags = [];
+        var list = pTag.getElementsByClassName('todo-tag');
+        var num = list.length;
+        for (var i = 0; i < num; ++i) {
+            var item = list[i];
+            tags.push(item.dataset.id);
+        }
+        var todoId = this._getTodoID(pTag);
+        // console.log('start _addTodoTag todo(' + todoId + ')');
+        _pager.popupPageById('PP0001', {'todo-id': todoId, 'tags': tags});
+    }
+
+    closedForm(pid, ifData) {
+        if (ifData === undefined) return;
+        if (pid === 'PP0001') {
+            this._updateTodoTags(ifData);
+        } else {
+            console.error(pid + ' is not support');
+        }
+    }
+
+    _updateTodoTags(tagInfo) {
+        console.log(tagInfo);
+        var pTag = document.getElementById(this._pageId);
+        var todos = pTag.getElementsByClassName('todo-item');
+        var num = todos.length;
+        var targetTodo = null;
+        var todoId = tagInfo['todo-id'];
+        for (var i = 0; i < num; ++i) {
+            var todo = todos[i];
+            if (todo.dataset.id === todoId) {
+                targetTodo = todo;
+                break;
+            }
+        }
+        if (targetTodo === null) {
+            console.error('no todo id (' + todoId + ')');
+            return;
+        }
+        var t = targetTodo.getElementsByClassName('add-todo-tag');      // + tag を検索
+        if (t.length !== 1) {
+            console.error('add-todo-tag not found');
+            return;
+        }
+        var addTag = t[0];
+        pTag = addTag.parentNode;
+        _pager._removeChildTag(pTag);   // タグ追加を含めてすべてのタグを削除
+        var tags = tagInfo['tags'];
+        for (var i = 0; i < tags.length; ++i) {
+            var tag = document.createElement("p");
+            tag.dataset.id = tags[i]['tag-id'];
+            tag.innerText = tags[i]['tag-name'];
+            tag.classList.add('todo-tag');
+            pTag.appendChild(tag);
+        }
+        pTag.appendChild(addTag);
     }
 
     _setModeFree() {

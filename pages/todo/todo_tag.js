@@ -1,16 +1,8 @@
 class TagData extends DataModelBase {
     constructor() {
         super();
-        this._listDatas = [
-/*
-            {"id": 1, "name": "言語 C"},
-            {"id": 2, "name": "言語 C++"},
-            {"id": 3, "name": "言語 GO"},
-            {"id": 4, "name": "言語 Java"},
-            {"id": 5, "name": "言語 Python"},
-            {"id": 6, "name": "言語 Rust"}
-*/
-        ];
+        this._listDatas = [];
+        this._selectedItem = {};
     }
     get rowTagClassName() { return 'PP0001-tag-list-container'; }
     get rows() { return this._listDatas.length + 1; }
@@ -29,6 +21,9 @@ class TagData extends DataModelBase {
             var cbx = document.createElement("input");
             cbx.setAttribute('type', 'checkbox');
             cbx.setAttribute('value', '' + item.id);
+            if (this._selectedItem.tags.includes(item.id)) {
+                cbx.setAttribute('checked','checked');
+            }
             l.appendChild(cbx);
             ret.push(l);
         }
@@ -69,6 +64,10 @@ class TodoTagPage extends TodoPagerController {
         }, 0);
     }
 
+    prepareShow(ifData) {
+        this._dataModel._selectedItem = ifData;
+    }
+
     pageShown() {
         super._dynamicAssignEvent();
         super.pageShown();
@@ -80,15 +79,27 @@ class TodoTagPage extends TodoPagerController {
 
     _clicked_btn_close(self) {
         return function(event) {
-            console.log(self.pageId + ' close button click event start');
+            // console.log(self.pageId + ' close button click event start');
             _pager.closePopupPage(self.pageId);
         }
     }
 
     _clicked_btn_ok(self) {
         return function(event) {
-            console.log(self.pageId + ' ok button click event start');
-            _pager.closePopupPage(self.pageId);
+            // console.log(self.pageId + ' ok button click event start');
+            var tags = [];
+            var pTag = document.getElementById(self._pageId);
+            var items = pTag.getElementsByClassName('PP0001-tag-list-item');
+            var num = items.length;
+            for (var i = 0; i < num; ++i) {
+                var item = items[i];
+                if (item.children[0].checked) {
+                    tags.push({'tag-id': item.children[0].value, 'tag-name': item.innerText});
+                }
+            }
+
+            _pager.closePopupPage(self.pageId,
+                 {'todo-id': self._dataModel._selectedItem['todo-id'], 'tags': tags});
         }
     }
 
