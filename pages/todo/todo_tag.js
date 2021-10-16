@@ -130,7 +130,7 @@ class TodoTagPage extends TodoPagerController {
             var json = JSON.parse(respData);
             self._dataModel._listDatas = json.tags;
             var pTag = document.getElementById(self._pageId);
-            _pager._initPopupTableData(self, pTag);
+            _pager.initPopupTableData(self, pTag);
         };
     }
 }
