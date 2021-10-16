@@ -71,7 +71,7 @@
         });
     }
 
-    _initPopupTableData(pc, pTag) {
+    initPopupTableData(pc, pTag) {
         var dTag = pTag.querySelector('.' + pc.dataModel.rowTagClassName);
         if (dTag === null) {
             console.error('no popup table row class name');
@@ -107,7 +107,7 @@
 
         if (pc.dataModel !== null) {
             this._initPopupTableHeader(pc, tag);
-            this._initPopupTableData(pc, tag);
+            this.initPopupTableData(pc, tag);
             this._initPopupButtons(pc, tag);
         }
     }
