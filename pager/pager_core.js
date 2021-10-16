@@ -50,13 +50,6 @@
         tag.classList.add("page_hidden");
     }
 
-    _removeChildTag(pTag) {
-        var num = pTag.childElementCount;
-        for (var i = 0; i < num; ++i) {
-            pTag.children[0].remove();
-        }
-    }
-
     _initPopupTableHeader(pc, pTag) {
         if (pc.dataModel.headerTagClassName === null) return;
         var hTag = pTag.querySelector('.' + pc.dataModel.headerTagClassName);
