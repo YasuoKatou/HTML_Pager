@@ -506,7 +506,7 @@ class TodoMainPage extends TodoPagerController {
         }
         var addTag = t[0];
         pTag = addTag.parentNode;
-        _pager._removeChildTag(pTag);   // タグ追加を含めてすべてのタグを削除
+        while (pTag.firstChild) pTag.removeChild(pTag.firstChild);
         var tags = tagInfo['tags'];
         for (var i = 0; i < tags.length; ++i) {
             var tag = document.createElement("p");
