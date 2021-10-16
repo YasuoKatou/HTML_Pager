@@ -23,22 +23,6 @@ class TodoMainPage extends TodoPagerController {
         'new_todo_label'
     ]
 
-    _urlPrefix() {
-        return 'http://localhost:8083';
-    }
-
-    _createAjaxParam(func_id, req_data, resp_func) {
-        return new PagerAjax({
-            async: true,
-            method: 'POST',
-            url: this._urlPrefix() + '/' + func_id,
-            requestHeaders: [],
-            txData: JSON.stringify(req_data),
-            timeout: 5000,
-            responseReceived: resp_func,
-        });
-    }
-
     _execute_ShowTodo() {
         var self = this;
         return function(respData) {
@@ -102,7 +86,7 @@ class TodoMainPage extends TodoPagerController {
     
             // サーバ登録
             var req = {'title': this._todoTitle.value, 'temp-id': tmpId};
-            this._createAjaxParam('add_todo', req, this._received_new_todo()).send();
+            super._createAjaxParam('add_todo', req, this._received_new_todo()).send();
         } else {
             var changed = (this._hiddenTodo.innerText !== this._todoTitle.value);
             this._hiddenTodo.innerText = this._todoTitle.value;
@@ -111,7 +95,7 @@ class TodoMainPage extends TodoPagerController {
                 // サーバ更新
                 var parent = this._hiddenTodo.parentNode.parentNode;
                 var req = {'id': parent.dataset.id, 'title': this._hiddenTodo.innerText};
-                this._createAjaxParam('update_todo', req, this._received_update_todo()).send();
+                super._createAjaxParam('update_todo', req, this._received_update_todo()).send();
             }
             this._hiddenTodo = null;
         }
@@ -160,7 +144,7 @@ class TodoMainPage extends TodoPagerController {
 
             // サーバ登録
             var req = {'todo-id': todoId, 'comment': content, 'temp-id': tmpId};
-            this._createAjaxParam('add_comment', req, this._received_new_comment()).send();
+            super._createAjaxParam('add_comment', req, this._received_new_comment()).send();
         } else {
             var changed = (this._hiddenComment.innerText !== this._todoComment.value.trim());
             var empty = (this._todoComment.value.trim() === '');
@@ -169,11 +153,11 @@ class TodoMainPage extends TodoPagerController {
             if (changed && !empty) {
                 // サーバ更新
                 var req = {'id': this._hiddenComment.dataset.id, 'comment': content};
-                this._createAjaxParam('update_comment', req, this._received_update_comment()).send();
+                super._createAjaxParam('update_comment', req, this._received_update_comment()).send();
             } else if (empty) {
                 // サーバ削除
                 var req = {'todo-id': todoId, 'id': this._hiddenComment.dataset.id};
-                this._createAjaxParam('delete_comment', req, this._received_delete_comment()).send();
+                super._createAjaxParam('delete_comment', req, this._received_delete_comment()).send();
             }
             this._hiddenComment = null;
         }
@@ -438,7 +422,7 @@ class TodoMainPage extends TodoPagerController {
         var exec = confirm("「" + title.innerText + "」(id:" + id + ") を削除します");
         if (!exec) return;
         var req = {'id': id};
-        this._createAjaxParam('delete_todo', req, this._received_delete_todo()).send();
+        super._createAjaxParam('delete_todo', req, this._received_delete_todo()).send();
     }
 
     _received_delete_todo() {

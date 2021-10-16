@@ -147,6 +147,33 @@ class TodoHttpServer(HttpHandlerBase):
         respData = {'todo-id': reqData['todo-id'], 'id': reqData['id']}
         self._send_response(respData)
 
+    def _read_tags(self, con):
+        tags = []
+        con.row_factory = self._dict_factory
+        cur = con.cursor()
+        for row in cur.execute('SELECT id, tag_name FROM TODO_TAG order by tag_name'):
+            tags.append({'id': str(row['id']), 'name': row['tag_name']})
+        return tags
+
+    def do_POST_read_tags(self):
+        with self._getDBConnection() as con:
+            tags = self._read_tags(con)
+        self._send_response({'tags': tags})
+
+    def do_POST_add_tag(self):
+        reqData = json.loads(self._getRequestData())
+        now = self._getNow()
+        sql = ''' INSERT INTO TODO_TAG(tag_name,create_ts,update_ts)
+                  VALUES(?,?,?)'''
+        with self._getDBConnection() as con:
+            con.row_factory = self._dict_factory
+            cur = con.cursor()
+            cur.execute(sql, (reqData['tag-name'], now, now))
+            con.commit()
+
+            tags = self._read_tags(con)
+        self._send_response({'tags': tags})
+
 def _existsDb(db_path):
     p = pathlib.Path(db_path)
     print('db full path: ' + str(p.absolute()))

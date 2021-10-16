@@ -3,6 +3,22 @@ class TodoPagerController extends PagerController {
         super(p);
     }
 
+    _urlPrefix() {
+        return 'http://localhost:8083';
+    }
+
+    _createAjaxParam(func_id, req_data, resp_func) {
+        return new PagerAjax({
+            async: true,
+            method: 'POST',
+            url: this._urlPrefix() + '/' + func_id,
+            requestHeaders: [],
+            txData: JSON.stringify(req_data),
+            timeout: 5000,
+            responseReceived: resp_func,
+        });
+    }
+
     _formatDate (date, format) {
         format = format.replace(/yyyy/g, date.getFullYear());
         format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
