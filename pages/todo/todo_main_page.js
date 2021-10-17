@@ -1,27 +1,23 @@
 class TodoMainPage extends TodoPagerController {
     constructor(p) {
         super(p);
+        this._todo_status = [];
+        this._todo_status_css = [
+            {id: '0', css: null}, {id: '10', css: 'todo-doing'}, {id: '20', css: 'todo-done'}
+        ]
         this._setModeFree();
         this._createTodoTitle();
         this._createComment()
-        //this._showTodo(this._test_data);
 
         var myPage = document.getElementById(p);
         myPage.addEventListener('click', this._myPage_click());
+        myPage.addEventListener('change', this._myPage_change());
 
         var self = this;
         setTimeout(function() {
             self._createAjaxParam('read_todo', {}, self._execute_ShowTodo()).send();
         }, 0);
     }
-
-    _floatElementId = [
-        'new_todo_title'
-    ];
-
-    _restoreElements = [
-        'new_todo_label'
-    ]
 
     _execute_ShowTodo() {
         var self = this;
@@ -206,12 +202,21 @@ class TodoMainPage extends TodoPagerController {
         var self = this;
         return function(event) {
             setTimeout(function() {
-                self._execute_event(event);
+                self._execute_click_event(event);
             }, 0);
         }
     }
 
-    _execute_event(event) {
+    _myPage_change() {
+        var self = this;
+        return function(event) {
+            setTimeout(function() {
+                self._execute_change_event(event);
+            }, 0);
+        }
+    }
+
+    _execute_click_event(event) {
         var tag = event.target;
         if (tag.classList.contains('new-todo-label-content')) {
             this._addTodoStart(event);          // 新規にTODOを作成
@@ -227,6 +232,40 @@ class TodoMainPage extends TodoPagerController {
             this._deleteTodo(event);            // TODO削除
         } else if (tag.classList.contains('add-todo-tag')) {
             this._addTodoTag(event);            // TODOにタグを設定
+        }
+    }
+
+    _execute_change_event(event) {
+        // console.log(event.target.value);
+        var li = this._getTodoLiTag(event.target);
+        if (li === null) return;
+        var todoId = li.dataset.id;
+        var tags = li.getElementsByClassName('summary-title');
+        if (tags.length !== 1) {
+            console.error('no todo taitle class (summary-title)');
+            return;
+        }
+        var statId = event.target.value;
+        var req = {'id': todoId, 'status': statId};
+        super._createAjaxParam('update_status', req, this._received_update_status()).send();
+
+        var sumTag = tags[0];
+        this._todo_status_css.forEach((item) => {
+            if (item.id === statId) {
+                if (item.css !== null) {
+                    sumTag.classList.add(item.css);
+                }
+            } else {
+                if (item.css !== null) {
+                    sumTag.classList.remove(item.css);
+                }
+            }
+        });
+    }
+    _received_update_status() {
+        var self = this;
+        return function(respData) {
+            // TODO状態の更新レスポンスは、処理しない
         }
     }
 
@@ -318,6 +357,7 @@ class TodoMainPage extends TodoPagerController {
 
     _appendTodo(json) {
         // console.log(json);
+        this._todo_status = json.status_list;
         var todoContainer = document.getElementById('todo_item_container');
         var self = this;
         json.todo_list.forEach(function(todoItem) {
@@ -339,6 +379,13 @@ class TodoMainPage extends TodoPagerController {
         p = document.createElement('p');
         p.classList.add('summary-title');
         p.innerText = todoItemJson.summary.title
+        this._todo_status_css.forEach((item) => {
+            if (item.id === todoItemJson.summary.status) {
+                if (item.css !== null) {
+                    p.classList.add(item.css);
+                }
+            }
+        });
         summaryDiv.appendChild(p);
         p = document.createElement('p');
         p.classList.add('trash-icon');
@@ -363,6 +410,21 @@ class TodoMainPage extends TodoPagerController {
         addComment.innerText = '+ comment';
         opeDiv.appendChild(addComment)
         detail.appendChild(opeDiv);
+        var stat = document.createElement('select');
+        this._todo_status.forEach((opt) => {
+            var optTag = document.createElement('option');
+            optTag.text = opt.name;
+            optTag.value = opt.id;
+            if (opt.id === todoItemJson.summary.status) {
+                optTag.selected = true;
+            }
+            stat.appendChild(optTag);
+        });
+        var statLabel = document.createElement('label');
+        statLabel.classList.add('todo-status');
+        statLabel.innerText = '状態 : ';
+        statLabel.appendChild(stat);
+        opeDiv.appendChild(statLabel);
         // タグ
         var tagDiv = document.createElement('div');
         todoItemJson.tags.forEach(function(tag) {
@@ -443,7 +505,7 @@ class TodoMainPage extends TodoPagerController {
         console.error('no delete todo');
     }
 
-    _getTodoID(tag) {
+    _getTodoLiTag(tag) {
         var pNode = tag.parentNode;
         while (pNode.tagName.toLowerCase() !== 'li') {
             pNode = pNode.parentNode;
@@ -452,7 +514,13 @@ class TodoMainPage extends TodoPagerController {
                 return null;
             }
         }
-        return pNode.dataset.id;
+        return pNode;
+    }
+
+    _getTodoID(tag) {
+        var li = this._getTodoLiTag(tag);
+        if (li === null) return null;
+        return li.dataset.id;
     }
 
     _addTodoTag(event) {
@@ -545,53 +613,4 @@ class TodoMainPage extends TodoPagerController {
         ADD_TODO: 1, EDIt_TODO: 2,
         ADD_COMMENT: 11, EDIT_COMMENT:12
     }
-/*
-    _test_data = {
-        "todo_list": [
-            {
-                "summary": {"id": 11, "title": "TODOのステータスがわからない"},
-                "comments": [],
-                "tags": [
-                    {"id": 100, "name": "TODO アプリ"}
-                ]
-            },
-            {
-                "summary": {"id": 10, "title": "新規TODOの入力用にコンポーネントの作成を行う"},
-                "comments": [],
-                "tags": [
-                    {"id": 100, "name": "TODO アプリ"}
-                ]
-            },
-            {
-                "summary": {"id": 11, "title": "TODOの新規登録は、ボタンレイアウトにする"},
-                "comments": [{"id": 10001, "content":"コメントまたはタグと同じcssにする"},
-                             {"id": 10002, "content":"2021/9/28 対応完了"}],
-                "tags": [
-                    {"id": 100, "name": "TODO アプリ"}
-                ]
-            },
-            {
-                "summary": {"id": 1, "title": "todo #1"},
-                "comments": [
-                    {"id": 100, "content":"コメント1-1"}, {"id": 351, "content":"コメント1-2"}
-                ],
-                "tags": [
-                    {"id": 1, "name": "コンピュータ"}, {"id": 2, "name": "python"}
-                ]
-            },
-            {
-                "summary": {"id": 2, "title": "todo #2"},
-                "comments": [],
-                "tags": []
-            },
-            {
-                "summary": {"id": 3, "title": "todo #3"},
-                "comments": [
-                    {"id": 1020, "content":"コメント3-1"}
-                ],
-                "tags": []
-            }
-        ]
-    }
-*/
 }

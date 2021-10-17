@@ -53,14 +53,16 @@ class TodoHttpServer(HttpHandlerBase):
                    where T1.todo_id = ?
                    order by T2.tag_name
                '''
+        sql4 = ''' select id, name from TODO_STATUS order by seq '''
         with self._getDBConnection() as con:
             con.row_factory = self._dict_factory
             cur1 = con.cursor()
             cur2 = con.cursor()
             cur3 = con.cursor()
-            for row1 in cur1.execute('SELECT id, title FROM TODO_TITLE ORDER BY id desc'):
+            cur4 = con.cursor()
+            for row1 in cur1.execute('SELECT id, title, status FROM TODO_TITLE ORDER BY id desc'):
                 todoId = str(row1['id'])
-                item = {'summary':{'id': todoId, 'title': row1['title']},
+                item = {'summary':{'id': todoId, 'title': row1['title'], 'status': str(row1['status'])},
                         'comments': [],
                         'tags': []}
                 for row2 in cur2.execute(sql2, (todoId, )):
@@ -68,7 +70,11 @@ class TodoHttpServer(HttpHandlerBase):
                 for row3 in cur3.execute(sql3, (todoId, )):
                     item['tags'].append({'id': str(row3['id']), 'name': row3['name']})
                 todoList.append(item)
-        self._send_response({"todo_list": todoList})
+                statList = []
+                for row4 in cur4.execute(sql4):
+                    statList.append({'id': str(row4['id']), 'name': row4['name']})
+
+        self._send_response({"todo_list": todoList, 'status_list': statList})
 
     def do_POST_add_todo(self):
         reqData = json.loads(self._getRequestData())
@@ -87,7 +93,7 @@ class TodoHttpServer(HttpHandlerBase):
     def do_POST_update_todo(self):
         reqData = json.loads(self._getRequestData())
         now = self._getNow()
-        sql = ''' UPDATE TODO_TITLE set title = ? , update_ts = ?)
+        sql = ''' UPDATE TODO_TITLE set title = ? , update_ts = ?
                   WHERE id = ?'''
         with self._getDBConnection() as con:
             cur = con.cursor()
@@ -95,6 +101,17 @@ class TodoHttpServer(HttpHandlerBase):
             con.commit()
         respData = {'id': reqData['id']}
         self._send_response(respData)
+
+    def do_POST_update_status(self):
+        reqData = json.loads(self._getRequestData())
+        now = self._getNow()
+        sql = ''' UPDATE TODO_TITLE set status = ? , update_ts = ?
+                  WHERE id = ?'''
+        with self._getDBConnection() as con:
+            cur = con.cursor()
+            cur.execute(sql, (reqData['status'], now, reqData['id']))
+            con.commit()
+        self._send_response(reqData)
 
     def do_POST_delete_todo(self):
         reqData = json.loads(self._getRequestData())
@@ -254,14 +271,43 @@ def _createDb(db_path):
         print('タグ一覧のインデックスを作成しました.')
         con.commit()
 
+def _getNow():
+    now = datetime.datetime.now()
+    return now.strftime("%Y-%m-%d %H:%M:%S.%f")
+
+def _dbVerup01(db_path):
+    with sqlite3.connect(db_path) as con:
+        cur = con.cursor()
+        cur.execute('''SELECT COUNT(*) FROM sqlite_master WHERE TYPE='table' AND name='TODO_STATUS'
+        ''')
+        if cur.fetchone()[0] == 1:
+            return
+        cur.execute('''
+            create table TODO_STATUS (
+                id INTEGER NOT NULL UNIQUE,
+                name VARCHAR(16) NOT NULL,
+                seq INTEGER NOT NULL,
+                create_ts TEXT NOT NULL,
+                update_ts TEXT NOT NULL)
+        ''')
+        cur.execute('''create index TODO_STATUS_idx1 on TODO_STATUS(seq)''')
+        now = _getNow()
+        p = (now, now, )
+        cur.execute('''insert into TODO_STATUS (id,name,seq,create_ts,update_ts) values ( 0, '未着手',  1, ?, ?)''', p)
+        cur.execute('''insert into TODO_STATUS (id,name,seq,create_ts,update_ts) values (10,   '着手', 10, ?, ?)''', p)
+        cur.execute('''insert into TODO_STATUS (id,name,seq,create_ts,update_ts) values (20,   '完了', 20, ?, ?)''', p)
+        print('TODOステータステーブルを追加')
+
 if __name__ == '__main__':
     # DBの確認と作成
     _path = pathlib.Path(__file__).parent / _DB_NAME
     if _existsDb(_path):
         print('todo db exists.')
+        _dbVerup01(_path)
     else:
         print('no todo db')
         _createDb(_path)
+        _dbVerup01(_path)
 
     #httpサーバの起動
     server_address = ('', 8083)

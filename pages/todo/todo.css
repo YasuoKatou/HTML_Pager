@@ -69,6 +69,10 @@
 .todo-comment {
 }
 
+.todo-status {
+    margin-left: 2em;
+}
+
 .add-comment {
     margin-top: 1em;
     display: inline-block;
@@ -89,6 +93,15 @@
     border-radius: 11px;
     background-color: #fa4141;
     font-size: x-small;
+}
+
+.todo-doing {
+    color: deeppink;
+    font-weight: bolder;
+}
+
+.todo-done {
+    color:darkgray;
 }
 
 .PP0001-add-tag,

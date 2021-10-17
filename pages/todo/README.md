@@ -10,6 +10,7 @@
 |1-1|[TODO取得](#todo取得)|read_todo|
 |1-2|[TODOタイトル登録](#todoタイトル登録)|add_todo|
 |1-3|[TODOタイトル更新](#todoタイトル更新)|update_todo|
+|1-4|[TODOステータス更新](#todoステータス更新)|update_status|
 |1-9|[TODO削除](#todo削除)|delete_todo|
 |2-1|[TODOコメント登録](#todoコメント登録)|add_comment|
 |2-2|[TODOコメント更新](#todoコメント更新)|update_comment|
@@ -28,31 +29,39 @@
   |No|項目名称|物理名|型|説明|
   |:-:|:--|:--|:--|:--|
   |1|TODO一覧|todo_list|配列|(1)参照|
+  |2|TODO状態一覧|status_list|配列|(2)参照|
 
     (1) TODO項目
     |No|項目名称|物理名|型|説明|
     |:-:|:--|:--|:--|:--|
-    |1|TODOタイトル情報|summary|オブジェクト|(2)参照|
-    |2|コメント情報一覧|comments|配列|(3)参照|
-    |3|タグ情報一覧|tags|配列|(4)参照|
+    |1|TODO情報|summary|オブジェクト|(1-1)参照|
+    |2|コメント情報一覧|comments|配列|(1-2)参照|
+    |3|タグ情報一覧|tags|配列|(1-3)参照|
 
-    (2) TODOタイトル情報
+    (1-1) TODO情報
     |No|項目名称|物理名|型|説明|
     |:-:|:--|:--|:--|:--|
     |1|TODO ID|id|数字||
     |2|TODO タイトル|title|文字列||
+    |3|TODO 状態|status|数字||
 
-    (3) コメント情報
+    (1-2) コメント情報
     |No|項目名称|物理名|型|説明|
     |:-:|:--|:--|:--|:--|
     |1|コメント ID|id|数字||
     |2|TODO コメント|content|文字列||
 
-    (4) タグ情報
+    (1-3) タグ情報
     |No|項目名称|物理名|型|説明|
     |:-:|:--|:--|:--|:--|
     |1|タグ ID|id|数字||
     |2|TODO タグ名|name|文字列||
+
+    (2) TODO状態一覧
+    |No|項目名称|物理名|型|説明|
+    |:-:|:--|:--|:--|:--|
+    |1|状態ID|id|数字|
+    |2|状態名|name|文字列|
 
 [↑ 外部インターフェース一覧](#外部インターフェース一覧)
 
@@ -89,13 +98,27 @@
   |1|ID|id|数値|[リクエスト].ID|
 [↑ 外部インターフェース一覧](#外部インターフェース一覧)
 
+### TODOステータス更新
+
+- リクエスト（update_status）
+  
+  |No|項目名称|物理名|型|説明|
+  |:-:|:--|:--|:--|:--|
+  |1|TODO ID|id|数字||
+  |2|TODO状態|status|数字||
+
+- レスポンス  
+  リクエストと同じ  
+
+[↑ 外部インターフェース一覧](#外部インターフェース一覧)
+
 ### TODO削除
 
 - リクエスト（delete_todo）
   
   |No|項目名称|物理名|型|説明|
   |:-:|:--|:--|:--|:--|
-  |1|TODO_ID|id|文字列|削除するTODO ID|
+  |1|TODO_ID|id|数字|削除するTODO ID|
 
 - レスポンス
   
@@ -111,7 +134,7 @@
   
   |No|項目名称|物理名|型|説明|
   |:-:|:--|:--|:--|:--|
-  |1|TODO_ID|todo-id|文字列||
+  |1|TODO_ID|todo-id|数字||
   |2|コメント|comment|文字列||
   |3|仮ID|temp-id|文字列||
 
@@ -130,7 +153,7 @@
   
   |No|項目名称|物理名|型|説明|
   |:-:|:--|:--|:--|:--|
-  |1|ID|id|文字列|コメントID|
+  |1|ID|id|数字|コメントID|
   |2|コメント|comment|文字列|更新文字列|
 
 - レスポンス
@@ -146,8 +169,8 @@
   
   |No|項目名称|物理名|型|説明|
   |:-:|:--|:--|:--|:--|
-  |1|TODO_ID|todo-id|文字列|削除するコメントのTODO ID|
-  |2|ID|id|文字列|削除するコメントID|
+  |1|TODO_ID|todo-id|数字|削除するコメントのTODO ID|
+  |2|ID|id|数字|削除するコメントID|
 
 - レスポンス
   
@@ -215,6 +238,7 @@
 |2|[コメント](#コメントテーブル)|TODO_COMMENT|TODOのコメントを保持する|
 |3|[タグ](#タグテーブル)|TODO_TAG|TODOのタグを保持する|
 |4|[タグ一覧](#タグ一覧テーブル)|TODO_TAGS|TODOごとのタグを保持する|
+|5|[状態](#状態テーブル)|TODO_STATUS|TODOの状態一覧|
 
 ### タイトルテーブル
 
@@ -298,12 +322,37 @@ create index TODO_TAGS_idx1 on TODO_TAGS(todo_id)
 ```
 [↑ テーブル一覧](#テーブル一覧)
 
+### 状態テーブル  
+システムの初期起動でデータを登録しメンテナンスしない.
+
+|No|カラム名称|物理名|説明|
+|:-:|:--|:--|:--|
+|1|状態ID|id||
+|2|状態名|name||
+|3|表示順|seq||
+|4|登録日時|create_ts||
+|5|更新日時|update_ts||
+
+```
+create table TODO_STATUS (
+    id INTEGER NOT NULL UNIQUE,
+    name VARCHAR(16) NOT NULL,
+    seq INTEGER NOT NULL,
+    create_ts TEXT NOT NULL,
+    update_ts TEXT NOT NULL
+)
+create index TODO_STATUS_idx1 on TODO_STATUS(seq)
+insert into TODO_STATUS (id,name,seq,create_ts,update_ts) values
+ (0, '未着手', 1, now, now)
+insert into TODO_STATUS (id,name,seq,create_ts,update_ts) values
+ (10, '着手', 10, now, now)
+insert into TODO_STATUS (id,name,seq,create_ts,update_ts) values
+ (20, '完了', 20, now, now)
+```
+[↑ テーブル一覧](#テーブル一覧)
+
 ***
 ## 課題
-- コメントの削除
-- TODOのステータスの変更
-- ラベルの登録
-- ラベルの選択
 - 登録／更新日時を表示
 - TODOタイトルの登録中がわかるようにスタイルを設定したい（文字色をグレーにするとか）
 - TODOコメントの登録中がわかるようにスタイルを設定したい（文字色をグレーにするとか）
