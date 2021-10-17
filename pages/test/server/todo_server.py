@@ -46,11 +46,18 @@ class TodoHttpServer(HttpHandlerBase):
         self._getRequestData()
         todoList = []
         sql2 = ''' SELECT id, comment FROM TODO_COMMENT
-                   WHERE todo_id = ? ORDER BY id desc'''
+                   WHERE todo_id = ? ORDER BY id desc
+               '''
+        sql3 = ''' select T1.tag_id id, T2.tag_name name from TODO_TAGS T1
+                   inner join TODO_TAG T2 on T2.id = T1.tag_id
+                   where T1.todo_id = ?
+                   order by T2.tag_name
+               '''
         with self._getDBConnection() as con:
             con.row_factory = self._dict_factory
             cur1 = con.cursor()
             cur2 = con.cursor()
+            cur3 = con.cursor()
             for row1 in cur1.execute('SELECT id, title FROM TODO_TITLE ORDER BY id desc'):
                 todoId = str(row1['id'])
                 item = {'summary':{'id': todoId, 'title': row1['title']},
@@ -58,6 +65,8 @@ class TodoHttpServer(HttpHandlerBase):
                         'tags': []}
                 for row2 in cur2.execute(sql2, (todoId, )):
                     item['comments'].append({'id': str(row2['id']), 'content': row2['comment']})
+                for row3 in cur3.execute(sql3, (todoId, )):
+                    item['tags'].append({'id': str(row3['id']), 'name': row3['name']})
                 todoList.append(item)
         self._send_response({"todo_list": todoList})
 
@@ -173,6 +182,22 @@ class TodoHttpServer(HttpHandlerBase):
 
             tags = self._read_tags(con)
         self._send_response({'tags': tags})
+
+    def do_POST_set_todo_tag(self):
+        reqData = json.loads(self._getRequestData())
+        now = self._getNow()
+        todoId = reqData['todo-id']
+        with self._getDBConnection() as con:
+            con.row_factory = self._dict_factory
+            cur = con.cursor()
+            # 一旦登録内容を全削除
+            cur.execute('DELETE FROM TODO_TAGS WHERE todo_id = ?', (todoId,))
+            # 再登録
+            for item in reqData['tags']:
+                cur.execute('''INSERT INTO TODO_TAGS(todo_id,tag_id,create_ts,update_ts)
+                               VALUES(?,?,?,?)''', (todoId, item['id'], now, now))
+            con.commit()
+        self._send_response({})
 
 def _existsDb(db_path):
     p = pathlib.Path(db_path)
