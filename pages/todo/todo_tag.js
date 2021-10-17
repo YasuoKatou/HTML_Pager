@@ -94,7 +94,7 @@ class TodoTagPage extends TodoPagerController {
             for (var i = 0; i < num; ++i) {
                 var item = items[i];
                 if (item.children[0].checked) {
-                    tags.push({'tag-id': item.children[0].value, 'tag-name': item.innerText});
+                    tags.push({'id': item.children[0].value, 'name': item.innerText});
                 }
             }
 

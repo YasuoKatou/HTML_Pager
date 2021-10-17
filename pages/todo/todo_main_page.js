@@ -104,7 +104,7 @@ class TodoMainPage extends TodoPagerController {
         return function(respData) {
             // TODOタイトルの更新（レスポンス受信）では、特に何もしない
             var json = JSON.parse(respData);
-            console.log('TODO updated(id:' + json['id'] + ')')
+            console.log('TODO updated(id:' + json['id'] + ')');
         };
     }
     _received_new_todo() {
@@ -190,7 +190,7 @@ class TodoMainPage extends TodoPagerController {
         return function(respData) {
             // コメントの更新（レスポンス受信）では、特に何もしない
             var json = JSON.parse(respData);
-            console.log('comment updated(id:' + json['id'] + ')')
+            console.log('comment updated(id:' + json['id'] + ')');
         };
     }
 
@@ -198,7 +198,7 @@ class TodoMainPage extends TodoPagerController {
         return function(respData) {
             // コメントの削除（レスポンス受信）
             var json = JSON.parse(respData);
-            console.log('comment updated(id:' + json['id'] + ')')
+            console.log('comment updated(id:' + json['id'] + ')');
         };
     }
 
@@ -317,13 +317,10 @@ class TodoMainPage extends TodoPagerController {
     }
 
     _appendTodo(json) {
+        // console.log(json);
         var todoContainer = document.getElementById('todo_item_container');
         var self = this;
         json.todo_list.forEach(function(todoItem) {
-            // var li = document.createElement('li');
-            // li.classList.add('todo-item');
-            // li.appendChild(self._createDetailsTag(todoItem));
-            // todoContainer.appendChild(li);
             todoContainer.appendChild(self._createDetailsTag(todoItem));
         })
     }
@@ -476,13 +473,14 @@ class TodoMainPage extends TodoPagerController {
         if (ifData === undefined) return;
         if (pid === 'PP0001') {
             this._updateTodoTags(ifData);
+            this._updateTodoTagServer(ifData);
         } else {
             console.error(pid + ' is not support');
         }
     }
 
     _updateTodoTags(tagInfo) {
-        console.log(tagInfo);
+        // console.log(tagInfo);
         var pTag = document.getElementById(this._pageId);
         var todos = pTag.getElementsByClassName('todo-item');
         var num = todos.length;
@@ -510,12 +508,28 @@ class TodoMainPage extends TodoPagerController {
         var tags = tagInfo['tags'];
         for (var i = 0; i < tags.length; ++i) {
             var tag = document.createElement("p");
-            tag.dataset.id = tags[i]['tag-id'];
-            tag.innerText = tags[i]['tag-name'];
+            tag.dataset.id = tags[i]['id'];
+            tag.innerText = tags[i]['name'];
             tag.classList.add('todo-tag');
             pTag.appendChild(tag);
         }
         pTag.appendChild(addTag);
+    }
+
+    _updateTodoTagServer(tagInfo) {
+        var tags = [];
+        tagInfo.tags.forEach((item) => {
+            tags.push({'id': item.id});
+        });
+        var req = {'todo-id': tagInfo['todo-id'], 'tags': tags};
+        this._createAjaxParam('set_todo_tag', req, this._receive_updateTodoTagServer()).send();
+    }
+
+    _receive_updateTodoTagServer() {
+        var self = this;
+        return function(respData) {
+            // TODOタグの設定（レスポンス受信）では、特に何もしない
+        }
     }
 
     _setModeFree() {
