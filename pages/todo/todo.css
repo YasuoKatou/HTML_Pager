@@ -183,3 +183,19 @@
     left: 0;
     margin:auto;
 }
+
+.todo-cate-list-name {
+    width: 20em;
+}
+
+.todo-cate-list-no-proc {
+    width: 3em;
+}
+
+.todo-cate-list-processing {
+    width: 3em;
+}
+
+.todo-cate-list-term {
+    width: 3em;
+}

@@ -234,13 +234,51 @@
 
 |No|テーブル名称|物理名|説明|
 |:-:|:--|:--|:--|
-|1|[タイトル](#タイトルテーブル)|TODO_TITLE|TODOのタイトルを保存する|
-|2|[コメント](#コメントテーブル)|TODO_COMMENT|TODOのコメントを保持する|
-|3|[タグ](#タグテーブル)|TODO_TAG|TODOのタグを保持する|
-|4|[タグ一覧](#タグ一覧テーブル)|TODO_TAGS|TODOごとのタグを保持する|
-|5|[状態](#状態テーブル)|TODO_STATUS|TODOの状態一覧|
+|1|[カテゴリ](#カテゴリテーブル)|TODO_CATEGORY|TODOのカテゴリを保持する|
+|2|[カテゴリ一覧](#カテゴリ一覧テーブル)|TODO_CATEGORIES|各TODOのカテゴリ保存する|
+|3|[TODOタイトル](#todoタイトルテーブル)|TODO_TITLE|TODOのタイトルを保存する|
+|4|[コメント](#コメントテーブル)|TODO_COMMENT|TODOのコメントを保持する|
+|5|[タグ](#タグテーブル)|TODO_TAG|TODOのタグを保持する|
+|6|[タグ一覧](#タグ一覧テーブル)|TODO_TAGS|TODOごとのタグを保持する|
+|7|[状態](#状態テーブル)|TODO_STATUS|TODOの状態一覧|
 
-### タイトルテーブル
+### カテゴリテーブル
+|No|カラム名称|物理名|説明|新規|更新|削除|
+|:-:|:--|:--|:--|:-:|:-:|:-:|
+|1|ID|id||A|○|○|
+|2|カテゴリ名|name||○|○||
+|3|登録日時|create_ts||○|-|-|
+|4|更新日時|update_ts||○|○|-|
+
+```
+create table TODO_CATEGORY (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(256) NOT NULL,
+    create_ts TEXT NOT NULL,
+    update_ts TEXT NOT NULL
+)
+```
+[↑ テーブル一覧](#テーブル一覧)
+
+### カテゴリ一覧テーブル
+|No|カラム名称|物理名|説明|新規|削除|
+|:-:|:--|:--|:--|:-:|:-:|
+|1|カテゴリID|category_id||○|○|
+|2|TODO ID|todo_id||○|-|
+|3|登録日時|create_ts||○|-|
+|4|更新日時|update_ts||○|-|
+
+```
+create table TODO_CATEGORIES (
+    category_id INTEGER NOT NULL,
+    todo_id INTEGER NOT NULL,
+    create_ts TEXT NOT NULL,
+    update_ts TEXT NOT NULL
+)
+```
+[↑ テーブル一覧](#テーブル一覧)
+
+### TODOタイトルテーブル
 
 |No|カラム名称|物理名|説明|新規|更新|削除|
 |:-:|:--|:--|:--|:-:|:-:|:-:|
@@ -353,6 +391,7 @@ insert into TODO_STATUS (id,name,seq,create_ts,update_ts) values
 
 ***
 ## 課題
+- TODOのカテゴリを実装
 - 登録／更新日時を表示
 - TODOタイトルの登録中がわかるようにスタイルを設定したい（文字色をグレーにするとか）
 - TODOコメントの登録中がわかるようにスタイルを設定したい（文字色をグレーにするとか）
