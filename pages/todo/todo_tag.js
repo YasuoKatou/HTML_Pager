@@ -68,9 +68,9 @@ class TodoTagPage extends TodoPagerController {
         this._dataModel._selectedItem = ifData;
     }
 
-    pageShown() {
+    pageShown(ifData) {
         super._dynamicAssignEvent();
-        super.pageShown();
+        super.pageShown(ifData);
     }
     pageHidden() {
         super._removeDynamicEvent();

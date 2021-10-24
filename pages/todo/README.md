@@ -7,22 +7,48 @@
 
 |No|機能名|機能ID|
 |:-:|:--|:--|
-|1-1|[TODO取得](#todo取得)|read_todo|
-|1-2|[TODOタイトル登録](#todoタイトル登録)|add_todo|
-|1-3|[TODOタイトル更新](#todoタイトル更新)|update_todo|
-|1-4|[TODOステータス更新](#todoステータス更新)|update_status|
-|1-9|[TODO削除](#todo削除)|delete_todo|
-|2-1|[TODOコメント登録](#todoコメント登録)|add_comment|
-|2-2|[TODOコメント更新](#todoコメント更新)|update_comment|
-|2-9|[TODOコメント削除](#todoコメント削除)|delete_comment|
-|3-1|[タグの取得](#タグの取得)|read_tags|
-|3-2|[タグの登録](#タグの登録)|add_tag|
-|3-3|[TODOタグの登録](#todoタグの登録)|set_todo_tag|
+|1-1|[カテゴリ取得](#カテゴリ取得)|read_category|
+|2-1|[TODO取得](#todo取得)|read_todo|
+|2-2|[TODOタイトル登録](#todoタイトル登録)|add_todo|
+|2-3|[TODOタイトル更新](#todoタイトル更新)|update_todo|
+|2-4|[TODOステータス更新](#todoステータス更新)|update_status|
+|2-9|[TODO削除](#todo削除)|delete_todo|
+|3-1|[TODOコメント登録](#todoコメント登録)|add_comment|
+|3-2|[TODOコメント更新](#todoコメント更新)|update_comment|
+|3-9|[TODOコメント削除](#todoコメント削除)|delete_comment|
+|4-1|[タグの取得](#タグの取得)|read_tags|
+|4-2|[タグの登録](#タグの登録)|add_tag|
+|4-3|[TODOタグの登録](#todoタグの登録)|set_todo_tag|
+
+### カテゴリ取得
+
+- リクエスト（read_category）  
+  なし
+
+- レスポンス
+  
+  |No|項目名称|物理名|型|説明|
+  |:-:|:--|:--|:--|:--|
+  |1|カテゴリ情報|category_list|配列|(1)参照|
+
+    (1) カテゴリ情報
+    |No|項目名称|物理名|型|説明|
+    |:-:|:--|:--|:--|:--|
+    |1|カテゴリID|id|数字||
+    |2|カテゴリ名|name|文字列||
+    |3|未着手数|num1|数字||
+    |4|着手数|num2|数字||
+    |5|完了数|num3|数字||
+
+[↑ 外部インターフェース一覧](#外部インターフェース一覧)
 
 ### TODO取得
 
 - リクエスト（read_todo）  
-  なし
+  
+  |No|項目名称|物理名|型|説明|
+  |:-:|:--|:--|:--|:--|
+  |1|取得カテゴリID|category_id|数字||
 
 - レスポンス
   
@@ -391,7 +417,7 @@ insert into TODO_STATUS (id,name,seq,create_ts,update_ts) values
 
 ***
 ## 課題
-- TODOのカテゴリを実装
+- TODOのカテゴリを実装（カテゴリの編集機能）
 - 登録／更新日時を表示
 - TODOタイトルの登録中がわかるようにスタイルを設定したい（文字色をグレーにするとか）
 - TODOコメントの登録中がわかるようにスタイルを設定したい（文字色をグレーにするとか）

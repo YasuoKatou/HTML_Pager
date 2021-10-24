@@ -60,7 +60,7 @@ class PagerController extends PagerBase {
     }
 
     prepareShow(ifData = undefined) {}
-    pageShown() {}
+    pageShown(ifData = undefined) {}
     pageHidden() {}
     closedForm(pid, ifData = undefined) {}
 

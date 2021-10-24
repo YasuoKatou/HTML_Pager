@@ -1,3 +1,10 @@
+:root {
+    --category-list-name-width: 20em;
+    --category-list-noprocess-width: 3em;
+    --category-list-processing-width: 3em;
+    --category-list-finished-width: 3em;
+}
+
 #page_root {
     overflow: auto;
 }
@@ -184,18 +191,51 @@
     margin:auto;
 }
 
-.todo-cate-list-name {
-    width: 20em;
+.popup-table-head > p:nth-child(1) {
+    width: var(--category-list-name-width);
 }
 
-.todo-cate-list-no-proc {
-    width: 3em;
+.popup-table-head > p:nth-child(2) {
+    width: var(--category-list-noprocess-width);
 }
 
-.todo-cate-list-processing {
-    width: 3em;
+.popup-table-head > p:nth-child(3) {
+    width: var(--category-list-processing-width);
 }
 
-.todo-cate-list-term {
-    width: 3em;
+.popup-table-head > p:nth-child(4) {
+    width: var(--category-list-finished-width);
+}
+
+.popup-table-body > ul > li {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+/**
+ * カテゴリ一覧のカテゴリID
+ */
+.popup-table-body > ul > li > p:nth-child(1) {
+    width: 0;
+    display: none;
+}
+
+.popup-table-body > ul > li > p:nth-child(2) {
+    flex-grow: 1;
+}
+
+.popup-table-body > ul > li > p:nth-child(3) {
+    width: var(--category-list-noprocess-width);
+    text-align: right;
+}
+
+.popup-table-body > ul > li > p:nth-child(4) {
+    width: var(--category-list-processing-width);
+    text-align: right;
+}
+
+.popup-table-body > ul > li > p:nth-child(5) {
+    width: var(--category-list-finished-width);
+    text-align: right;
 }

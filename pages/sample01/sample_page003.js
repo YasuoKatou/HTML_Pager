@@ -96,9 +96,9 @@ class SamplePage003 extends PagerController {
         super.prepareShow(ifData);
     }
 
-    pageShown() {
+    pageShown(ifData) {
         super._dynamicAssignEvent();
-        super.pageShown();
+        super.pageShown(ifData);
     }
     pageHidden() {
         super._removeDynamicEvent();

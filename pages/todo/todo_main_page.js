@@ -12,11 +12,14 @@ class TodoMainPage extends TodoPagerController {
         var myPage = document.getElementById(p);
         myPage.addEventListener('click', this._myPage_click());
         myPage.addEventListener('change', this._myPage_change());
+    }
 
+    pageShown(ifData) {
         var self = this;
         setTimeout(function() {
-            self._createAjaxParam('read_todo', {}, self._execute_ShowTodo()).send();
+            self._createAjaxParam('read_todo', ifData, self._execute_ShowTodo()).send();
         }, 0);
+        super.pageShown(ifData);
     }
 
     _execute_ShowTodo() {
@@ -507,6 +510,7 @@ class TodoMainPage extends TodoPagerController {
 
     _getTodoLiTag(tag) {
         var pNode = tag.parentNode;
+        if (pNode === null) return null;
         while (pNode.tagName.toLowerCase() !== 'li') {
             pNode = pNode.parentNode;
             if (pNode === null) {

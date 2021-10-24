@@ -83,6 +83,7 @@
     }
 
     _initPopupButtons(pc, pTag) {
+        if (pc.dataModel.buttonsTagClassName === null) return;
         var bTag = pTag.querySelector('.' + pc.dataModel.buttonsTagClassName);
         if (bTag === null) {
             console.error('no popup buttons class name');
@@ -138,14 +139,15 @@
         return null;
     }
 
-    changePageById(pid) {
+    changePageById(pid, ifData = undefined) {
         var pc = this._findPageController(pid);
         if (pc === null) {
             console.error(pid + " not found at changePageById");
             return;
         }
+        pc.prepareShow(ifData);
         this._changePage(pc);
-        pc.pageShown();
+        pc.pageShown(ifData);
     }
 
     popupPageById(pid, ifData = undefined) {
@@ -169,7 +171,7 @@
         var tag = document.getElementById(pid);
         this._setFunctionKeys(pc);
         this._page_show(pc, tag);
-        pc.pageShown();
+        pc.pageShown(ifData);
     }
 
     closePopupPage(pid, ifData = undefined) {
@@ -273,18 +275,19 @@
     }
 
     initPage() {
-        //初期表示するページ
-        var x = document.getElementById(this.openningPage.pageId);
-        this._page_show(this.openningPage, x);
         //Function キー非表示
         if (this._configFKey && !this._FKeyVisible) { this._funcKeys("hidden"); }
-
         //クリックイベントの設定
         document.addEventListener('click', this._click_event(this));
-
         //キーボードイベントの設定
         document.addEventListener('keydown', this._keyDown_event(this));
         document.addEventListener('keyup', this._keyUp_event(this));
+
+        //初期表示するページ
+        var x = document.getElementById(this.openningPage.pageId);
+        this.openningPage.prepareShow();
+        this._page_show(this.openningPage, x);
+        this.openningPage.pageShown();
     }
 
     /**

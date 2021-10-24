@@ -42,8 +42,73 @@ class TodoHttpServer(HttpHandlerBase):
         self.end_headers()
         self.wfile.write(json.dumps(respData).encode())
 
+    def do_POST_read_category(self):
+        def newCategory(id, name):
+            return {'id': str(id), 'name': name, 'num1': '0', 'num2': '0', 'num3': '0'}
+        def updateNum(row, status, num):
+            if status == 0:     # 未着手
+                row['num1'] = str(num)
+            elif status == 10:  # 作業中
+                row['num2'] = str(num)
+            elif status == 20:  # 完了
+                row['num3'] = str(num)
+            else:
+                print('not suppot status code : ' + str(num))
+        def addCategory(catList, id, name, status, num):
+            for row in catList:
+                if row['id'] == id:
+                    updateNum(row, status, num)
+                    return
+            row = newCategory(int(id), name)
+            updateNum(row, status, num)
+            catList.append(row)
+
+        reqData = json.loads(self._getRequestData())
+        # カテゴリの取得
+        sql1 = ''' select T1.id, T1.name from TODO_CATEGORY T1 order by T1.name
+               '''
+        # カテゴリごとの件数取得
+        sql2 = '''  select coalesce(T1.id, 0) id, coalesce(T1.name, '未分類') name, S.status, S.num
+                    from (
+                        select T2.category_id, T3.status, count(1) num
+                        from todo_title T3
+                        left outer join TODO_CATEGORIES T2
+                        on T2.todo_id   =  T3.id
+                        group by T2.category_id, T3.status
+                    ) S
+                    left outer join TODO_CATEGORY T1
+                    on T1.id  =  S.category_id
+                    order by T1.name
+               '''
+        catList = [newCategory(0, '未分類')]
+        with self._getDBConnection() as con:
+            con.row_factory = self._dict_factory
+            cur = con.cursor()
+            for row in cur.execute(sql1):
+                catList.append(newCategory(row['id'], row['name']))
+            for row in cur.execute(sql2):
+                addCategory(catList, str(row['id']), row['name'], row['status'], row['num'])
+        self._send_response({"category_list": catList})
+
     def do_POST_read_todo(self):
-        self._getRequestData()
+        reqData = json.loads(self._getRequestData())
+        if reqData['category_id'] == '0':
+            # カテゴリに割当していないTODOの一覧を取得
+            sql1 = ''' SELECT T1.id, T1.title, T1.status FROM TODO_TITLE T1
+                       WHERE not exists (SELECT 1 from TODO_CATEGORIES T2 WHERE T2.todo_id = T1.id)
+                       ORDER BY T1.id desc
+                   '''
+            sql1Param = ()
+        else:
+            # カテゴリ指定でTODOの一覧を取得
+            sql1 = ''' SELECT T1.id, T1.title, T1.status FROM TODO_TITLE T1
+                       inner join TODO_CATEGORIES T2 on T2.todo_id = T1.id AND T2.category_id = ?
+                       ORDER BY T1.id desc
+                   '''
+            sql1Param = (reqData['category_id'],)
+        self._read_todo(sql1, sql1Param)
+
+    def _read_todo(self, sql1, sql1Param):
         todoList = []
         sql2 = ''' SELECT id, comment FROM TODO_COMMENT
                    WHERE todo_id = ? ORDER BY id desc
@@ -60,7 +125,7 @@ class TodoHttpServer(HttpHandlerBase):
             cur2 = con.cursor()
             cur3 = con.cursor()
             cur4 = con.cursor()
-            for row1 in cur1.execute('SELECT id, title, status FROM TODO_TITLE ORDER BY id desc'):
+            for row1 in cur1.execute(sql1, sql1Param):
                 todoId = str(row1['id'])
                 item = {'summary':{'id': todoId, 'title': row1['title'], 'status': str(row1['status'])},
                         'comments': [],
@@ -298,16 +363,44 @@ def _dbVerup01(db_path):
         cur.execute('''insert into TODO_STATUS (id,name,seq,create_ts,update_ts) values (20,   '完了', 20, ?, ?)''', p)
         print('TODOステータステーブルを追加')
 
+def _dbVerup02(db_path):
+    with sqlite3.connect(db_path) as con:
+        cur = con.cursor()
+        cur.execute('''SELECT COUNT(*) FROM sqlite_master WHERE TYPE='table' AND name='TODO_CATEGORY'
+        ''')
+        if cur.fetchone()[0] == 0:
+            cur.execute('''
+                create table TODO_CATEGORY (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name VARCHAR(256) NOT NULL,
+                    create_ts TEXT NOT NULL,
+                    update_ts TEXT NOT NULL)
+            ''')
+            print('カテゴリテーブルを追加')
+        cur.execute('''SELECT COUNT(*) FROM sqlite_master WHERE TYPE='table' AND name='TODO_CATEGORIES'
+        ''')
+        if cur.fetchone()[0] == 0:
+            cur.execute('''
+                create table TODO_CATEGORIES (
+                    category_id INTEGER NOT NULL,
+                    todo_id INTEGER NOT NULL,
+                    create_ts TEXT NOT NULL,
+                    update_ts TEXT NOT NULL)
+            ''')
+            print('カテゴリ一覧テーブルを追加')
+
 if __name__ == '__main__':
     # DBの確認と作成
     _path = pathlib.Path(__file__).parent / _DB_NAME
     if _existsDb(_path):
         print('todo db exists.')
         _dbVerup01(_path)
+        _dbVerup02(_path)
     else:
         print('no todo db')
         _createDb(_path)
         _dbVerup01(_path)
+        _dbVerup02(_path)
 
     #httpサーバの起動
     server_address = ('', 8083)
