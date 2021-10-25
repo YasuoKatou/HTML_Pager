@@ -30,7 +30,7 @@ class TagData extends DataModelBase {
         return ret;
     }
 
-    get buttonsTagClassName() {
+    get buttonsOperationClassName() {
         return 'PP0001-ope';
     }
     get buttons() {

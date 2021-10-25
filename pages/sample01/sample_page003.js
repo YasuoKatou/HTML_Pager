@@ -62,7 +62,7 @@ class SamplePage003Data extends DataModelBase {
         }
         return ret;
     }
-    get buttonsTagClassName() {
+    get buttonsOperationClassName() {
         return 'popup_multi_button';
     }
     get buttons() {

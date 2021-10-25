@@ -83,8 +83,8 @@
     }
 
     _initPopupButtons(pc, pTag) {
-        if (pc.dataModel.buttonsTagClassName === null) return;
-        var bTag = pTag.querySelector('.' + pc.dataModel.buttonsTagClassName);
+        if (pc.dataModel.buttonsOperationClassName === null) return;
+        var bTag = pTag.querySelector('.' + pc.dataModel.buttonsOperationClassName);
         if (bTag === null) {
             console.error('no popup buttons class name');
             return;

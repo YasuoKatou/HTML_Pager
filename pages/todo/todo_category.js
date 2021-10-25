@@ -43,6 +43,19 @@ class CategoryData extends DataModelBase {
 
         return ret;
     }
+    get buttonsOperationClassName() {
+        return 'popup_one_button';
+    }
+    get buttons() {
+        var ret = [];
+        var p = document.createElement("p");
+        p.id = 'add_category';
+        p.classList.add('popup_button');
+        p.innerText = 'カテゴリ追加';
+        ret.push(p);
+
+        return ret;
+    }
 }
 class TodoCategoryPage extends TodoPagerController {
     constructor(p) {
@@ -50,8 +63,23 @@ class TodoCategoryPage extends TodoPagerController {
         this._dataModel = new CategoryData();
     }
 
+    _clicked_add_category(self) {
+        var self = this;
+        return function(event) {
+            setTimeout(function() {
+                self._new_category();
+            }, 0);
+        }
+    }
+
+    pageHidden() {
+        super._removeDynamicEvent();
+        super.pageHidden();
+    }
+
     pageShown(ifData) {
         super._createAjaxParam('read_category', {}, this._response_readCategory()).send();
+        super._dynamicAssignEvent();
         super.pageShown(ifData);
     }
 
@@ -88,5 +116,13 @@ class TodoCategoryPage extends TodoPagerController {
     _show_todo(event) {
         var li = event.target.parentNode;
         _pager.changePageById("todo_main", {'category_id': li.firstChild.innerText});
+    }
+
+    _new_category() {
+        var value = prompt("カテゴリ名");
+        if (value === null) return;
+
+        var req = {'category_name': value};
+        super._createAjaxParam('add_category', req, this._response_readCategory()).send();
     }
 }

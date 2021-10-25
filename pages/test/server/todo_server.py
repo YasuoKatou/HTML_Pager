@@ -63,7 +63,7 @@ class TodoHttpServer(HttpHandlerBase):
             updateNum(row, status, num)
             catList.append(row)
 
-        reqData = json.loads(self._getRequestData())
+        #reqData = json.loads(self._getRequestData())
         # カテゴリの取得
         sql1 = ''' select T1.id, T1.name from TODO_CATEGORY T1 order by T1.name
                '''
@@ -89,6 +89,18 @@ class TodoHttpServer(HttpHandlerBase):
             for row in cur.execute(sql2):
                 addCategory(catList, str(row['id']), row['name'], row['status'], row['num'])
         self._send_response({"category_list": catList})
+
+    def do_POST_add_category(self):
+        reqData = json.loads(self._getRequestData())
+        now = self._getNow()
+        sql = ''' INSERT INTO TODO_CATEGORY(name,create_ts,update_ts)
+                  VALUES(?,?,?)'''
+        todo_id = -1
+        with self._getDBConnection() as con:
+            cur = con.cursor()
+            cur.execute(sql, (reqData['category_name'], now, now))
+            con.commit()
+        self.do_POST_read_category()
 
     def do_POST_read_todo(self):
         reqData = json.loads(self._getRequestData())
@@ -135,9 +147,9 @@ class TodoHttpServer(HttpHandlerBase):
                 for row3 in cur3.execute(sql3, (todoId, )):
                     item['tags'].append({'id': str(row3['id']), 'name': row3['name']})
                 todoList.append(item)
-                statList = []
-                for row4 in cur4.execute(sql4):
-                    statList.append({'id': str(row4['id']), 'name': row4['name']})
+            statList = []
+            for row4 in cur4.execute(sql4):
+                statList.append({'id': str(row4['id']), 'name': row4['name']})
 
         self._send_response({"todo_list": todoList, 'status_list': statList})
 

@@ -75,7 +75,7 @@ class DataModelBase extends PagerBase {
     get rowTagClassName() { return null; }
     get rows() { return 0; }
     rowColumns(index) { return null; }
-    get buttonsTagClassName() { return null; }
+    get buttonsOperationClassName() { return null; }
     get buttons() { return null; }
 }
 
