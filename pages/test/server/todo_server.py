@@ -156,14 +156,18 @@ class TodoHttpServer(HttpHandlerBase):
     def do_POST_add_todo(self):
         reqData = json.loads(self._getRequestData())
         now = self._getNow()
-        sql = ''' INSERT INTO TODO_TITLE(title,create_ts,update_ts)
+        sql1 = ''' INSERT INTO TODO_TITLE(title,create_ts,update_ts)
                   VALUES(?,?,?)'''
+        sql2 = ''' INSERT INTO TODO_CATEGORIES(category_id,todo_id,create_ts,update_ts)
+                  VALUES(?,?,?,?)'''
         todo_id = -1
         with self._getDBConnection() as con:
             cur = con.cursor()
-            cur.execute(sql, (reqData['title'], now, now))
-            con.commit()
+            cur.execute(sql1, (reqData['title'], now, now))
             todo_id = cur.lastrowid
+            if reqData['category-id'] != '':
+                cur.execute(sql2, (reqData['category-id'], todo_id, now, now))
+            con.commit()
         respData = {'temp-id': reqData['temp-id'], 'id': todo_id}
         self._send_response(respData)
 

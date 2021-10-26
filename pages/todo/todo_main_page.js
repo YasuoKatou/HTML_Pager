@@ -12,10 +12,18 @@ class TodoMainPage extends TodoPagerController {
         var myPage = document.getElementById(p);
         myPage.addEventListener('click', this._myPage_click());
         myPage.addEventListener('change', this._myPage_change());
+        this.todo_category_id = '';
     }
 
     pageShown(ifData) {
         var self = this;
+        this.todo_category_id = ifData['category_id'];
+        var h = document.getElementById('header-title');
+        if (h !== null) {
+            h.innerText = 'TODO アプリ (' + ifData['category_name'] + ')';
+        } else {
+            console.error('no header id (header-title)');
+        }
         setTimeout(function() {
             self._createAjaxParam('read_todo', ifData, self._execute_ShowTodo()).send();
         }, 0);
@@ -84,7 +92,7 @@ class TodoMainPage extends TodoPagerController {
                                                  newTodoLabel.nextElementSibling);
     
             // サーバ登録
-            var req = {'title': this._todoTitle.value, 'temp-id': tmpId};
+            var req = {'title': this._todoTitle.value, 'temp-id': tmpId, 'category-id': this.todo_category_id};
             super._createAjaxParam('add_todo', req, this._received_new_todo()).send();
         } else {
             var changed = (this._hiddenTodo.innerText !== this._todoTitle.value);

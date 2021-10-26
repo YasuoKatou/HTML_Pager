@@ -115,7 +115,8 @@ class TodoCategoryPage extends TodoPagerController {
 
     _show_todo(event) {
         var li = event.target.parentNode;
-        _pager.changePageById("todo_main", {'category_id': li.firstChild.innerText});
+        _pager.changePageById("todo_main", {'category_id': li.children[0].innerText
+                                          , 'category_name': li.children[1].innerText});
     }
 
     _new_category() {
