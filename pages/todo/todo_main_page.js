@@ -46,12 +46,30 @@ class TodoMainPage extends TodoPagerController {
     }
 
     _createComment() {
-        this._todoComment = document.createElement('textarea');
-        this._todoComment.id = 'new_todo_comment';
-        this._todoComment.rows = 5;
-        this._todoComment.setAttribute("type", "text");
-        this._todoComment.placeholder = 'コメントを入力';
-        this._todoComment.addEventListener('dblclick', this._inputTodoComment());
+        var textAtra = document.createElement('textarea');
+        textAtra.id = 'new_todo_comment';
+        textAtra.rows = 5;
+        textAtra.setAttribute("type", "text");
+        textAtra.placeholder = 'コメントを入力';
+        textAtra.addEventListener('dblclick', this._inputTodoComment());
+        var iconTag = document.createElement('p');
+        iconTag.classList.add('comment-fix')
+        iconTag.addEventListener('click', this._inputTodoComment());
+        var body = document.createElement('div');
+
+        body.appendChild(textAtra);
+        body.appendChild(iconTag);
+        this._todoComment = body;
+    }
+
+    get _commentValue() {
+        var textArea = this._todoComment.firstChild;
+        return textArea.value;
+    }
+
+    set _commentValue(value) {
+        var textArea = this._todoComment.firstChild;
+        textArea.value = value;
     }
 
     _inputTodoTitle() {
@@ -132,7 +150,7 @@ class TodoMainPage extends TodoPagerController {
     }
 
     _execute_todoComment(event) {
-        var parent = event.target.parentNode;
+        var parent = event.target.parentNode.parentNode;
         var ope = parent.getElementsByClassName('todo-detail-ope');
         var todoId = this._getTodoID(event.target);
         this._todoComment.remove();
@@ -140,7 +158,7 @@ class TodoMainPage extends TodoPagerController {
         this._setModeFree();
         if (ope.length !== 1) return;
 
-        var content = this._todoComment.value.replaceAll(/\n/g, '<br>');
+        var content = this._commentValue.replaceAll(/\n/g, '<br>');
         if (isNewComment) {
             var tmpId = this._getTempId();
             var p = document.createElement('p');
@@ -153,8 +171,8 @@ class TodoMainPage extends TodoPagerController {
             var req = {'todo-id': todoId, 'comment': content, 'temp-id': tmpId};
             super._createAjaxParam('add_comment', req, this._received_new_comment()).send();
         } else {
-            var changed = (this._hiddenComment.innerText !== this._todoComment.value.trim());
-            var empty = (this._todoComment.value.trim() === '');
+            var changed = (this._hiddenComment.innerText !== this._commentValue.trim());
+            var empty = (this._commentValue.trim() === '');
             this._hiddenComment.innerHTML = content;
             this._hiddenComment.style.display = 'block';
             if (changed && !empty) {
@@ -295,7 +313,7 @@ class TodoMainPage extends TodoPagerController {
         // 入力用のタグを非表示にする
         this._removeInputTags();
 
-        this._todoComment.value = '';
+        this._commentValue = '';
         event.target.parentNode.parentNode.insertBefore(this._todoComment, event.target.parentNode);
         this._todoComment.focus();
         this._setMode(this._MODE.ADD_COMMENT);
@@ -305,7 +323,7 @@ class TodoMainPage extends TodoPagerController {
         // 入力用のタグを非表示にする
         this._removeInputTags();
 
-        this._todoComment.value = event.target.innerHTML.replaceAll('<br>', '\n');
+        this._commentValue = event.target.innerHTML.replaceAll('<br>', '\n');
         event.target.style.display = 'none';
         event.target.parentNode.insertBefore(this._todoComment, event.target);
         this._todoComment.focus();

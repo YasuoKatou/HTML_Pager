@@ -31,12 +31,18 @@
 .trash-icon {
     background-image: url(./icons/trash_64.png);
 }
+.comment-fix {
+    background-image: url(./icons/check_64.png);
+}
+.comment-fix,
 .trash-icon {
+    display: inline-block;
     font-size: large;
     background-repeat: no-repeat;
     background-position: center center;
     background-size: 0.8em;
     width: 1.5em;
+    height: 1em;
 }
 .todo-li-icon {
     font-size: large;
