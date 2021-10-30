@@ -1,10 +1,15 @@
 # -*- coding:utf-8 -*-
 
 import datetime
+import functools
 import json
+import logging
+import logging.handlers
 import pathlib
 import sqlite3
+import time
 from http.server import HTTPServer
+from logging import Formatter
 from pages.test.server.http_server import HttpHandlerBase
 
 _DB_NAME = 'todo.db'
@@ -12,13 +17,26 @@ _DB_NAME = 'todo.db'
 '''
 http://localhost:8083/todo.html
 '''
+
 class TodoHttpServer(HttpHandlerBase):
+    def deco_proc_time(f):
+        @functools.wraps(f)
+        def wrapper(self, *args, **kwargs):
+            self._log = logging.getLogger(__name__)
+            start = time.time()
+            res = f(self, *args, **kwargs)
+            elapsed_time = time.time() - start
+            self._log.info("{} ms in {}".format(elapsed_time * 1000, f.__name__))
+            return res
+        return wrapper
+
     def _getRequestData(self):
         content_len  = int(self.headers.get("content-length"))
         req_body = self.rfile.read(content_len).decode("utf-8")
         data = req_body.encode("utf-8")
-        print('request body : ({}) {}'.format(content_len, data))
-        return data
+        d = json.loads(data)
+        self._log.info('request body : ({}) {}'.format(content_len, d))
+        return d
 
     def _dict_factory(self, cursor, row):
         d = {}
@@ -35,13 +53,15 @@ class TodoHttpServer(HttpHandlerBase):
         return sqlite3.connect(dbPath)
 
     def _send_response(self, respData):
-        print('reponse data : ' + str(respData))
         self.send_response(200)
         self.send_header('Content-Type', 'application/json; charset=utf-8')
         super()._sendCorsHeader()
         self.end_headers()
-        self.wfile.write(json.dumps(respData).encode())
+        d = json.dumps(respData)
+        self.wfile.write(d.encode())
+        self._log.info('reponse : {}'.format(d))
 
+    @deco_proc_time
     def do_POST_read_category(self):
         def newCategory(id, name):
             return {'id': str(id), 'name': name, 'num1': '0', 'num2': '0', 'num3': '0'}
@@ -63,7 +83,6 @@ class TodoHttpServer(HttpHandlerBase):
             updateNum(row, status, num)
             catList.append(row)
 
-        #reqData = json.loads(self._getRequestData())
         # カテゴリの取得
         sql1 = ''' select T1.id, T1.name from TODO_CATEGORY T1 order by T1.name
                '''
@@ -90,8 +109,9 @@ class TodoHttpServer(HttpHandlerBase):
                 addCategory(catList, str(row['id']), row['name'], row['status'], row['num'])
         self._send_response({"category_list": catList})
 
+    @deco_proc_time
     def do_POST_add_category(self):
-        reqData = json.loads(self._getRequestData())
+        reqData = self._getRequestData()
         now = self._getNow()
         sql = ''' INSERT INTO TODO_CATEGORY(name,create_ts,update_ts)
                   VALUES(?,?,?)'''
@@ -102,8 +122,9 @@ class TodoHttpServer(HttpHandlerBase):
             con.commit()
         self.do_POST_read_category()
 
+    @deco_proc_time
     def do_POST_read_todo(self):
-        reqData = json.loads(self._getRequestData())
+        reqData = self._getRequestData()
         if reqData['category_id'] == '0':
             # カテゴリに割当していないTODOの一覧を取得
             sql1 = ''' SELECT T1.id, T1.title, T1.status FROM TODO_TITLE T1
@@ -153,8 +174,9 @@ class TodoHttpServer(HttpHandlerBase):
 
         self._send_response({"todo_list": todoList, 'status_list': statList})
 
+    @deco_proc_time
     def do_POST_add_todo(self):
-        reqData = json.loads(self._getRequestData())
+        reqData = self._getRequestData()
         now = self._getNow()
         sql1 = ''' INSERT INTO TODO_TITLE(title,create_ts,update_ts)
                   VALUES(?,?,?)'''
@@ -171,8 +193,9 @@ class TodoHttpServer(HttpHandlerBase):
         respData = {'temp-id': reqData['temp-id'], 'id': todo_id}
         self._send_response(respData)
 
+    @deco_proc_time
     def do_POST_update_todo(self):
-        reqData = json.loads(self._getRequestData())
+        reqData = self._getRequestData()
         now = self._getNow()
         sql = ''' UPDATE TODO_TITLE set title = ? , update_ts = ?
                   WHERE id = ?'''
@@ -183,8 +206,9 @@ class TodoHttpServer(HttpHandlerBase):
         respData = {'id': reqData['id']}
         self._send_response(respData)
 
+    @deco_proc_time
     def do_POST_update_status(self):
-        reqData = json.loads(self._getRequestData())
+        reqData = self._getRequestData()
         now = self._getNow()
         sql = ''' UPDATE TODO_TITLE set status = ? , update_ts = ?
                   WHERE id = ?'''
@@ -194,8 +218,9 @@ class TodoHttpServer(HttpHandlerBase):
             con.commit()
         self._send_response(reqData)
 
+    @deco_proc_time
     def do_POST_delete_todo(self):
-        reqData = json.loads(self._getRequestData())
+        reqData = self._getRequestData()
         delParam = (reqData['id'], )
         with self._getDBConnection() as con:
             cur = con.cursor()
@@ -206,8 +231,9 @@ class TodoHttpServer(HttpHandlerBase):
         respData = {'id': reqData['id']}
         self._send_response(respData)
 
+    @deco_proc_time
     def do_POST_add_comment(self):
-        reqData = json.loads(self._getRequestData())
+        reqData = self._getRequestData()
         now = self._getNow()
         sql = ''' INSERT INTO TODO_COMMENT(todo_id, comment,create_ts,update_ts)
                   VALUES(?,?,?,?)'''
@@ -220,8 +246,9 @@ class TodoHttpServer(HttpHandlerBase):
         respData = {'todo-id': reqData['todo-id'], 'temp-id': reqData['temp-id'], 'id': comment_id}
         self._send_response(respData)
 
+    @deco_proc_time
     def do_POST_update_todo(self):
-        reqData = json.loads(self._getRequestData())
+        reqData = self._getRequestData()
         now = self._getNow()
         sql = ''' UPDATE TODO_TITLE set title = ? , update_ts = ?
                   WHERE id = ?'''
@@ -232,8 +259,9 @@ class TodoHttpServer(HttpHandlerBase):
         respData = {'id': reqData['id']}
         self._send_response(respData)
 
+    @deco_proc_time
     def do_POST_update_comment(self):
-        reqData = json.loads(self._getRequestData())
+        reqData = self._getRequestData()
         now = self._getNow()
         sql = ''' UPDATE TODO_COMMENT set comment = ? , update_ts = ?
                   WHERE id = ?'''
@@ -244,8 +272,9 @@ class TodoHttpServer(HttpHandlerBase):
         respData = {'id': reqData['id']}
         self._send_response(respData)
 
+    @deco_proc_time
     def do_POST_delete_comment(self):
-        reqData = json.loads(self._getRequestData())
+        reqData = self._getRequestData()
         delParam = (reqData['id'], )
         with self._getDBConnection() as con:
             cur = con.cursor()
@@ -262,13 +291,15 @@ class TodoHttpServer(HttpHandlerBase):
             tags.append({'id': str(row['id']), 'name': row['tag_name']})
         return tags
 
+    @deco_proc_time
     def do_POST_read_tags(self):
         with self._getDBConnection() as con:
             tags = self._read_tags(con)
         self._send_response({'tags': tags})
 
+    @deco_proc_time
     def do_POST_add_tag(self):
-        reqData = json.loads(self._getRequestData())
+        reqData = self._getRequestData()
         now = self._getNow()
         sql = ''' INSERT INTO TODO_TAG(tag_name,create_ts,update_ts)
                   VALUES(?,?,?)'''
@@ -281,8 +312,9 @@ class TodoHttpServer(HttpHandlerBase):
             tags = self._read_tags(con)
         self._send_response({'tags': tags})
 
+    @deco_proc_time
     def do_POST_set_todo_tag(self):
-        reqData = json.loads(self._getRequestData())
+        reqData = self._getRequestData()
         now = self._getNow()
         todoId = reqData['todo-id']
         with self._getDBConnection() as con:
@@ -405,7 +437,22 @@ def _dbVerup02(db_path):
             ''')
             print('カテゴリ一覧テーブルを追加')
 
+def _setLog():
+    l = logging.getLogger(__name__)
+    l.setLevel(logging.DEBUG)
+
+    logPath = pathlib.Path(__file__).parent / 'log/todo.log'
+    rh = logging.handlers.TimedRotatingFileHandler(
+        logPath,
+        when='midnight',
+        encoding='utf-8',
+        backupCount=7
+    )
+    rh.setFormatter(Formatter('%(asctime)s %(thread)d-%(threadName)s %(name)s:%(lineno)s %(funcName)s [%(levelname)s]: %(message)s'))
+    l.addHandler(rh)
+
 if __name__ == '__main__':
+    _setLog()
     # DBの確認と作成
     _path = pathlib.Path(__file__).parent / _DB_NAME
     if _existsDb(_path):

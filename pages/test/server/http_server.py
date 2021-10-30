@@ -14,12 +14,12 @@ class HttpHandlerBase(SimpleHTTPRequestHandler):
         super().do_GET()
 
     def do_POST(self):
-        print('POST response version : {}'.format(self.protocol_version))
+        #print('POST response version : {}'.format(self.protocol_version))
         if len(self.path) < 1:
             print("no url")
             return
         m = 'do_POST' + self.path.replace('/', '_')
-        print('method = {}'.format(m))
+        #print('method = {}'.format(m))
         f = False
         for a in inspect.getmembers(self):
             if a[0] == m:
