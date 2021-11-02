@@ -62,14 +62,16 @@ class TodoMainPage extends TodoPagerController {
         this._todoComment = body;
     }
 
+    get _commentTextarea() {
+        return this._todoComment.firstChild;
+    }
+
     get _commentValue() {
-        var textArea = this._todoComment.firstChild;
-        return textArea.value;
+        return this._commentTextarea.value;
     }
 
     set _commentValue(value) {
-        var textArea = this._todoComment.firstChild;
-        textArea.value = value;
+        this._commentTextarea.value = value;
     }
 
     _inputTodoTitle() {
@@ -315,7 +317,7 @@ class TodoMainPage extends TodoPagerController {
 
         this._commentValue = '';
         event.target.parentNode.parentNode.insertBefore(this._todoComment, event.target.parentNode);
-        this._todoComment.focus();
+        this._commentTextarea.focus();
         this._setMode(this._MODE.ADD_COMMENT);
     }
 
@@ -326,7 +328,7 @@ class TodoMainPage extends TodoPagerController {
         this._commentValue = event.target.innerHTML.replaceAll('<br>', '\n');
         event.target.style.display = 'none';
         event.target.parentNode.insertBefore(this._todoComment, event.target);
-        this._todoComment.focus();
+        this._commentTextarea.focus();
         this._setMode(this._MODE.EDIT_COMMENT);
         this._hiddenComment = event.target;
     }
