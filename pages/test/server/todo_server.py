@@ -59,7 +59,7 @@ class TodoHttpServer(HttpHandlerBase):
         self.end_headers()
         d = json.dumps(respData)
         self.wfile.write(d.encode())
-        self._log.info('reponse : {}'.format(d))
+        self._log.info('reponse : {}'.format(respData))
 
     @deco_proc_time
     def do_POST_read_category(self):
@@ -73,7 +73,7 @@ class TodoHttpServer(HttpHandlerBase):
             elif status == 20:  # 完了
                 row['num3'] = str(num)
             else:
-                print('not suppot status code : ' + str(num))
+                self._log.error('not suppot status code : {}'.format(status))
         def addCategory(catList, id, name, status, num):
             for row in catList:
                 if row['id'] == id:
