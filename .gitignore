@@ -132,3 +132,4 @@ dmypy.json
 .pyre/
 
 **/todo*.db
+**/*.log.*

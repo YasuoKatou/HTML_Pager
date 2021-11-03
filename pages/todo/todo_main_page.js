@@ -160,7 +160,7 @@ class TodoMainPage extends TodoPagerController {
         this._setModeFree();
         if (ope.length !== 1) return;
 
-        var content = this._commentValue.replaceAll(/\n/g, '<br>');
+        var content = this._commentValue.trim().replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/\n/g, '<br>');
         if (isNewComment) {
             var tmpId = this._getTempId();
             var p = document.createElement('p');
@@ -173,7 +173,7 @@ class TodoMainPage extends TodoPagerController {
             var req = {'todo-id': todoId, 'comment': content, 'temp-id': tmpId};
             super._createAjaxParam('add_comment', req, this._received_new_comment()).send();
         } else {
-            var changed = (this._hiddenComment.innerText !== this._commentValue.trim());
+            var changed = (this._hiddenComment.innerHTML !== content);
             var empty = (this._commentValue.trim() === '');
             this._hiddenComment.innerHTML = content;
             this._hiddenComment.style.display = 'block';
@@ -241,9 +241,11 @@ class TodoMainPage extends TodoPagerController {
     _myPage_change() {
         var self = this;
         return function(event) {
-            setTimeout(function() {
-                self._execute_change_event(event);
-            }, 0);
+            if (event.target.classList.contains('todo-status')) {
+                setTimeout(function() {
+                    self._execute_status_change_event(event);
+                }, 0);
+            }
         }
     }
 
@@ -266,8 +268,7 @@ class TodoMainPage extends TodoPagerController {
         }
     }
 
-    _execute_change_event(event) {
-        // console.log(event.target.value);
+    _execute_status_change_event(event) {
         var li = this._getTodoLiTag(event.target);
         if (li === null) return;
         var todoId = li.dataset.id;
@@ -325,7 +326,7 @@ class TodoMainPage extends TodoPagerController {
         // 入力用のタグを非表示にする
         this._removeInputTags();
 
-        this._commentValue = event.target.innerHTML.replaceAll('<br>', '\n');
+        this._commentValue = event.target.innerHTML.replaceAll('<br>', '\n').replaceAll('&lt;', '<').replaceAll('&gt;', '>');
         event.target.style.display = 'none';
         event.target.parentNode.insertBefore(this._todoComment, event.target);
         this._commentTextarea.focus();
@@ -442,6 +443,7 @@ class TodoMainPage extends TodoPagerController {
         opeDiv.appendChild(addComment)
         detail.appendChild(opeDiv);
         var stat = document.createElement('select');
+        stat.classList.add('todo-status');
         this._todo_status.forEach((opt) => {
             var optTag = document.createElement('option');
             optTag.text = opt.name;
@@ -452,7 +454,7 @@ class TodoMainPage extends TodoPagerController {
             stat.appendChild(optTag);
         });
         var statLabel = document.createElement('label');
-        statLabel.classList.add('todo-status');
+        statLabel.classList.add('todo-status-label');
         statLabel.innerText = '状態 : ';
         statLabel.appendChild(stat);
         opeDiv.appendChild(statLabel);
