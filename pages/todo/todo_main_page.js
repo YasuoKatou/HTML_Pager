@@ -77,7 +77,7 @@ class TodoMainPage extends TodoPagerController {
     _inputTodoTitle() {
         var self = this;
         return function(event) {
-            if (event.keyCode != 13) return;
+            if ((event.code.toLowerCase() !== 'enter') && (event.code.toLowerCase() !== 'escape')) return;
             setTimeout(function() {
                 self._execute_inputTodoTitle(event);
             }, 0);
@@ -102,6 +102,7 @@ class TodoMainPage extends TodoPagerController {
         if (this._todoTitle.value === '') return;
 
         if (isNewTodo) {
+            if (event.code.toLowerCase() === 'escape') return;
             var tmpId = this._getTempId();
             var newTodo = {
                 "summary": {"id": tmpId, "title": this._todoTitle.value},
@@ -115,8 +116,11 @@ class TodoMainPage extends TodoPagerController {
             var req = {'title': this._todoTitle.value, 'temp-id': tmpId, 'category-id': this.todo_category_id};
             super._createAjaxParam('add_todo', req, this._received_new_todo()).send();
         } else {
-            var changed = (this._hiddenTodo.innerText !== this._todoTitle.value);
-            this._hiddenTodo.innerText = this._todoTitle.value;
+            var changed = false;
+            if (event.code.toLowerCase() !== 'escape') {
+                changed = (this._hiddenTodo.innerText !== this._todoTitle.value);
+                this._hiddenTodo.innerText = this._todoTitle.value;
+            }
             this._hiddenTodo.style.display = 'block';
             if (changed) {
                 // サーバ更新
