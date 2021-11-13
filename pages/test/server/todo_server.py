@@ -269,7 +269,7 @@ class TodoHttpServer(HttpHandlerBase):
             cur = con.cursor()
             cur.execute(sql, (reqData['comment'], now, reqData['id']))
             con.commit()
-        respData = {'id': reqData['id']}
+        respData = {'todo-id': reqData['todo-id'], 'id': reqData['id']}
         self._send_response(respData)
 
     @deco_proc_time

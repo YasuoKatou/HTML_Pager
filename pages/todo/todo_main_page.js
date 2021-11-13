@@ -179,7 +179,7 @@ class TodoMainPage extends TodoPagerController {
             this._hiddenComment.style.display = 'block';
             if (changed && !empty) {
                 // サーバ更新
-                var req = {'id': this._hiddenComment.dataset.id, 'comment': content};
+                var req = {'todo-id': todoId, 'id': this._hiddenComment.dataset.id, 'comment': content};
                 super._createAjaxParam('update_comment', req, this._received_update_comment()).send();
             } else if (empty) {
                 // サーバ削除

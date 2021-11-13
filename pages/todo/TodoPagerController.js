@@ -4,7 +4,8 @@ class TodoPagerController extends PagerController {
     }
 
     _urlPrefix() {
-        return 'http://localhost:8083';
+        // return 'http://localhost:8083';
+        return 'http://localhost/HTML_Pager';
     }
 
     _createAjaxParam(func_id, req_data, resp_func) {
@@ -12,7 +13,7 @@ class TodoPagerController extends PagerController {
             async: true,
             method: 'POST',
             url: this._urlPrefix() + '/' + func_id,
-            requestHeaders: [],
+            requestHeaders: ['Content-Type', 'application/json'],
             txData: JSON.stringify(req_data),
             timeout: 5000,
             responseReceived: resp_func,
