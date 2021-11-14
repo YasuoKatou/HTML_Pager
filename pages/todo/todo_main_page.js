@@ -13,6 +13,9 @@ class TodoMainPage extends TodoPagerController {
         myPage.addEventListener('click', this._myPage_click());
         myPage.addEventListener('dblclick', this._myPage_click());
         myPage.addEventListener('change', this._myPage_change());
+        myPage.addEventListener('compositionstart', this._ime_status());
+        myPage.addEventListener('compositionend', this._ime_status());
+        this._compFlg = false;
         this.todo_category_id = '';
     }
 
@@ -78,6 +81,7 @@ class TodoMainPage extends TodoPagerController {
     _inputTodoTitle() {
         var self = this;
         return function(event) {
+            if (self._compFlg) return;
             if ((event.code.toLowerCase() !== 'enter') && (event.code.toLowerCase() !== 'escape')) return;
             setTimeout(function() {
                 self._execute_inputTodoTitle(event);
@@ -252,6 +256,13 @@ class TodoMainPage extends TodoPagerController {
                     self._execute_status_change_event(event);
                 }, 0);
             }
+        }
+    }
+
+    _ime_status() {
+        var self = this;
+        return function(event) {
+            self._compFlg = (event.type.toLowerCase() === 'compositionstart');
         }
     }
 
