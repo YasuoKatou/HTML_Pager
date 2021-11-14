@@ -11,6 +11,7 @@ class TodoMainPage extends TodoPagerController {
 
         var myPage = document.getElementById(p);
         myPage.addEventListener('click', this._myPage_click());
+        myPage.addEventListener('dblclick', this._myPage_click());
         myPage.addEventListener('change', this._myPage_change());
         this.todo_category_id = '';
     }
@@ -236,6 +237,7 @@ class TodoMainPage extends TodoPagerController {
     _myPage_click() {
         var self = this;
         return function(event) {
+            //console.log('_myPage_click (type:' + event.type + ')');
             setTimeout(function() {
                 self._execute_click_event(event);
             }, 0);
@@ -255,20 +257,27 @@ class TodoMainPage extends TodoPagerController {
 
     _execute_click_event(event) {
         var tag = event.target;
-        if (tag.classList.contains('new-todo-label-content')) {
-            this._addTodoStart(event);          // 新規にTODOを作成
-        } else if (tag.classList.contains('add-comment')) {
-            this._addCommentStart(event);       // 新規にTODOコメントを作成
-        } else if (tag.classList.contains('todo-comment')) {
-            this._editCommentStart(event);      // TODOコメントを編集
-        } else if (tag.classList.contains('summary-title')) {
-            this._editTodoTitleStart(event);    // TODOタイトルを編集
-        } else if (tag.classList.contains('todo-li-icon')) {
-            this._clickSummary(event);          // TODOタイトルを編集
-        } else if (tag.classList.contains('trash-icon')) {
-            this._deleteTodo(event);            // TODO削除
-        } else if (tag.classList.contains('add-todo-tag')) {
-            this._addTodoTag(event);            // TODOにタグを設定
+        var eventType = event.type.toLowerCase();
+        if (eventType === 'click') {
+            if (tag.classList.contains('new-todo-label-content')) {
+                this._addTodoStart(event);          // 新規にTODOを作成
+            } else if (tag.classList.contains('add-comment')) {
+                this._addCommentStart(event);       // 新規にTODOコメントを作成
+            } else if (tag.classList.contains('todo-li-icon')) {
+                this._clickSummary(event);          // TODOタイトルを展開／閉じる
+            } else if (tag.classList.contains('trash-icon')) {
+                this._deleteTodo(event);            // TODO削除
+            } else if (tag.classList.contains('add-todo-tag')) {
+                this._addTodoTag(event);            // TODOにタグを設定
+            }
+        } else if (eventType === 'dblclick') {
+            if (tag.classList.contains('todo-comment')) {
+                this._editCommentStart(event);      // TODOコメントを編集
+            } else if (tag.classList.contains('summary-title')) {
+                this._editTodoTitleStart(event);    // TODOタイトルを編集
+            }
+        } else {
+            console.error('event type [' + event.type + '] is not support');
         }
     }
 
