@@ -17,7 +17,11 @@
     z-index: 10;
 }
 
-.todo-summary {
+.todo-summary-block {
+
+}
+
+.todo-summary-title {
     display: flex;
     flex-direction: row;
 }
@@ -56,7 +60,12 @@
     flex-grow: 1;
     font-size: large;
 }
-
+.summary-date {
+    padding-right: 1.5em;
+    text-align: right;
+    font-size: smaller;
+    color: navy;
+}
 .todo-item {
     /*border: 1px solid lightblue;*/
 }
@@ -79,6 +88,11 @@
     text-align: right;
 }
 
+.todo-comment-container {
+}
+.todo-comment-source {
+    display: none;
+}
 .todo-comment {
 }
 

@@ -19,6 +19,8 @@ def _db_cursor(conn):
 def _getNow():
     now = datetime.datetime.now()
     return now.strftime("%Y-%m-%d %H:%M:%S.%f")
+def _datetimeStr(val):
+    return val.strftime("%Y-%m-%d %H:%M:%S.%f")
 
 @todoApp.route('/add_category', methods=['POST'])
 def add_category():
@@ -105,14 +107,14 @@ def read_todo():
     categoryId = req['category_id']
     if categoryId == '0':
         # カテゴリに割当していないTODOの一覧を取得
-        sql = ''' SELECT T1.id, T1.title, T1.status FROM TODO_TITLE T1
+        sql = ''' SELECT T1.id, T1.title, T1.status, T1.create_ts ,T1.update_ts FROM TODO_TITLE T1
                    WHERE not exists (SELECT 1 from TODO_CATEGORIES T2 WHERE T2.todo_id = T1.id)
                    ORDER BY T1.id desc
                '''
         sql1Param = ()
     else:
         # カテゴリ指定でTODOの一覧を取得
-        sql = ''' SELECT T1.id, T1.title, T1.status FROM TODO_TITLE T1
+        sql = ''' SELECT T1.id, T1.title, T1.status, T1.create_ts ,T1.update_ts FROM TODO_TITLE T1
                    inner join TODO_CATEGORIES T2 on T2.todo_id = T1.id AND T2.category_id = %s
                    ORDER BY T1.id desc
                '''
@@ -123,7 +125,7 @@ def read_todo():
 def _read_todo(sql1, sql1Param):
     todoList = []
     sql2 = ''' SELECT id, comment FROM TODO_COMMENT
-                WHERE todo_id = %s ORDER BY id desc
+                WHERE todo_id = %s ORDER BY id
             '''
     sql3 = ''' select T1.tag_id as id, T2.tag_name as name from TODO_TAGS T1
                 inner join TODO_TAG T2 on T2.id = T1.tag_id
@@ -136,7 +138,9 @@ def _read_todo(sql1, sql1Param):
             cur.execute(sql1, sql1Param)
             for row1 in cur.fetchall():
                 todoId = str(row1['id'])
-                item = {'summary':{'id': todoId, 'title': row1['title'], 'status': str(row1['status'])},
+                item = {'summary':{'id': todoId, 'title': row1['title'], 'status': str(row1['status']),
+                                   'date1': _datetimeStr(row1['create_ts']),
+                                   'date2': _datetimeStr(row1['update_ts'])},
                         'comments': [],
                         'tags': []}
                 cur.execute(sql2, (todoId, ))
@@ -177,12 +181,11 @@ def add_todo():
 @todoApp.route('/update_todo', methods=['POST'])
 def update_todo():
     req = request.json
-    now = _getNow()
-    sql = ''' UPDATE TODO_TITLE set title = %s , update_ts = %s
+    sql = ''' UPDATE TODO_TITLE set title = %s
                 WHERE id = %s'''
     with _db_connect() as conn:
         with _db_cursor(conn) as cur:
-            cur.execute(sql, (req['title'], now, req['id']))
+            cur.execute(sql, (req['title'], req['id']))
             conn.commit()
     return jsonify({'id': req['id']})
 

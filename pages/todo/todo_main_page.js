@@ -160,31 +160,49 @@ class TodoMainPage extends TodoPagerController {
         };
     }
 
+    _getParentNodeByClassName(childTag, className) {
+        let pNode = childTag;
+        while (!pNode.classList.contains(className)) {
+            pNode = pNode.parentNode;
+            if (pNode === null) {
+                console.error('no parent tag containing ' + className);
+                return null;
+            }
+        }
+        return pNode;
+    }
+
+    _setCommentHtml(target, content) {
+        while(target.lastChild) {
+            target.removeChild(target.lastChild);
+        }
+        let md = new MarkdownToHtml(content);
+        md.setHtml(target);
+
+        let s = target.nextElementSibling;
+        s.innerText = content;
+    }
+
     _execute_todoComment(event) {
-        var parent = event.target.parentNode.parentNode;
-        var ope = parent.getElementsByClassName('todo-detail-ope');
         var todoId = this._getTodoID(event.target);
+        let parent = this._getParentNodeByClassName(event.target, 'todo-detail-dody');
         this._todoComment.remove();
         var isNewComment = this._mode === this._MODE.ADD_COMMENT;
         this._setModeFree();
-        if (ope.length !== 1) return;
 
         var content = this._commentValue.trim().replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/\n/g, '<br>');
         if (isNewComment) {
-            var tmpId = this._getTempId();
-            var p = document.createElement('p');
-            p.classList.add('todo-comment');
-            p.dataset.id = tmpId;
-            p.innerHTML = content;
-            parent.insertBefore(p, ope[0]);
-
+            let tempId = this._getTempId();
+            let c = this._createCommentTag({'id': tempId, 'content': content});
+            let w = parent.lastElementChild;    // tag の設定要素
+            parent.insertBefore(c, w.previousElementSibling);   // コメントの追加やステータスの設定を行う要素のの前に追加
             // サーバ登録
-            var req = {'todo-id': todoId, 'comment': content, 'temp-id': tmpId};
+            var req = {'todo-id': todoId, 'comment': content, 'temp-id': tempId};
             super._createAjaxParam('add_comment', req, this._received_new_comment()).send();
         } else {
             var changed = (this._hiddenComment.innerHTML !== content);
             var empty = (this._commentValue.trim() === '');
-            this._hiddenComment.innerHTML = content;
+            this._setCommentHtml(this._hiddenComment, content);
             this._hiddenComment.style.display = 'block';
             if (changed && !empty) {
                 // サーバ更新
@@ -201,6 +219,8 @@ class TodoMainPage extends TodoPagerController {
     _received_new_comment() {
         return function(respData) {
             var json = JSON.parse(respData);
+            console.log('comment add response');
+            console.log(json);
             var liList = document.getElementById('todo_item_container').getElementsByTagName('li');
             var num1 = liList.length;
             for (var i = 0; i < num1; ++i) {
@@ -218,7 +238,7 @@ class TodoMainPage extends TodoPagerController {
                     }
                 }
             }
-            console.error('no todo comment\n' + json);
+            console.error('no todo comment at add responce');
         };
     }
 
@@ -231,10 +251,32 @@ class TodoMainPage extends TodoPagerController {
     }
 
     _received_delete_comment() {
+        let self = this;
         return function(respData) {
             // コメントの削除（レスポンス受信）
             var json = JSON.parse(respData);
-            console.log('comment updated(id:' + json['id'] + ')');
+            console.log('comment delete response');
+            console.log(json);
+
+            var liList = document.getElementById('todo_item_container').getElementsByTagName('li');
+            var num1 = liList.length;
+            for (var i = 0; i < num1; ++i) {
+                var li = liList[i];
+                if (!li.classList.contains('todo-item')) continue;      // TODO項目以外
+                if (json['todo-id'] !== li.dataset.id) continue;        // TODOのIDが異なる
+                var comments = li.getElementsByClassName('todo-comment');
+                var num2 = comments.length;
+                if (num2 === 0) continue;                               // コメントが存在しない
+                for (var j = 0; j < num2; ++j) {
+                    var comment = comments[j];
+                    if (json['id'] === comment.dataset.id) {
+                        let parent = self._getParentNodeByClassName(comment, 'todo-comment-container');
+                        parent.remove();
+                        return;
+                    }
+                }
+            }
+            console.error('no todo comment at delete response');
         };
     }
 
@@ -350,7 +392,9 @@ class TodoMainPage extends TodoPagerController {
         // 入力用のタグを非表示にする
         this._removeInputTags();
 
-        this._commentValue = event.target.innerHTML.replaceAll('<br>', '\n').replaceAll('&lt;', '<').replaceAll('&gt;', '>');
+        let p = this._getParentNodeByClassName(event.target, 'todo-comment');
+        let s = p.nextElementSibling.innerText;
+        this._commentValue = s.replaceAll('<br>', '\n').replaceAll('&lt;', '<').replaceAll('&gt;', '>');
         event.target.style.display = 'none';
         event.target.parentNode.insertBefore(this._todoComment, event.target);
         this._commentTextarea.focus();
@@ -421,13 +465,31 @@ class TodoMainPage extends TodoPagerController {
         })
     }
 
+    _createCommentTag(comment) {
+        let c = document.createElement('div');
+        c.classList.add('todo-comment-container');
+        let pv = document.createElement('div');
+        pv.classList.add('todo-comment');
+        pv.dataset.id = comment.id;
+        c.appendChild(pv);
+        // 非表示のタグは、表示用タグの後に配置する
+        let ps = document.createElement('p');
+        ps.classList.add('todo-comment-source');
+        c.appendChild(ps);
+
+        this._setCommentHtml(pv, comment.content);
+
+        return c;
+    }
+
     _createDetailsTag(todoItemJson) {
+        var self = this;
         var todoItem = document.createElement('li');
         todoItem.dataset.id = todoItemJson.summary.id;
         todoItem.classList.add('todo-item');
         // サマリー
         var summaryDiv = document.createElement('div');
-        summaryDiv.classList.add('todo-summary');
+        summaryDiv.classList.add('todo-summary-title');
         var p = document.createElement('p');
         p.classList.add('todo-li-icon');
         p.classList.add('todo-li-icon-close');
@@ -446,17 +508,24 @@ class TodoMainPage extends TodoPagerController {
         p = document.createElement('p');
         p.classList.add('trash-icon');
         summaryDiv.appendChild(p);
-        todoItem.appendChild(summaryDiv);
+        var sumBlk = document.createElement('div');
+        sumBlk.classList.add('todo-summary-block');
+        sumBlk.appendChild(summaryDiv);
+        // 日付
+        var dateDiv = document.createElement('div');
+        dateDiv.classList.add('summary-date');
+        var date1 = document.createElement('span');
+        date1.innerText = super._formatDate(new Date(todoItemJson.summary.date1), '登録日 : yyyy年MM月dd日 HH時mm分');
+        dateDiv.appendChild(date1);
+        sumBlk.appendChild(dateDiv);
+
+        todoItem.appendChild(sumBlk);
         // コメント
         var detail = document.createElement('div');
         detail.classList.add('todo-detail-dody');
         detail.classList.add('todo-details-close');
         todoItemJson.comments.forEach(function(comment) {
-            var p = document.createElement('p');
-            p.classList.add('todo-comment');
-            p.dataset.id = comment.id;
-            p.innerHTML = comment.content;
-            detail.appendChild(p);
+            detail.appendChild(self._createCommentTag(comment));
         });
         // コメントを追加するボタン
         var opeDiv = document.createElement('div');
@@ -507,9 +576,9 @@ class TodoMainPage extends TodoPagerController {
         var now = new Date();
         return super._formatDate(now, 'yyyyMMdd_HHmmss.SSS');
     }
+
     _clickSummary(event) {
-        //console.log(event.target);
-        var li = event.target.parentNode.parentNode;
+        var li = this._getTodoLiTag(event.target);
         var details = li.getElementsByClassName('todo-detail-dody');
         if (details.length !== 1) {
             console.error('no details');
