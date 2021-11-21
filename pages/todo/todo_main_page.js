@@ -596,14 +596,12 @@ class TodoMainPage extends TodoPagerController {
     }
 
     _deleteTodo(event) {
-        var parent = event.target.parentNode;
-        var titles = parent.getElementsByClassName('summary-title');
-        if (titles.length !== 1) {
+        var title = event.target.previousElementSibling;    // ゴミ箱アイコンの前にTODOタイトルが配置している
+        if (title === null) {
             console.error('no summary title tag');
             return;
         }
-        var title = titles[0];
-        var id = parent.parentNode.dataset.id;
+        var id = this._getTodoID(title);
         var exec = confirm("「" + title.innerText + "」(id:" + id + ") を削除します");
         if (!exec) return;
         var req = {'id': id};
