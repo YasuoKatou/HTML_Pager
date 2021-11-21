@@ -12,7 +12,7 @@ class TodoPagerController extends PagerController {
         return new PagerAjax({
             async: true,
             method: 'POST',
-            url: this._urlPrefix() + '/' + func_id,
+            url: location.href + func_id,
             requestHeaders: ['Content-Type', 'application/json'],
             txData: JSON.stringify(req_data),
             timeout: 5000,
