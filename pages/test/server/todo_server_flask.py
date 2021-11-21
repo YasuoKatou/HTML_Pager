@@ -176,7 +176,7 @@ def add_todo():
             if req['category-id'] != '0':
                 cur.execute(sql2, (req['category-id'], todo_id, now, now))
             conn.commit()
-    return jsonify({'temp-id': req['temp-id'], 'id': todo_id})
+    return jsonify({'temp-id': req['temp-id'], 'id': todo_id, 'date1': now})
 
 @todoApp.route('/update_todo', methods=['POST'])
 def update_todo():

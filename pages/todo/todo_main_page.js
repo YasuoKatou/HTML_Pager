@@ -1,6 +1,7 @@
 class TodoMainPage extends TodoPagerController {
     constructor(p) {
         super(p);
+        this._DATE1_FMT = '登録日 : yyyy年MM月dd日 HH時mm分';
         this._todo_status = [];
         this._todo_status_css = [
             {id: '0', css: null}, {id: '10', css: 'todo-doing'}, {id: '20', css: 'todo-done'}
@@ -144,19 +145,33 @@ class TodoMainPage extends TodoPagerController {
         };
     }
     _received_new_todo() {
+        let self = this;
         return function(respData) {
             var json = JSON.parse(respData);
             var liList = document.getElementById('todo_item_container').getElementsByTagName('li');
             var num = liList.length;
+            let li;
+            let found = false;
             for (var i = 0; i < num; ++i) {
-                var li = liList[i];
+                li = liList[i];
                 if (!li.classList.contains('todo-item')) continue;
                 if (json['temp-id'] === li.dataset.id) {
                     li.dataset.id = json['id'];
-                    return;
+                    found = true;
+                    break;
                 }
             }
-            console.error('no new todo.\n' + json);
+            if (found) {
+                // 登録日時の表示
+                let ls = li.getElementsByClassName('summary-date1');
+                if (ls.length === 1) {
+                    ls[0].innerText = self._formatDate(new Date(json['date1']), self._DATE1_FMT);
+                } else {
+                    console.error('no new todo date1.');
+                }
+            } else {
+                console.error('no new todo.');
+            }
         };
     }
 
@@ -514,9 +529,12 @@ class TodoMainPage extends TodoPagerController {
         // 日付
         var dateDiv = document.createElement('div');
         dateDiv.classList.add('summary-date');
-        var date1 = document.createElement('span');
-        date1.innerText = super._formatDate(new Date(todoItemJson.summary.date1), '登録日 : yyyy年MM月dd日 HH時mm分');
-        dateDiv.appendChild(date1);
+        var date1Tag = document.createElement('span');
+        date1Tag.classList.add('summary-date1');
+        if (todoItemJson.summary.date1) {
+            date1Tag.innerText = super._formatDate(new Date(todoItemJson.summary.date1), this._DATE1_FMT);
+        }
+        dateDiv.appendChild(date1Tag);
         sumBlk.appendChild(dateDiv);
 
         todoItem.appendChild(sumBlk);
