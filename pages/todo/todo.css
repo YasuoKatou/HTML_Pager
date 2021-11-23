@@ -68,6 +68,9 @@
 }
 .summary-date1 {
 }
+.summary-date2 {
+    margin-right: 3em;
+}
 
 .todo-item {
     /*border: 1px solid lightblue;*/

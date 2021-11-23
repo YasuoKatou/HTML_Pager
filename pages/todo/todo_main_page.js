@@ -2,6 +2,8 @@ class TodoMainPage extends TodoPagerController {
     constructor(p) {
         super(p);
         this._DATE1_FMT = '登録日 : yyyy年MM月dd日 HH時mm分';
+        this._DATE2_WORKING_FMT = '着手日 : yyyy年MM月dd日 HH時mm分';
+        this._DATE2_FINISHED_FMT = '完了日 : yyyy年MM月dd日 HH時mm分';
         this._todo_status = [];
         this._todo_status_css = [
             {id: '0', css: null}, {id: '10', css: 'todo-doing'}, {id: '20', css: 'todo-done'}
@@ -378,8 +380,41 @@ class TodoMainPage extends TodoPagerController {
     _received_update_status() {
         var self = this;
         return function(respData) {
-            // TODO状態の更新レスポンスは、処理しない
-        }
+            let json = JSON.parse(respData);
+            console.log('status uodate response');
+            console.log(json);
+
+            let date2 = "";             // 未着手は空欄に変更
+            // 着手または完了で日時を設定
+            if (json['status'] == '10') {
+                date2 = self._formatDate(new Date(json['date2']), self._DATE2_WORKING_FMT);
+            } else if (json['status'] == '20') {
+                date2 = self._formatDate(new Date(json['date2']), self._DATE2_FINISHED_FMT);
+            }
+            let liList = document.getElementById('todo_item_container').getElementsByTagName('li');
+            let num = liList.length;
+            let li;
+            let found = false;
+            for (var i = 0; i < num; ++i) {
+                li = liList[i];
+                if (!li.classList.contains('todo-item')) continue;
+                if (json['id'] === li.dataset.id) {
+                    found = true;
+                    break;
+                }
+            }
+            if (found) {
+                // 登録日時の表示
+                let ls = li.getElementsByClassName('summary-date2');
+                if (ls.length === 1) {
+                    ls[0].innerText = date2;
+                } else {
+                    console.error('no status update todo date2.');
+                }
+            } else {
+                console.error('no status update todo.');
+            }
+        };
     }
 
     _addTodoStart(event) {
@@ -497,6 +532,22 @@ class TodoMainPage extends TodoPagerController {
         return c;
     }
 
+    _createDate1HtmlTag(date) {
+        let tag = document.createElement('span');
+        tag.classList.add('summary-date1');
+        tag.innerText = super._formatDate(new Date(date), this._DATE1_FMT);
+        return tag;
+    }
+
+    _createDate2HtmlTag(date, fmt) {
+        let tag = document.createElement('span');
+        tag.classList.add('summary-date2');
+        if (date !== null) {
+            tag.innerText = super._formatDate(new Date(date), fmt);
+        }
+        return tag;
+    }
+
     _createDetailsTag(todoItemJson) {
         var self = this;
         var todoItem = document.createElement('li');
@@ -529,12 +580,16 @@ class TodoMainPage extends TodoPagerController {
         // 日付
         var dateDiv = document.createElement('div');
         dateDiv.classList.add('summary-date');
-        var date1Tag = document.createElement('span');
-        date1Tag.classList.add('summary-date1');
-        if (todoItemJson.summary.date1) {
-            date1Tag.innerText = super._formatDate(new Date(todoItemJson.summary.date1), this._DATE1_FMT);
+        if (todoItemJson.summary.status === '10') {
+            dateDiv.appendChild(this._createDate2HtmlTag(todoItemJson.summary.date2, this._DATE2_WORKING_FMT));
+        } else if (todoItemJson.summary.status === '20') {
+            dateDiv.appendChild(this._createDate2HtmlTag(todoItemJson.summary.date2, this._DATE2_FINISHED_FMT));
+        } else {
+            dateDiv.appendChild(this._createDate2HtmlTag(null, null));
         }
-        dateDiv.appendChild(date1Tag);
+        if (todoItemJson.summary.date1) {
+            dateDiv.appendChild(this._createDate1HtmlTag(todoItemJson.summary.date1));
+        }
         sumBlk.appendChild(dateDiv);
 
         todoItem.appendChild(sumBlk);
@@ -553,6 +608,7 @@ class TodoMainPage extends TodoPagerController {
         addComment.innerText = '+ comment';
         opeDiv.appendChild(addComment)
         detail.appendChild(opeDiv);
+        // 状態
         var stat = document.createElement('select');
         stat.classList.add('todo-status');
         this._todo_status.forEach((opt) => {

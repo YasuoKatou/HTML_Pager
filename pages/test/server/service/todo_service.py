@@ -187,6 +187,7 @@ class TodoService(_service_base.TodoServiceBase):
             with super().db_cursor(conn) as cur:
                 cur.execute(sql, (req['status'], now, req['id']))
                 conn.commit()
+        req['date2'] = now
         return req
 
     def delete_todo(self, req):
