@@ -335,6 +335,8 @@ class TodoMainPage extends TodoPagerController {
                 this._addCommentStart(event);       // 新規にTODOコメントを作成
             } else if (tag.classList.contains('todo-li-icon')) {
                 this._clickSummary(event);          // TODOタイトルを展開／閉じる
+            } else if (tag.classList.contains('summary-title')) {
+                this._clickSummary(event);          // TODOタイトルを展開／閉じる
             } else if (tag.classList.contains('trash-icon')) {
                 this._deleteTodo(event);            // TODO削除
             } else if (tag.classList.contains('add-todo-tag')) {
@@ -652,7 +654,13 @@ class TodoMainPage extends TodoPagerController {
     }
 
     _clickSummary(event) {
-        var li = this._getTodoLiTag(event.target);
+        let target;
+        if (event.target.classList.contains('summary-title')) {
+            target = event.target.previousElementSibling;       // タイトルの前にTODO開閉のアイコンを配置している
+        } else {
+            target = event.target;
+        }
+        var li = this._getTodoLiTag(target);
         var details = li.getElementsByClassName('todo-detail-dody');
         if (details.length !== 1) {
             console.error('no details');
@@ -660,17 +668,17 @@ class TodoMainPage extends TodoPagerController {
         }
         var detail = details[0];
         if (detail.classList.contains('todo-details-close')) {
-            event.target.classList.remove('todo-li-icon-close');
-            event.target.classList.add('todo-li-icon-open');
+            target.classList.remove('todo-li-icon-close');
+            target.classList.add('todo-li-icon-open');
         } else {
-            event.target.classList.remove('todo-li-icon-open');
-            event.target.classList.add('todo-li-icon-close');
+            target.classList.remove('todo-li-icon-open');
+            target.classList.add('todo-li-icon-close');
         }
         detail.classList.toggle('todo-details-close');
     }
 
     _deleteTodo(event) {
-        var title = event.target.previousElementSibling;    // ゴミ箱アイコンの前にTODOタイトルが配置している
+        var title = event.target.previousElementSibling;    // ゴミ箱アイコンの前にTODOタイトルを配置している
         if (title === null) {
             console.error('no summary title tag');
             return;
