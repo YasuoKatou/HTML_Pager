@@ -27,7 +27,7 @@ class TodoMainPage extends TodoPagerController {
         this.todo_category_id = ifData['category_id'];
         var h = document.getElementById('header-title');
         if (h !== null) {
-            h.innerText = 'TODO アプリ (' + ifData['category_name'] + ')';
+            h.innerText = 'TODO アプリ【' + ifData['category_name'] + '】';
         } else {
             console.error('no header id (header-title)');
         }
