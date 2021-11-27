@@ -49,7 +49,7 @@ class TodoMainPage extends TodoPagerController {
         this._todoTitle.id = 'new_todo_title';
         this._todoTitle.setAttribute("type", "text");
         this._todoTitle.placeholder = '新規のTODOを入力';
-        this._todoTitle.addEventListener('keydown', this._inputTodoTitle());
+        this._todoTitle.addEventListener('keydown', this._keyInputTodoTitle());
     }
 
     _createComment() {
@@ -59,6 +59,7 @@ class TodoMainPage extends TodoPagerController {
         textAtra.setAttribute("type", "text");
         textAtra.placeholder = 'コメントを入力';
         textAtra.addEventListener('dblclick', this._inputTodoComment());
+        textAtra.addEventListener('keydown', this._keyInputComment());
         var iconTag = document.createElement('p');
         iconTag.classList.add('comment-fix')
         iconTag.addEventListener('click', this._inputTodoComment());
@@ -81,14 +82,26 @@ class TodoMainPage extends TodoPagerController {
         this._commentTextarea.value = value;
     }
 
-    _inputTodoTitle() {
+    _keyInputTodoTitle() {
         var self = this;
         return function(event) {
             if (self._compFlg) return;
             if ((event.code.toLowerCase() !== 'enter') && (event.code.toLowerCase() !== 'escape')) return;
             setTimeout(function() {
-                self._execute_inputTodoTitle(event);
+                self._execute_keyInputTodoTitle(event);
             }, 0);
+        }
+    }
+
+    _keyInputComment() {
+        var self = this;
+        return function(event) {
+            if (self._compFlg) return;
+            if (event.code.toLowerCase() === 'escape') {
+                self._todoComment.remove();
+                self._hiddenComment.style.display = 'block';
+                self._hiddenComment = null;
+            }
         }
     }
 
@@ -101,7 +114,7 @@ class TodoMainPage extends TodoPagerController {
         }
     }
 
-    _execute_inputTodoTitle(event) {
+    _execute_keyInputTodoTitle(event) {
         this._todoTitle.remove();
         var isNewTodo = this._mode === this._MODE.ADD_TODO;
         this._setModeFree();
