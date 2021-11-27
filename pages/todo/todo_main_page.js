@@ -406,7 +406,7 @@ class TodoMainPage extends TodoPagerController {
                 }
             }
             if (found) {
-                // 登録日時の表示
+                // 着手または完了日時の表示
                 let ls = li.getElementsByClassName('summary-date2');
                 if (ls.length === 1) {
                     ls[0].innerText = date2;
@@ -537,7 +537,9 @@ class TodoMainPage extends TodoPagerController {
     _createDate1HtmlTag(date) {
         let tag = document.createElement('span');
         tag.classList.add('summary-date1');
-        tag.innerText = super._formatDate(new Date(date), this._DATE1_FMT);
+        if (date !== null) {
+            tag.innerText = super._formatDate(new Date(date), this._DATE1_FMT);
+        }
         return tag;
     }
 
@@ -582,16 +584,21 @@ class TodoMainPage extends TodoPagerController {
         // 日付
         var dateDiv = document.createElement('div');
         dateDiv.classList.add('summary-date');
+        let dateTag;
         if (todoItemJson.summary.status === '10') {
-            dateDiv.appendChild(this._createDate2HtmlTag(todoItemJson.summary.date2, this._DATE2_WORKING_FMT));
+            dateTag = this._createDate2HtmlTag(todoItemJson.summary.date2, this._DATE2_WORKING_FMT);
         } else if (todoItemJson.summary.status === '20') {
-            dateDiv.appendChild(this._createDate2HtmlTag(todoItemJson.summary.date2, this._DATE2_FINISHED_FMT));
+            dateTag = this._createDate2HtmlTag(todoItemJson.summary.date2, this._DATE2_FINISHED_FMT);
         } else {
-            dateDiv.appendChild(this._createDate2HtmlTag(null, null));
+            dateTag = this._createDate2HtmlTag(null, null);
         }
+        dateDiv.appendChild(dateTag);
         if (todoItemJson.summary.date1) {
-            dateDiv.appendChild(this._createDate1HtmlTag(todoItemJson.summary.date1));
+            dateTag = this._createDate1HtmlTag(todoItemJson.summary.date1);
+        } else {
+            dateTag = this._createDate1HtmlTag(null, null);
         }
+        dateDiv.appendChild(dateTag);
         sumBlk.appendChild(dateDiv);
 
         todoItem.appendChild(sumBlk);
