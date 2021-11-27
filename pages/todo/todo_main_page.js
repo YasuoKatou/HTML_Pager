@@ -217,7 +217,8 @@ class TodoMainPage extends TodoPagerController {
             var req = {'todo-id': todoId, 'comment': content, 'temp-id': tempId};
             super._createAjaxParam('add_comment', req, this._received_new_comment()).send();
         } else {
-            var changed = (this._hiddenComment.innerHTML !== content);
+            let srcTag = this._hiddenComment.nextElementSibling;
+            var changed = (srcTag.innerText !== content);
             var empty = (this._commentValue.trim() === '');
             this._setCommentHtml(this._hiddenComment, content);
             this._hiddenComment.style.display = 'block';
