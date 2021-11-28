@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import importlib
+import inspect
 import logging
 import logging.handlers
 import pathlib
@@ -27,23 +28,19 @@ l.addHandler(rh)
 
 _myPath = pathlib.Path(__file__)
 sys.path.append(str(_myPath.parent / 'service'))
-_serviceModule = importlib.import_module('todo_service')
-_todoService_001 = _serviceModule.TodoService()
-_todoService = {
-    'read_category': _todoService_001,
-    'add_category': _todoService_001,
-    'read_todo': _todoService_001,
-    'add_todo': _todoService_001,
-    'update_todo': _todoService_001,
-    'update_status': _todoService_001,
-    'delete_todo': _todoService_001,
-    'add_comment': _todoService_001,
-    'update_comment': _todoService_001,
-    'delete_comment': _todoService_001,
-    'read_tags': _todoService_001,
-    'add_tag': _todoService_001,
-    'set_todo_tag': _todoService_001,
-}
+_serviceList = [
+    importlib.import_module('todo_service').TodoService(),
+]
+_todoService = {}
+for svc in _serviceList:
+    for ite in inspect.getmembers(svc, inspect.ismethod):
+        m = ite[0]
+        if m.startswith('_'):
+            continue
+        if callable(getattr(svc, m)):
+            # TODO 重複登録時の判定が必要
+            _todoService[m] = svc
+            print('/{} at {}'.format(m, type(svc).__name__))
 
 todoApp = Flask(__name__)
 todoApp.config['JSON_AS_ASCII'] = False
@@ -51,80 +48,11 @@ todoApp.config['JSON_AS_ASCII'] = False
 def _getServiceMethod(path):
     return getattr(_todoService[path], path)
 
-@todoApp.route('/add_category', methods=['POST'])
-def add_category():
+@todoApp.route('/<action>', methods=['POST'])
+def todo_controller(action):
     req = request.json
-    method = _getServiceMethod(request.path[1:])
-    return jsonify(method(req))
-
-@todoApp.route('/read_category', methods=['POST'])
-def read_category():
-    method = _getServiceMethod(request.path[1:])
-    return jsonify(method())
-
-@todoApp.route('/read_tags', methods=['POST'])
-def read_tags():
-    method = _getServiceMethod(request.path[1:])
-    return jsonify({'tags': method()})
-
-@todoApp.route('/read_todo', methods=['POST'])
-def read_todo():
-    req = request.json
-    method = _getServiceMethod(request.path[1:])
-    return jsonify(method(req))
-
-@todoApp.route('/add_todo', methods=['POST'])
-def add_todo():
-    req = request.json
-    method = _getServiceMethod(request.path[1:])
-    return jsonify(method(req))
-
-@todoApp.route('/update_todo', methods=['POST'])
-def update_todo():
-    req = request.json
-    method = _getServiceMethod(request.path[1:])
-    return jsonify(method(req))
-
-@todoApp.route('/update_status', methods=['POST'])
-def update_status():
-    req = request.json
-    method = _getServiceMethod(request.path[1:])
-    return jsonify(method(req))
-
-@todoApp.route('/delete_todo', methods=['POST'])
-def delete_todo():
-    req = request.json
-    method = _getServiceMethod(request.path[1:])
-    return jsonify(method(req))
-
-@todoApp.route('/add_comment', methods=['POST'])
-def add_comment():
-    req = request.json
-    method = _getServiceMethod(request.path[1:])
-    return jsonify(method(req))
-
-@todoApp.route('/update_comment', methods=['POST'])
-def update_comment():
-    req = request.json
-    method = _getServiceMethod(request.path[1:])
-    return jsonify(method(req))
-
-@todoApp.route('/delete_comment', methods=['POST'])
-def delete_comment():
-    req = request.json
-    method = _getServiceMethod(request.path[1:])
-    return jsonify(method(req))
-
-@todoApp.route('/add_tag', methods=['POST'])
-def add_tag():
-    req = request.json
-    method = _getServiceMethod(request.path[1:])
-    return jsonify({'tags': method(req)})
-
-@todoApp.route('/set_todo_tag', methods=['POST'])
-def set_todo_tag():
-    req = request.json
-    method = _getServiceMethod(request.path[1:])
+    method = _getServiceMethod(action)
+    # TODO method == null の時、エラー処理を実装すること
     return jsonify(method(req))
 
 if __name__ == '__main__':

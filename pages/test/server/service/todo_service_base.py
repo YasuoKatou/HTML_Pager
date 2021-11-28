@@ -14,13 +14,13 @@ class TodoServiceBase:
         self._dsn = os.environ.get('TODO_DB_DNS')
         #print('dns : ' + self._dsn)
 
-    def db_connect(self):
+    def _db_connect(self):
         return psycopg2.connect(self._dsn)
-    def db_cursor(self, conn):
+    def _db_cursor(self, conn):
         return conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    def getNow(self):
+    def _getNow(self):
         now = datetime.datetime.now()
         return now.strftime("%Y-%m-%d %H:%M:%S.%f")
-    def datetimeStr(self, val):
+    def _datetimeStr(self, val):
         return val.strftime("%Y-%m-%d %H:%M:%S.%f")
 #[EOF]
