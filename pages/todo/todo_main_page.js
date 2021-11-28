@@ -145,8 +145,8 @@ class TodoMainPage extends TodoPagerController {
             this._hiddenTodo.style.display = 'block';
             if (changed) {
                 // サーバ更新
-                var parent = this._hiddenTodo.parentNode.parentNode;
-                var req = {'id': parent.dataset.id, 'title': this._hiddenTodo.innerText};
+                let todoId = this._getTodoID(this._hiddenTodo);
+                var req = {'id': todoId, 'title': this._hiddenTodo.innerText};
                 super._createAjaxParam('update_todo', req, this._received_update_todo()).send();
             }
             this._hiddenTodo = null;
