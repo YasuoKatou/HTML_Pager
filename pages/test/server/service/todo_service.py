@@ -119,6 +119,24 @@ class TodoService(_service_base.TodoServiceBase):
             conn.commit()
         return self._read_category()
 
+    def update_category(self, req):
+        now = super()._getNow()
+        param = (req['name'], now, req['id'], )
+        with super()._db_connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute('UPDATE TODO_CATEGORY SET name = %s, update_ts = %s WHERE id = %s', param)
+            conn.commit()
+        return self._read_category()
+
+    def delete_category(self, req):
+        param = (req['id'], )
+        with super()._db_connect() as conn:
+            with conn.cursor() as cur:
+                cur.execute('DELETE FROM TODO_CATEGORIES WHERE category_id = %s', param)
+                cur.execute('DELETE FROM TODO_CATEGORY WHERE id = %s', param)
+            conn.commit()
+        return self._read_category()
+
     def read_tags(self, req):
         return {'tags': self._read_tags()}
 

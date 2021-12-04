@@ -73,22 +73,22 @@ body {
     padding-left: 10px;
 }
 
-.popup_body {
+.popup-body {
     padding: 15px 10px 10px 10px;
 }
-.popup_body_list {
+.popup-body-list {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     overflow: auto;
 }
 
-.popup_body li {
+.popup-body li {
     padding-top: 5px;
     padding-bottom: 5px;
 }
 
-.popup_body label {
+.popup-body label {
     display: block;
     float: left;
     width: 7em;

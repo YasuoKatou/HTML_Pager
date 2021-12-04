@@ -65,6 +65,7 @@
     }
 
     initPopupTableData(pc, pTag) {
+        if (pc.dataModel.rowTagClassName === null) return;
         var dTag = pTag.querySelector('.' + pc.dataModel.rowTagClassName);
         if (dTag === null) {
             console.error('no popup table row class name');

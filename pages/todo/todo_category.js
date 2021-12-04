@@ -61,6 +61,40 @@ class TodoCategoryPage extends TodoPagerController {
     constructor(p) {
         super(p);
         this._dataModel = new CategoryData();
+
+        this._setOperationEvent();
+    }
+
+    _getOperationTag() {
+        let myPage = document.getElementById(this._pageId);
+        let tags = myPage.getElementsByClassName("popup-table-operation");
+        if (tags.length === 1) {
+            let pTag = tags[0].firstElementChild;
+            if (pTag !== null) {
+                return pTag;
+            } else {
+                console.error('no p-tag at popup-table-operation');
+            }
+        } else {
+            console.error('no popup-table-operation class');
+        }
+        return null;
+    }
+
+    _setOperationEvent() {
+        let opeTag = this._getOperationTag();
+        if (opeTag !== null) {
+            opeTag.addEventListener('click', this._operation_event());
+        }
+    }
+
+    _operation_event() {
+        return function(event) {
+            // console.log('_operation_event');
+            let cl = event.target.classList;
+            cl.toggle('share-icon');
+            cl.toggle('edit-icon');
+        }
     }
 
     _clicked_add_category(self) {
@@ -109,14 +143,33 @@ class TodoCategoryPage extends TodoPagerController {
     _clickEvent_category_row() {
         var self = this;
         return function(event) {
-            self._show_todo(event);
+            setTimeout(function() {
+                self._execute_clickEvent_category_row(event);
+            }, 0);
+        }
+    }
+
+    _getSelectedItem(li) {
+        return {'category_id': li.children[0].innerText
+              , 'category_name': li.children[1].innerText};
+    }
+
+    _execute_clickEvent_category_row(event) {
+        let opeTag = this._getOperationTag();
+        if (opeTag !== null) {
+            if (opeTag.classList.contains('share-icon')) {
+                this._show_todo(event);
+            } else if (opeTag.classList.contains('edit-icon')) {
+                let param = this._getSelectedItem(event.target.parentNode);
+                param['dialog-title'] = 'カテゴリの更新／削除'
+                _pager.popupPageById('PP0002', param);
+            }
         }
     }
 
     _show_todo(event) {
         var li = event.target.parentNode;
-        _pager.changePageById("todo_main", {'category_id': li.children[0].innerText
-                                          , 'category_name': li.children[1].innerText});
+        _pager.changePageById("todo_main", this._getSelectedItem(li));
     }
 
     _new_category() {
@@ -125,5 +178,31 @@ class TodoCategoryPage extends TodoPagerController {
 
         var req = {'category_name': value};
         super._createAjaxParam('add_category', req, this._response_readCategory()).send();
+    }
+
+    closedForm(pid, ifData = undefined) {
+        let svcId = '';
+        let svcReq = null;
+        if (pid === 'PP0002') {
+            if (ifData !== undefined) {
+                if ('result' in ifData) {
+                    if (ifData['result'] === 'update') {
+                        svcId = 'update_category';
+                        svcReq = {'id': ifData['category_id'], 'name': ifData['category_name']};
+                    } else if (ifData['result'] === 'delete') {
+                        svcId = 'delete_category';
+                        svcReq = {'id': ifData['category_id']};
+                    } else {
+                        console.error('result string error : ' + ifData['result']);
+                    }
+                } else {
+                    console.error('not result attribute')
+                }
+            }
+        }
+        if (svcId !== '') {
+            super._createAjaxParam(svcId, svcReq, this._response_readCategory()).send();
+        }
+        super.closedForm(ifData);
     }
 }

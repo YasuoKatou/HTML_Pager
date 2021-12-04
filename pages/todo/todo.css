@@ -38,8 +38,16 @@
 .comment-fix {
     background-image: url(./icons/check_64.png);
 }
+.share-icon {
+    background-image: url(./icons/share_64.png);
+}
+.edit-icon {
+    background-image: url(./icons/pen_64.png);
+}
 .comment-fix,
-.trash-icon {
+.trash-icon,
+.share-icon,
+.edit-icon {
     display: inline-block;
     font-size: large;
     background-repeat: no-repeat;
@@ -223,6 +231,15 @@
     margin:auto;
 }
 
+.popup-body {
+    padding: 10px;
+}
+
+.popup-table-operation {
+    height: 2em;
+    text-align: right;
+}
+
 .popup-table-head > p:nth-child(1) {
     width: var(--category-list-name-width);
 }
@@ -270,4 +287,39 @@
 .popup-table-body > ul > li > p:nth-child(5) {
     width: var(--category-list-finished-width);
     text-align: right;
+}
+
+.PP0002-form {
+    width: 20em;
+    background-color: white;
+}
+
+.PP0002-dialog-title {
+    text-align: center;
+    margin-bottom: 0.5em;
+    background-color: #fa4141;
+    color: #fff;
+}
+
+.PP0002-input-wrapper {
+    text-align: center;
+}
+
+.PP0002-content-string {
+    width: 90%;
+    border: 1px solid;
+    border-radius: 4px;
+    padding: 3px;
+}
+
+.PP0002-button-wrapper {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.PP0002-button-wrapper > input {
+    flex-basis: 4em;
 }

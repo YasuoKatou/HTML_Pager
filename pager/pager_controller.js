@@ -129,4 +129,19 @@ class PagerController extends PagerBase {
     fkey12_A(event) {}
 
     get dataModel() { return this._dataModel; }
+
+    get _getMyPage() {
+        return document.getElementById(this._pageId);
+    }
+
+    _getElementsByClassName(rootTag, className) {
+        let tags = rootTag.getElementsByClassName(className);
+        if (tags.length === 1) {
+            return tags[0];
+        } else if (tags.length === 0) {
+            console.error('no such class name : ' + className);
+            return null;
+        }
+        return tags;
+    }
 }
