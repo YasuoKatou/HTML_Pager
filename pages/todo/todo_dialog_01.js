@@ -34,7 +34,7 @@ class TodoDialog01 extends TodoPagerController {
     _execute_update_button(event) {
         let myPage = super._getMyPage;
         let text = super._getElementsByClassName(myPage, 'PP0002-content-string');
-        this._ifData['category_name'] = text.value;
+        this._ifData['content'] = text.value;
         this._ifData['result'] = 'update';
         _pager.closePopupPage(super.pageId, this._ifData);
     }
@@ -78,7 +78,7 @@ class TodoDialog01 extends TodoPagerController {
             header.innerText = titleString;
 
             let text = super._getElementsByClassName(myPage, 'PP0002-content-string');
-            text.value = ifData['category_name'];
+            text.value = ifData['content'];
         }
         this._ifData = ifData;
         super.prepareShow(ifData);

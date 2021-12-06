@@ -149,9 +149,10 @@ class TodoCategoryPage extends TodoPagerController {
         }
     }
 
-    _getSelectedItem(li) {
-        return {'category_id': li.children[0].innerText
-              , 'category_name': li.children[1].innerText};
+    _getSelectedItem(li, keyName) {
+        let items = {'category_id': li.children[0].innerText};
+        items[keyName] = li.children[1].innerText;
+        return items;
     }
 
     _execute_clickEvent_category_row(event) {
@@ -160,7 +161,7 @@ class TodoCategoryPage extends TodoPagerController {
             if (opeTag.classList.contains('share-icon')) {
                 this._show_todo(event);
             } else if (opeTag.classList.contains('edit-icon')) {
-                let param = this._getSelectedItem(event.target.parentNode);
+                let param = this._getSelectedItem(event.target.parentNode, 'content');
                 param['dialog-title'] = 'カテゴリの更新／削除'
                 _pager.popupPageById('PP0002', param);
             }
@@ -169,7 +170,7 @@ class TodoCategoryPage extends TodoPagerController {
 
     _show_todo(event) {
         var li = event.target.parentNode;
-        _pager.changePageById("todo_main", this._getSelectedItem(li));
+        _pager.changePageById("todo_main", this._getSelectedItem(li, 'category_name'));
     }
 
     _new_category() {
@@ -181,26 +182,26 @@ class TodoCategoryPage extends TodoPagerController {
     }
 
     closedForm(pid, ifData = undefined) {
-        let svcId = '';
+        let svcId = null;
         let svcReq = null;
         if (pid === 'PP0002') {
             if (ifData !== undefined) {
                 if ('result' in ifData) {
                     if (ifData['result'] === 'update') {
                         svcId = 'update_category';
-                        svcReq = {'id': ifData['category_id'], 'name': ifData['category_name']};
+                        svcReq = {'id': ifData['category_id'], 'name': ifData['content']};
                     } else if (ifData['result'] === 'delete') {
                         svcId = 'delete_category';
                         svcReq = {'id': ifData['category_id']};
                     } else {
-                        console.error('result string error : ' + ifData['result']);
+                        console.error('result string error : ' + ifData['result'] + ' at TodoCategoryPage');
                     }
                 } else {
-                    console.error('not result attribute')
+                    console.error('not result attribute at TodoCategoryPage');
                 }
             }
         }
-        if (svcId !== '') {
+        if (svcId !== null) {
             super._createAjaxParam(svcId, svcReq, this._response_readCategory()).send();
         }
         super.closedForm(ifData);

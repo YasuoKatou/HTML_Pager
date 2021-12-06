@@ -165,7 +165,9 @@
             var page = pages[i];
             if (page.classList.contains('page_show')) {
                 page.classList.add('popup-block');
+                page.style.zIndex = 0;
             }
+            if (page.id === pid) page.style.zIndex = 1;
         }
         this._popupSave.push(this._pageController);
         this._pageController = pc;
@@ -179,10 +181,12 @@
         var page = document.getElementById(pid);
         this._page_hidden(page);
         this._pageController.pageHidden();
+        page.style.zIndex = 0;
 
         this._pageController = this._popupSave.pop();
         this._pageController.closedForm(pid, ifData);
         page = document.getElementById(this._pageController.pageId);
+        page.style.zIndex = 1;
         page.classList.remove('popup-block');
         this._setFunctionKeys(this._pageController);
     }

@@ -5,28 +5,21 @@ class TagData extends DataModelBase {
         this._selectedItem = {};
     }
     get rowTagClassName() { return 'PP0001-tag-list-container'; }
-    get rows() { return this._listDatas.length + 1; }
+    get rows() { return this._listDatas.length; }
     rowColumns(index) {
         var ret = [];
-        if (index === 0) {
-            var p = document.createElement("p");
-            p.classList.add('PP0001-add-tag');
-            p.innerText = '+ tag';
-            ret.push(p);
-        } else {
-            var l = document.createElement("label");
-            l.classList.add('PP0001-tag-list-item');
-            var item = this._listDatas[index - 1];
-            l.innerText = item.name;
-            var cbx = document.createElement("input");
-            cbx.setAttribute('type', 'checkbox');
-            cbx.setAttribute('value', '' + item.id);
-            if (this._selectedItem.tags.includes(item.id)) {
-                cbx.setAttribute('checked','checked');
-            }
-            l.appendChild(cbx);
-            ret.push(l);
+        var l = document.createElement("label");
+        l.classList.add('PP0001-tag-list-item');
+        var item = this._listDatas[index];
+        l.innerText = item.name;
+        var cbx = document.createElement("input");
+        cbx.setAttribute('type', 'checkbox');
+        cbx.setAttribute('value', '' + item.id);
+        if (this._selectedItem.tags.includes(item.id)) {
+            cbx.setAttribute('checked','checked');
         }
+        l.appendChild(cbx);
+        ret.push(l);
         return ret;
     }
 
@@ -54,6 +47,7 @@ class TodoTagPage extends TodoPagerController {
     constructor(p) {
         super(p);
         this._dataModel = new TagData();
+        this._mode = 'select';
 
         var myPage = document.getElementById(p);
         myPage.addEventListener('click', this._myPage_click());
@@ -116,6 +110,12 @@ class TodoTagPage extends TodoPagerController {
         var tag = event.target;
         if (tag.classList.contains('PP0001-add-tag')) {
             this._addTag();
+        } else if (tag.classList.contains('share-icon')) {
+            this._changeMode(tag);
+        } else if (tag.classList.contains('edit-icon')) {
+            this._changeMode(tag);
+        } else {
+            this._editTag(event);
         }
     }
 
@@ -135,13 +135,80 @@ class TodoTagPage extends TodoPagerController {
         super._createAjaxParam('add_tag', req, this._received_add_tag()).send();
     }
 
-    _received_add_tag() {
+    _received_add_tag(checkMode = false) {
         var self = this;
         return function(respData) {
             var json = JSON.parse(respData);
             self._dataModel._listDatas = json.tags;
-            var pTag = document.getElementById(self._pageId);
+            var pTag = self._getMyPage;
             _pager.initPopupTableData(self, pTag);
+            if (checkMode) {
+                let t = self._getElementsByClassName(pTag, 'edit-icon');
+                self._setCheckBox(t);
+            }
         };
+    }
+
+    _setCheckBox(tag) {
+        let isDisable = true;
+        if (tag.classList.contains('share-icon')) {
+            isDisable = false;
+            this._mode = 'select';
+        } else {
+            this._mode = 'edit';
+        }
+        let myPage = super._getMyPage;
+        let tags = myPage.getElementsByClassName("PP0001-tag-list-item");
+        for (let index = 0; index < tags.length; ++index) {
+            tags[index].firstElementChild.disabled = isDisable;
+        }
+    }
+
+    _changeMode(tag) {
+        tag.classList.toggle('share-icon');
+        tag.classList.toggle('edit-icon');
+        this._setCheckBox(tag);
+    }
+
+    _editTag(event) {
+        if (this._mode !== 'edit') return;
+        let tag = event.target;
+        if (tag.classList.contains('PP0001-tag-list-item')) {
+            tag = tag.parentElement;
+        } else if (tag.tagName.toLowerCase() !== 'li') {
+            return;
+        }
+        let param = {'dialog-title': 'タグの更新／削除'};
+        tag = tag.firstElementChild;        // label
+        param['content'] = tag.textContent;
+        tag = tag.firstElementChild;        // input checkbox
+        param['tag-id'] = tag.value;
+        _pager.popupPageById('PP0002', param);
+    }
+
+    closedForm(pid, ifData = undefined) {
+        let svcId = null;
+        let svcReq = null;
+        if (pid === 'PP0002') {
+            if (ifData !== undefined) {
+                if ('result' in ifData) {
+                    if (ifData['result'] === 'update') {
+                        svcId = 'update_tag';
+                        svcReq = {'id': ifData['tag-id'], 'name': ifData['content']};
+                    } else if (ifData['result'] === 'delete') {
+                        svcId = 'delete_tag';
+                        svcReq = {'id': ifData['tag-id']};
+                    } else {
+                        console.error('result string error : ' + ifData['result'] + ' at TodoTagPage');
+                    }
+                } else {
+                    console.error('not result attribute at TodoTagPage');
+                }
+            }
+        }
+        if (svcId !== null) {
+            super._createAjaxParam(svcId, svcReq, this._received_add_tag(true)).send();
+        }
+        super.closedForm(ifData);
     }
 }

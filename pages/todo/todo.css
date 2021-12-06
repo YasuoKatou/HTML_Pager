@@ -151,6 +151,12 @@
     color:darkgray;
 }
 
+.PP0001-mode-operation {
+    display: flex;
+    margin-bottom: 20px;
+    justify-content: space-between;
+}
+
 .PP0001-add-tag,
 .new-todo-label-content,
 .add-todo-tag {
@@ -162,10 +168,6 @@
     border-radius: 11px;
     background-color: lightgray;
     font-size: x-small;
-}
-
-.PP0001-add-tag {
-    margin-bottom: 0.5em;
 }
 
 #new_todo_title {
