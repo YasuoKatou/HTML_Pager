@@ -651,11 +651,7 @@ class TodoMainPage extends TodoPagerController {
         // タグ
         var tagDiv = document.createElement('div');
         todoItemJson.tags.forEach(function(tag) {
-            var p = document.createElement('p');
-            p.classList.add('todo-tag');
-            p.dataset.id = tag.id;
-            p.innerText = tag.name;
-            tagDiv.appendChild(p);
+            tagDiv.appendChild(self._createTodoTag(tag.id, tag.name));
         });
         // タグを追加するボタン
         var addTag = document.createElement('p');
@@ -770,6 +766,7 @@ class TodoMainPage extends TodoPagerController {
         if (pid === 'PP0001') {
             this._updateTodoTags(ifData);
             this._updateTodoTagServer(ifData);
+            this._refreshOtherTodoTags(ifData);
         } else {
             console.error(pid + ' is not support');
         }
@@ -777,11 +774,10 @@ class TodoMainPage extends TodoPagerController {
 
     _updateTodoTags(tagInfo) {
         // console.log(tagInfo);
-        var pTag = document.getElementById(this._pageId);
-        var todos = pTag.getElementsByClassName('todo-item');
-        var num = todos.length;
-        var targetTodo = null;
-        var todoId = tagInfo['todo-id'];
+        let todos = this._getElementsByClassName(this._getMyPage, 'todo-item', true);
+        let num = todos.length;
+        let targetTodo = null;
+        let todoId = tagInfo['todo-id'];
         for (var i = 0; i < num; ++i) {
             var todo = todos[i];
             if (todo.dataset.id === todoId) {
@@ -793,23 +789,24 @@ class TodoMainPage extends TodoPagerController {
             console.error('no todo id (' + todoId + ')');
             return;
         }
-        var t = targetTodo.getElementsByClassName('add-todo-tag');      // + tag を検索
-        if (t.length !== 1) {
-            console.error('add-todo-tag not found');
-            return;
-        }
-        var addTag = t[0];
-        pTag = addTag.parentNode;
+        var addTag = this._getElementsByClassName(targetTodo, 'add-todo-tag');      // + tag を検索
+        if (addTag === null) return;
+
+        var pTag = addTag.parentNode;
         while (pTag.firstChild) pTag.removeChild(pTag.firstChild);
         var tags = tagInfo['tags'];
         for (var i = 0; i < tags.length; ++i) {
-            var tag = document.createElement("p");
-            tag.dataset.id = tags[i]['id'];
-            tag.innerText = tags[i]['name'];
-            tag.classList.add('todo-tag');
-            pTag.appendChild(tag);
+            pTag.appendChild(this._createTodoTag(tags[i]['id'], tags[i]['name']));
         }
         pTag.appendChild(addTag);
+    }
+
+    _createTodoTag(id, name) {
+        var tag = document.createElement("p");
+        tag.dataset.id = id;
+        tag.innerText = name;
+        tag.classList.add('todo-tag');
+        return tag;
     }
 
     _updateTodoTagServer(tagInfo) {
@@ -826,6 +823,40 @@ class TodoMainPage extends TodoPagerController {
         return function(respData) {
             // TODOタグの設定（レスポンス受信）では、特に何もしない
         }
+    }
+
+    _refreshOtherTodoTags(tagInfo) {
+        let todoId = tagInfo['todo-id'];
+        let tagList = tagInfo['tag-list'];
+        let todos = this._getElementsByClassName(this._getMyPage, 'todo-item');
+        let num = todos.length;
+        for (var i = 0; i < num; ++i) {
+            var todo = todos[i];
+            if (todo.dataset.id !== todoId) {
+                this._refreshTodoTags(todo, tagList);
+            }
+        }
+    }
+
+    _refreshTodoTags(todo, tagList) {
+        let tags = this._getElementsByClassName(todo, 'todo-tag', true, false);
+        if (tags === null) return;
+        let num = tags.length;
+        for (let tagIndex = 0; tagIndex < num; ++tagIndex) {
+            let tag = tags[tagIndex];
+            let dataId = tag.dataset.id;
+            let found = false;
+            for (let index = 0; index < tagList.length; ++index) {
+                if (dataId === tagList[index].id) {
+                    tag.innerText = tagList[index].name;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                tag.remove();
+            }
+        };
     }
 
     _setModeFree() {

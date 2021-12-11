@@ -27,14 +27,8 @@ class TagData extends DataModelBase {
         return 'PP0001-ope';
     }
     get buttons() {
-        var ret = [];
-        var p = document.createElement("p");
-        p.id = 'btn_close';
-        p.classList.add('popup_button');
-        p.innerText = '閉じる';
-        ret.push(p);
-
-        p = document.createElement("p");
+        let ret = [];
+        let p = document.createElement("p");
         p.id = 'btn_ok';
         p.classList.add('popup_button');
         p.innerText = 'OK';
@@ -71,13 +65,6 @@ class TodoTagPage extends TodoPagerController {
         super.pageHidden();
     }
 
-    _clicked_btn_close(self) {
-        return function(event) {
-            // console.log(self.pageId + ' close button click event start');
-            _pager.closePopupPage(self.pageId);
-        }
-    }
-
     _clicked_btn_ok(self) {
         return function(event) {
             // console.log(self.pageId + ' ok button click event start');
@@ -93,7 +80,8 @@ class TodoTagPage extends TodoPagerController {
             }
 
             _pager.closePopupPage(self.pageId,
-                 {'todo-id': self._dataModel._selectedItem['todo-id'], 'tags': tags});
+                 {'todo-id': self._dataModel._selectedItem['todo-id'], 'tags': tags,
+                  'tag-list': self._dataModel._listDatas});
         }
     }
 

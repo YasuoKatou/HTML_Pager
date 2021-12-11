@@ -134,12 +134,15 @@ class PagerController extends PagerBase {
         return document.getElementById(this._pageId);
     }
 
-    _getElementsByClassName(rootTag, className) {
+    _getElementsByClassName(rootTag, className, isArray = false, errLog = true) {
         let tags = rootTag.getElementsByClassName(className);
         if (tags.length === 1) {
+            if (isArray) return tags;
             return tags[0];
         } else if (tags.length === 0) {
-            console.error('no such class name : ' + className);
+            if (errLog) {
+                console.error('no such class name : ' + className);
+            }
             return null;
         }
         return tags;
