@@ -9,29 +9,21 @@ class TodoDialog01 extends TodoPagerController {
         super(p);
         this._dataModel = new TodoDialog01Data();
 
-        this._setOperationEvent();
+        super._addClickEvent();
     }
 
-    _setOperationEvent() {
-        let myPage = super._getMyPage;
-        let btn = super._getElementsByClassName(myPage, 'btn-update');
-        btn.addEventListener('click', this._event_update_button());
-        btn = super._getElementsByClassName(myPage, 'btn-delete');
-        btn.addEventListener('click', this._event_delete_button());
-        btn = super._getElementsByClassName(myPage, 'btn-close');
-        btn.addEventListener('click', this._event_close_button());
-    }
-
-    _event_update_button() {
-        let self = this;
-        return function(event) {
-            setTimeout(function() {
-                self._execute_update_button(event);
-            }, 0);
+    _cleckEvent(event) {
+        let classList = event.target.classList;
+        if (classList.contains('btn-update')) {
+            this._updateButton(event);
+        } else if (classList.contains('btn-delete')) {
+            this._deleteButton(event);
+        } else if (classList.contains('btn-close')) {
+            this._closeButton(event);
         }
     }
 
-    _execute_update_button(event) {
+    _updateButton(event) {
         let myPage = super._getMyPage;
         let text = super._getElementsByClassName(myPage, 'PP0002-content-string');
         this._ifData['content'] = text.value;
@@ -39,30 +31,12 @@ class TodoDialog01 extends TodoPagerController {
         _pager.closePopupPage(super.pageId, this._ifData);
     }
 
-    _event_delete_button() {
-        let self = this;
-        return function(event) {
-            setTimeout(function() {
-                self._execute_delete_button(event);
-            }, 0);
-        }
-    }
-
-    _execute_delete_button(event) {
+    _deleteButton(event) {
         this._ifData['result'] = 'delete';
         _pager.closePopupPage(super.pageId, this._ifData);
     }
 
-    _event_close_button() {
-        let self = this;
-        return function(event) {
-            setTimeout(function() {
-                self._execute_close_button(event);
-            }, 0);
-        }
-    }
-
-    _execute_close_button(event) {
+    _closeButton(event) {
         _pager.closePopupPage(super.pageId);
     }
 
