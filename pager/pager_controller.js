@@ -147,4 +147,20 @@ class PagerController extends PagerBase {
         }
         return tags;
     }
+
+    _addClickEvent() {
+        let myPage = this._getMyPage;
+        myPage.addEventListener('click', this._cleckEventListener());
+    }
+
+    _cleckEventListener() {
+        let self = this;
+        return function(event) {
+            setTimeout(function() {
+                self._cleckEvent(event);
+            }, 0);
+        }
+    }
+
+    _cleckEvent(event) {}
 }

@@ -18,28 +18,21 @@ class CategoryData extends DataModelBase {
     }
     get rowTagClassName() { return 'popup-table-body'; }
     get rows() { return this._listDatas.length; }
+    _createCategoryRowItem(itemString) {
+        let c = document.createElement("p");
+        c.classList.add('category-row-item');
+        c.appendChild(document.createTextNode(itemString));
+        return c;
+    }
+
     rowColumns(index) {
         var ret = [];
         var rowData = this._listDatas[index];
-        var c = document.createElement("p");
-        c.appendChild(document.createTextNode(rowData['id']));
-        ret.push(c);
-
-        c = document.createElement("p");
-        c.appendChild(document.createTextNode(rowData['name']));
-        ret.push(c);
-
-        c = document.createElement("p");
-        c.appendChild(document.createTextNode(rowData['num1']));
-        ret.push(c);
-
-        c = document.createElement("p");
-        c.appendChild(document.createTextNode(rowData['num2']));
-        ret.push(c);
-
-        c = document.createElement("p");
-        c.appendChild(document.createTextNode(rowData['num3']));
-        ret.push(c);
+        ret.push(this._createCategoryRowItem(rowData['id']));
+        ret.push(this._createCategoryRowItem(rowData['name']));
+        ret.push(this._createCategoryRowItem(rowData['num1']));
+        ret.push(this._createCategoryRowItem(rowData['num2']));
+        ret.push(this._createCategoryRowItem(rowData['num3']));
 
         return ret;
     }
@@ -49,7 +42,6 @@ class CategoryData extends DataModelBase {
     get buttons() {
         var ret = [];
         var p = document.createElement("p");
-        p.id = 'add_category';
         p.classList.add('popup_button');
         p.innerText = 'カテゴリ追加';
         ret.push(p);
@@ -62,7 +54,19 @@ class TodoCategoryPage extends TodoPagerController {
         super(p);
         this._dataModel = new CategoryData();
 
-        this._setOperationEvent();
+        super._addClickEvent();
+    }
+
+    _cleckEvent(event) {
+        let classList = event.target.classList;
+        if (classList.contains('share-icon') || classList.contains('edit-icon')) {
+            this._toggleOperation(classList);
+        } else if (classList.contains('category-row-item')) {
+            this._selectCategory(event);
+        } else if (classList.contains('popup_button')) {
+            this._new_category();
+        }
+        super._cleckEvent(event);
     }
 
     _getOperationTag() {
@@ -81,29 +85,9 @@ class TodoCategoryPage extends TodoPagerController {
         return null;
     }
 
-    _setOperationEvent() {
-        let opeTag = this._getOperationTag();
-        if (opeTag !== null) {
-            opeTag.addEventListener('click', this._operation_event());
-        }
-    }
-
-    _operation_event() {
-        return function(event) {
-            // console.log('_operation_event');
-            let cl = event.target.classList;
-            cl.toggle('share-icon');
-            cl.toggle('edit-icon');
-        }
-    }
-
-    _clicked_add_category(self) {
-        var self = this;
-        return function(event) {
-            setTimeout(function() {
-                self._new_category();
-            }, 0);
-        }
+    _toggleOperation(classList) {
+        classList.toggle('share-icon');
+        classList.toggle('edit-icon');
     }
 
     pageHidden() {
@@ -134,19 +118,6 @@ class TodoCategoryPage extends TodoPagerController {
             console.error('no table body');
             return;
         }
-        var rows = wk[0].querySelectorAll('li');
-        for (var i = 0; i < rows.length; ++i) {
-            rows[i].addEventListener('click', this._clickEvent_category_row());
-        }
-    }
-
-    _clickEvent_category_row() {
-        var self = this;
-        return function(event) {
-            setTimeout(function() {
-                self._execute_clickEvent_category_row(event);
-            }, 0);
-        }
     }
 
     _getSelectedItem(li, keyName) {
@@ -155,7 +126,7 @@ class TodoCategoryPage extends TodoPagerController {
         return items;
     }
 
-    _execute_clickEvent_category_row(event) {
+    _selectCategory(event) {
         let opeTag = this._getOperationTag();
         if (opeTag !== null) {
             if (opeTag.classList.contains('share-icon')) {
