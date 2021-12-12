@@ -43,8 +43,7 @@ class TodoTagPage extends TodoPagerController {
         this._dataModel = new TagData();
         this._mode = 'select';
 
-        var myPage = document.getElementById(p);
-        myPage.addEventListener('click', this._myPage_click());
+        super._addClickEvent();
 
         var self = this;
         setTimeout(function() {
@@ -54,6 +53,13 @@ class TodoTagPage extends TodoPagerController {
 
     prepareShow(ifData) {
         this._dataModel._selectedItem = ifData;
+        let mode = this._getElementsByClassName(this._getMyPage, 'share-icon', false, false);
+        if (mode === null) {
+            mode = this._getElementsByClassName(this._getMyPage, 'edit-icon');
+            if (mode !== null) {
+                this._changeMode(mode);
+            }
+        }
     }
 
     pageShown(ifData) {
@@ -65,36 +71,24 @@ class TodoTagPage extends TodoPagerController {
         super.pageHidden();
     }
 
-    _clicked_btn_ok(self) {
-        return function(event) {
-            // console.log(self.pageId + ' ok button click event start');
-            var tags = [];
-            var pTag = document.getElementById(self._pageId);
-            var items = pTag.getElementsByClassName('PP0001-tag-list-item');
-            var num = items.length;
-            for (var i = 0; i < num; ++i) {
-                var item = items[i];
-                if (item.children[0].checked) {
-                    tags.push({'id': item.children[0].value, 'name': item.innerText});
-                }
+    _okButtonClicked() {
+        var tags = [];
+        var pTag = document.getElementById(this._pageId);
+        var items = pTag.getElementsByClassName('PP0001-tag-list-item');
+        var num = items.length;
+        for (var i = 0; i < num; ++i) {
+            var item = items[i];
+            if (item.children[0].checked) {
+                tags.push({'id': item.children[0].value, 'name': item.innerText});
             }
-
-            _pager.closePopupPage(self.pageId,
-                 {'todo-id': self._dataModel._selectedItem['todo-id'], 'tags': tags,
-                  'tag-list': self._dataModel._listDatas});
         }
+
+        _pager.closePopupPage(this.pageId,
+            {'todo-id': this._dataModel._selectedItem['todo-id'], 'tags': tags,
+             'tag-list': this._dataModel._listDatas});
     }
 
-    _myPage_click() {
-        var self = this;
-        return function(event) {
-            setTimeout(function() {
-                self._execute_event(event);
-            }, 0);
-        }
-    }
-
-    _execute_event(event) {
+    _cleckEvent(event) {
         var tag = event.target;
         if (tag.classList.contains('PP0001-add-tag')) {
             this._addTag();
@@ -102,6 +96,8 @@ class TodoTagPage extends TodoPagerController {
             this._changeMode(tag);
         } else if (tag.classList.contains('edit-icon')) {
             this._changeMode(tag);
+        } else if (tag.classList.contains('popup_button')) {
+            this._okButtonClicked();
         } else {
             this._editTag(event);
         }
