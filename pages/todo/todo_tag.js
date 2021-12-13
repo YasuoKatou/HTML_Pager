@@ -88,7 +88,7 @@ class TodoTagPage extends TodoPagerController {
              'tag-list': this._dataModel._listDatas});
     }
 
-    _cleckEvent(event) {
+    _clickEvent(event) {
         var tag = event.target;
         if (tag.classList.contains('PP0001-add-tag')) {
             this._addTag();
@@ -101,6 +101,7 @@ class TodoTagPage extends TodoPagerController {
         } else {
             this._editTag(event);
         }
+        super._clickEvent(event);
     }
 
     _received_read_tags() {

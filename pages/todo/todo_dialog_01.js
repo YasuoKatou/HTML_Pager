@@ -12,7 +12,7 @@ class TodoDialog01 extends TodoPagerController {
         super._addClickEvent();
     }
 
-    _cleckEvent(event) {
+    _clickEvent(event) {
         let classList = event.target.classList;
         if (classList.contains('btn-update')) {
             this._updateButton(event);
@@ -21,6 +21,7 @@ class TodoDialog01 extends TodoPagerController {
         } else if (classList.contains('btn-close')) {
             this._closeButton(event);
         }
+        super._clickEvent(event);
     }
 
     _updateButton(event) {

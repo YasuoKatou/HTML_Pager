@@ -57,7 +57,7 @@ class TodoCategoryPage extends TodoPagerController {
         super._addClickEvent();
     }
 
-    _cleckEvent(event) {
+    _clickEvent(event) {
         let classList = event.target.classList;
         if (classList.contains('share-icon') || classList.contains('edit-icon')) {
             this._toggleOperation(classList);
@@ -66,7 +66,7 @@ class TodoCategoryPage extends TodoPagerController {
         } else if (classList.contains('popup_button')) {
             this._new_category();
         }
-        super._cleckEvent(event);
+        super._clickEvent(event);
     }
 
     _getOperationTag() {

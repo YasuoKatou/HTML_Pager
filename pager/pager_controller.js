@@ -150,17 +150,17 @@ class PagerController extends PagerBase {
 
     _addClickEvent() {
         let myPage = this._getMyPage;
-        myPage.addEventListener('click', this._cleckEventListener());
+        myPage.addEventListener('click', this._clickEventListener());
     }
 
-    _cleckEventListener() {
+    _clickEventListener() {
         let self = this;
         return function(event) {
             setTimeout(function() {
-                self._cleckEvent(event);
+                self._clickEvent(event);
             }, 0);
         }
     }
 
-    _cleckEvent(event) {}
+    _clickEvent(event) {}
 }
