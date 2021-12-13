@@ -8,18 +8,16 @@ class TodoMainPage extends TodoPagerController {
         this._todo_status_css = [
             {id: '0', css: null}, {id: '10', css: 'todo-doing'}, {id: '20', css: 'todo-done'}
         ]
+        this._compFlg = false;
+        this.todo_category_id = '';
         this._setModeFree();
         this._createTodoTitle();
         this._createComment()
 
-        var myPage = document.getElementById(p);
-        myPage.addEventListener('click', this._myPage_click());
-        myPage.addEventListener('dblclick', this._myPage_click());
-        myPage.addEventListener('change', this._myPage_change());
-        myPage.addEventListener('compositionstart', this._ime_status());
-        myPage.addEventListener('compositionend', this._ime_status());
-        this._compFlg = false;
-        this.todo_category_id = '';
+        super._addClickEvent();
+        super._addDoubleClickEvent();
+        super._addChangeEvent();
+        super._addCompositionEvent();
     }
 
     pageShown(ifData) {
@@ -311,94 +309,85 @@ class TodoMainPage extends TodoPagerController {
         };
     }
 
-    _myPage_click() {
-        var self = this;
-        return function(event) {
-            //console.log('_myPage_click (type:' + event.type + ')');
-            setTimeout(function() {
-                self._execute_click_event(event);
-            }, 0);
+    _compositionEvent(event) {
+        try {
+            this._compFlg = (event.type.toLowerCase() === 'compositionstart');
+        } finally {
+            super._compositionEvent(event);
         }
     }
 
-    _myPage_change() {
-        var self = this;
-        return function(event) {
-            if (event.target.classList.contains('todo-status')) {
-                setTimeout(function() {
-                    self._execute_status_change_event(event);
-                }, 0);
-            }
-        }
-    }
-
-    _ime_status() {
-        var self = this;
-        return function(event) {
-            self._compFlg = (event.type.toLowerCase() === 'compositionstart');
-        }
-    }
-
-    _execute_click_event(event) {
-        var tag = event.target;
-        var eventType = event.type.toLowerCase();
-        if (eventType === 'click') {
-            if (tag.classList.contains('new-todo-label-content')) {
+    _clickEvent(event) {
+        try {
+            let classList = event.target.classList;
+            if (classList.contains('new-todo-label-content')) {
                 this._addTodoStart(event);          // 新規にTODOを作成
-            } else if (tag.classList.contains('add-comment')) {
+            } else if (classList.contains('add-comment')) {
                 this._addCommentStart(event);       // 新規にTODOコメントを作成
-            } else if (tag.classList.contains('todo-li-icon')) {
+            } else if (classList.contains('todo-li-icon')) {
                 this._clickSummary(event);          // TODOタイトルを展開／閉じる
-            } else if (tag.classList.contains('summary-title')) {
+            } else if (classList.contains('summary-title')) {
                 this._clickSummary(event);          // TODOタイトルを展開／閉じる
-            } else if (tag.classList.contains('trash-icon')) {
+            } else if (classList.contains('trash-icon')) {
                 this._deleteTodo(event);            // TODO削除
-            } else if (tag.classList.contains('add-todo-tag')) {
+            } else if (classList.contains('add-todo-tag')) {
                 this._addTodoTag(event);            // TODOにタグを設定
             }
-        } else if (eventType === 'dblclick') {
-            if (tag.classList.contains('todo-comment')) {
+        } finally {
+            super._clickEvent(event);
+        }
+    }
+    _doubleClickEvent(event) {
+        try {
+            let classList = event.target.classList;
+            if (classList.contains('todo-comment')) {
                 this._editCommentStart(event);      // TODOコメントを編集
-            } else if (tag.classList.contains('summary-title')) {
+            } else if (classList.contains('summary-title')) {
                 this._editTodoTitleStart(event);    // TODOタイトルを編集
-            }
-        } else {
-            console.error('event type [' + event.type + '] is not support');
+            }    
+        } finally {
+            super._doubleClickEvent(event);
         }
     }
 
-    _execute_status_change_event(event) {
-        var li = this._getTodoLiTag(event.target);
-        if (li === null) return;
-        var todoId = li.dataset.id;
-        var tags = li.getElementsByClassName('summary-title');
-        if (tags.length !== 1) {
-            console.error('no todo taitle class (summary-title)');
-            return;
-        }
-        var statId = event.target.value;
-        var req = {'id': todoId, 'status': statId};
-        super._createAjaxParam('update_status', req, this._received_update_status()).send();
+    _changeEvent(event) {
+        try {
+            if (!event.target.classList.contains('todo-status')) return;
 
-        var sumTag = tags[0];
-        this._todo_status_css.forEach((item) => {
-            if (item.id === statId) {
-                if (item.css !== null) {
-                    sumTag.classList.add(item.css);
-                }
-            } else {
-                if (item.css !== null) {
-                    sumTag.classList.remove(item.css);
-                }
+            var li = this._getTodoLiTag(event.target);
+            if (li === null) return;
+            var todoId = li.dataset.id;
+            var tags = li.getElementsByClassName('summary-title');
+            if (tags.length !== 1) {
+                console.error('no todo taitle class (summary-title)');
+                return;
             }
-        });
+            var statId = event.target.value;
+            var req = {'id': todoId, 'status': statId};
+            super._createAjaxParam('update_status', req, this._received_update_status()).send();
+    
+            var sumTag = tags[0];
+            this._todo_status_css.forEach((item) => {
+                if (item.id === statId) {
+                    if (item.css !== null) {
+                        sumTag.classList.add(item.css);
+                    }
+                } else {
+                    if (item.css !== null) {
+                        sumTag.classList.remove(item.css);
+                    }
+                }
+            });    
+        } finally {
+            super._changeEvent(event);
+        }
     }
     _received_update_status() {
         var self = this;
         return function(respData) {
             let json = JSON.parse(respData);
-            console.log('status uodate response');
-            console.log(json);
+            // console.log('status uodate response');
+            // console.log(json);
 
             let date2 = "";             // 未着手は空欄に変更
             // 着手または完了で日時を設定

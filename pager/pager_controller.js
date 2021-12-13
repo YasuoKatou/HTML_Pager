@@ -163,4 +163,53 @@ class PagerController extends PagerBase {
     }
 
     _clickEvent(event) {}
+
+    _addDoubleClickEvent() {
+        let myPage = this._getMyPage;
+        myPage.addEventListener('dblclick', this._doubleClickEventListener());
+    }
+
+    _doubleClickEventListener() {
+        let self = this;
+        return function(event) {
+            setTimeout(function() {
+                self._doubleClickEvent(event);
+            }, 0);
+        }
+    }
+
+    _doubleClickEvent(event) {}
+
+    _addChangeEvent() {
+        let myPage = this._getMyPage;
+        myPage.addEventListener('change', this._changeEventListener());
+    }
+
+    _changeEventListener() {
+        let self = this;
+        return function(event) {
+            setTimeout(function() {
+                self._changeEvent(event);
+            }, 0);
+        }
+    }
+
+    _changeEvent(event) {}
+
+    _addCompositionEvent() {
+        let myPage = this._getMyPage;
+        myPage.addEventListener('compositionstart', this._compositionEventListener());
+        myPage.addEventListener('compositionend', this._compositionEventListener());
+    }
+
+    _compositionEventListener() {
+        let self = this;
+        return function(event) {
+            setTimeout(function() {
+                self._compositionEvent(event);
+            }, 0);
+        }
+    }
+
+    _compositionEvent(event) {}
 }
