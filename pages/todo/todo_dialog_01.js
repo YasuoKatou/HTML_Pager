@@ -13,15 +13,18 @@ class TodoDialog01 extends TodoPagerController {
     }
 
     _clickEvent(event) {
-        let classList = event.target.classList;
-        if (classList.contains('btn-update')) {
-            this._updateButton(event);
-        } else if (classList.contains('btn-delete')) {
-            this._deleteButton(event);
-        } else if (classList.contains('btn-close')) {
-            this._closeButton(event);
+        try {
+            let classList = event.target.classList;
+            if (classList.contains('btn-update')) {
+                this._updateButton(event);
+            } else if (classList.contains('btn-delete')) {
+                this._deleteButton(event);
+            } else if (classList.contains('btn-close')) {
+                this._closeButton(event);
+            }    
+        } finally {
+            super._clickEvent(event);
         }
-        super._clickEvent(event);
     }
 
     _updateButton(event) {

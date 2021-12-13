@@ -58,15 +58,18 @@ class TodoCategoryPage extends TodoPagerController {
     }
 
     _clickEvent(event) {
-        let classList = event.target.classList;
-        if (classList.contains('share-icon') || classList.contains('edit-icon')) {
-            this._toggleOperation(classList);
-        } else if (classList.contains('category-row-item')) {
-            this._selectCategory(event);
-        } else if (classList.contains('popup_button')) {
-            this._new_category();
+        try {
+            let classList = event.target.classList;
+            if (classList.contains('share-icon') || classList.contains('edit-icon')) {
+                this._toggleOperation(classList);
+            } else if (classList.contains('category-row-item')) {
+                this._selectCategory(event);
+            } else if (classList.contains('popup_button')) {
+                this._new_category();
+            }    
+        } finally {
+            super._clickEvent(event);
         }
-        super._clickEvent(event);
     }
 
     _getOperationTag() {

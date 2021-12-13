@@ -89,19 +89,23 @@ class TodoTagPage extends TodoPagerController {
     }
 
     _clickEvent(event) {
-        var tag = event.target;
-        if (tag.classList.contains('PP0001-add-tag')) {
-            this._addTag();
-        } else if (tag.classList.contains('share-icon')) {
-            this._changeMode(tag);
-        } else if (tag.classList.contains('edit-icon')) {
-            this._changeMode(tag);
-        } else if (tag.classList.contains('popup_button')) {
-            this._okButtonClicked();
-        } else {
-            this._editTag(event);
+        try {
+            let tag = event.target;
+            let classList = tag.classList;
+            if (classList.contains('PP0001-add-tag')) {
+                this._addTag();
+            } else if (classList.contains('share-icon')) {
+                this._changeMode(tag);
+            } else if (classList.contains('edit-icon')) {
+                this._changeMode(tag);
+            } else if (classList.contains('popup_button')) {
+                this._okButtonClicked();
+            } else {
+                this._editTag(event);
+            }    
+        } finally {
+            super._clickEvent(event);
         }
-        super._clickEvent(event);
     }
 
     _received_read_tags() {
