@@ -8,24 +8,6 @@
  */
  class PagerBase {}
 
- /**
-  * クリックイベント情報クラス.
-  * 
-  * @version 0.0.1
-  * @since 0.0.1
-  * 
-  * @author Y.Katou <yasuokatou@gmail.com>
-  */
-  class PagerClickEvent extends PagerBase {
-     constructor(tag_id, event_func) {
-         super();
-         this._tagId = tag_id;
-         this._eventFunc = event_func;
-     }
-     get tagId() { return this._tagId; }
-     get eventFunc() { return this._eventFunc; }
- }
-
 /**
  * ファンクションキー情報クラス.
  * 

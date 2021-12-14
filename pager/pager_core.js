@@ -9,7 +9,6 @@
  class PagerCore extends PagerBase {
     constructor() {
         super();
-        this._clickEventList = [];
         this._functionKeyList = [];
         this._pageControllerList = [];
         this._popupSave = [];
@@ -225,20 +224,6 @@
         }
     }
 
-    _click_event(self) {
-        return function(event) {
-            var id = event.target.id;
-            for (var i = 0; i < self._clickEventList.length; ++i) {
-                if (self._clickEventList[i].tagId === id) {
-                    setTimeout(function() {
-                        self._clickEventList[i].eventFunc(event);
-                    }, 0);
-                    break;
-                }
-            }
-        }
-    }
-
     _funcKeyLabels(self, event) {
         var mask = PagerFunctionKey.KEY_ID_NO_MODIFIRE;
         var suffix = PagerController.FUNC_KEY_PROC_SUFFIX_NO_MODIFIRE;
@@ -282,8 +267,6 @@
     initPage() {
         //Function キー非表示
         if (this._configFKey && !this._FKeyVisible) { this._funcKeys("hidden"); }
-        //クリックイベントの設定
-        document.addEventListener('click', this._click_event(this));
         //キーボードイベントの設定
         document.addEventListener('keydown', this._keyDown_event(this));
         document.addEventListener('keyup', this._keyUp_event(this));
@@ -300,19 +283,6 @@
      * @param {PagerController}} p - Pagerコントローラクラス
      */
     addPageController(p) { this._pageControllerList.push(p); }
-
-    /**
-     * クリックイベント情報を登録する.
-     * @param {PagerClickEvent} p - クリックイベント情報クラス
-     * @since 0.0.1
-     */
-    addClickEvent(p) { this._clickEventList.push(p); }
-
-    removeClickEvent(id) {
-        this._clickEventList = this._clickEventList.filter((evtClass) => {
-            return (evtClass.tagId !== id);
-        });
-    }
 
     /**
      * ファンクションキー情報をクリアする.
