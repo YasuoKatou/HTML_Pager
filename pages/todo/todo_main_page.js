@@ -1,9 +1,9 @@
 class TodoMainPage extends TodoPagerController {
     constructor(p) {
         super(p);
-        this._DATE1_FMT = '登録日 : yyyy年MM月dd日 HH時mm分';
-        this._DATE2_WORKING_FMT = '着手日 : yyyy年MM月dd日 HH時mm分';
-        this._DATE2_FINISHED_FMT = '完了日 : yyyy年MM月dd日 HH時mm分';
+        this._DATE1_FMT = '登録日 : MM/dd HH:mm';
+        this._DATE2_WORKING_FMT = '着手日 : MM/dd HH:mm';
+        this._DATE2_FINISHED_FMT = '完了日 : MM/dd HH:mm';
         this._todo_status = [];
         this._todo_status_css = [
             {id: '0', css: null}, {id: '10', css: 'todo-doing'}, {id: '20', css: 'todo-done'}
@@ -56,11 +56,9 @@ class TodoMainPage extends TodoPagerController {
         textAtra.rows = 5;
         textAtra.setAttribute("type", "text");
         textAtra.placeholder = 'コメントを入力';
-        textAtra.addEventListener('dblclick', this._inputTodoComment());
         textAtra.addEventListener('keydown', this._keyInputComment());
         var iconTag = document.createElement('p');
         iconTag.classList.add('comment-fix')
-        iconTag.addEventListener('click', this._inputTodoComment());
         var body = document.createElement('div');
 
         body.appendChild(textAtra);
@@ -103,15 +101,6 @@ class TodoMainPage extends TodoPagerController {
         }
     }
 
-    _inputTodoComment() {
-        var self = this;
-        return function(event) {
-            setTimeout(function() {
-                self._execute_todoComment(event);
-            }, 0);
-        }
-    }
-
     _execute_keyInputTodoTitle(event) {
         this._todoTitle.remove();
         var isNewTodo = this._mode === this._MODE.ADD_TODO;
@@ -130,7 +119,7 @@ class TodoMainPage extends TodoPagerController {
             };
             newTodoLabel.parentNode.insertBefore(this._createDetailsTag(newTodo),
                                                  newTodoLabel.nextElementSibling);
-    
+
             // サーバ登録
             var req = {'title': this._todoTitle.value, 'temp-id': tmpId, 'category-id': this.todo_category_id};
             super._createAjaxParam('add_todo', req, this._received_new_todo()).send();
@@ -274,8 +263,8 @@ class TodoMainPage extends TodoPagerController {
     _received_update_comment() {
         return function(respData) {
             // コメントの更新（レスポンス受信）では、特に何もしない
-            var json = JSON.parse(respData);
-            console.log('comment updated(id:' + json['id'] + ')');
+            // var json = JSON.parse(respData);
+            // console.log('comment updated(id:' + json['id'] + ')');
         };
     }
 
@@ -332,6 +321,8 @@ class TodoMainPage extends TodoPagerController {
                 this._deleteTodo(event);            // TODO削除
             } else if (classList.contains('add-todo-tag')) {
                 this._addTodoTag(event);            // TODOにタグを設定
+            } else if (classList.contains('comment-fix')) {
+                this._execute_todoComment(event);   // TODOコメントの編集終了
             }
         } finally {
             super._clickEvent(event);
@@ -339,12 +330,15 @@ class TodoMainPage extends TodoPagerController {
     }
     _doubleClickEvent(event) {
         try {
-            let classList = event.target.classList;
+            let target = event.target;
+            let classList = target.classList;
             if (classList.contains('todo-comment')) {
                 this._editCommentStart(event);      // TODOコメントを編集
             } else if (classList.contains('summary-title')) {
                 this._editTodoTitleStart(event);    // TODOタイトルを編集
-            }    
+            } else if (target.id === 'new_todo_comment') {
+                this._execute_todoComment(event);
+            }
         } finally {
             super._doubleClickEvent(event);
         }
@@ -365,7 +359,7 @@ class TodoMainPage extends TodoPagerController {
             var statId = event.target.value;
             var req = {'id': todoId, 'status': statId};
             super._createAjaxParam('update_status', req, this._received_update_status()).send();
-    
+
             var sumTag = tags[0];
             this._todo_status_css.forEach((item) => {
                 if (item.id === statId) {
@@ -377,7 +371,7 @@ class TodoMainPage extends TodoPagerController {
                         sumTag.classList.remove(item.css);
                     }
                 }
-            });    
+            });
         } finally {
             super._changeEvent(event);
         }
