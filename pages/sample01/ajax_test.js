@@ -1,32 +1,27 @@
 class AjaxTest extends PagerController {
     constructor(p) {
         super(p);
+
+        super._addClickEvent();
     }
     get funcKeyDisplay() { return "hidden"; }
 
-    clicked_pat_btn1(self) {
-        return function(event) {
-            self._searchPostalCode(event);
-        }
-    }
-    clicked_pat_no_host(self) {
-        return function(event) {
-            self._hostErrorTest(event);
-        }
-    }
-    clicked_pat_not_found(self) {
-        return function(event) {
-            self._urlErrorTest(event);
-        }
-    }
-    clicked_pat_svr_err(self) {
-        return function(event) {
-            self._serverErrorTest(event);
-        }
-    }
-    clicked_pat_timeout(self) {
-        return function(event) {
-            self._timeoutTest(event);
+    _clickEvent(event) {
+        try {
+            let id = event.target.id;
+            if (id === 'pat_btn1') {
+                this._searchPostalCode(event);
+            } else if (id === 'pat_no_host') {
+                this._hostErrorTest(event);
+            } else if (id === 'pat_not_found') {
+                this._urlErrorTest(event);
+            } else if (id === 'pat_svr_err') {
+                this._serverErrorTest(event);
+            } else if (id === 'pat_timeout') {
+                this._timeoutTest(event);
+            }
+        } finally {
+            super._clickEvent(event);
         }
     }
 

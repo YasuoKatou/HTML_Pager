@@ -93,15 +93,12 @@ class TodoCategoryPage extends TodoPagerController {
         classList.toggle('edit-icon');
     }
 
-    pageHidden() {
-        super._removeDynamicEvent();
-        super.pageHidden();
-    }
-
     pageShown(ifData) {
-        super._createAjaxParam('read_category', {}, this._response_readCategory()).send();
-        super._dynamicAssignEvent();
-        super.pageShown(ifData);
+        try {
+            super._createAjaxParam('read_category', {}, this._response_readCategory()).send();
+        } finally {
+            super.pageShown(ifData);
+        }
     }
 
     _response_readCategory() {

@@ -62,15 +62,6 @@ class TodoTagPage extends TodoPagerController {
         }
     }
 
-    pageShown(ifData) {
-        super._dynamicAssignEvent();
-        super.pageShown(ifData);
-    }
-    pageHidden() {
-        super._removeDynamicEvent();
-        super.pageHidden();
-    }
-
     _okButtonClicked() {
         var tags = [];
         var pTag = document.getElementById(this._pageId);

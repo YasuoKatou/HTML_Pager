@@ -88,34 +88,20 @@ class SamplePage003 extends PagerController {
     constructor(p) {
         super(p);
         this._dataModel = new SamplePage003Data();
+
+        super._addClickEvent();
     }
     get funcKeyDisplay() { return "hidden"; }
 
-    prepareShow(ifData) {
-        console.log(ifData);
-        super.prepareShow(ifData);
-    }
-
-    pageShown(ifData) {
-        super._dynamicAssignEvent();
-        super.pageShown(ifData);
-    }
-    pageHidden() {
-        super._removeDynamicEvent();
-        super.pageHidden();
-    }
-
-    _clicked_p3_close(self) {
-        return function(event) {
-            // console.log(self.pageId + ' close button click event start');
-            _pager.closePopupPage(self.pageId);
-        }
-    }
-
-    _clicked_p3_ok(self) {
-        return function(event) {
-            // console.log(self.pageId + ' ok button click event start');
-            _pager.closePopupPage(self.pageId, 'popup ok button.');
+    _clickEvent(event) {
+        try {
+            if (event.target.id === 'p3_close') {
+                _pager.closePopupPage(this.pageId);
+            } else if (event.target.id === 'p3_ok') {
+                _pager.closePopupPage(this.pageId, 'popup ok button.');
+            }
+        } finally {
+            super._clickEvent(event);
         }
     }
 }

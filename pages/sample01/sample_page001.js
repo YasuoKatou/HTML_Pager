@@ -4,13 +4,19 @@
 class SamplePage001 extends PagerController {
     constructor(p) {
         super(p);
+
+        super._addClickEvent();
     }
     get funcKeyDisplay() { return "hidden"; }
 
-    clicked_p1_btn1(self) {
-        return function(event) {
-            console.log(self.pageId + ' click event start');
-            self._login(event);
+    _clickEvent(event) {
+        try {
+            if (event.target.id === 'p1_btn1') {
+                console.log(self.pageId + ' click event start');
+                this._login(event);
+            }
+        } finally {
+            super._clickEvent(event);
         }
     }
 

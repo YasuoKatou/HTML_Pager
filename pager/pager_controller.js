@@ -11,52 +11,6 @@ class PagerController extends PagerBase {
         super();
         this._pageId = p;
         this._dataModel = null;
-        this._assignEvents();
-    }
-    _assignEvents() {
-        this._assignEventByType('clicked_');
-    }
-    _dynamicAssignEvent() {
-        this._assignEventByType('_clicked_');
-    }
-    _assignEventByType(eventType) {
-        if (this._pageId === "non-page") return;
-        var pTag = document.getElementById(this._pageId);
-        if (pTag === null) {
-            console.error("root tag ('" + this._pageId + "') is not found ...");
-            return;
-        }
-        var prefixSize = eventType.length;
-        Object.getOwnPropertyNames(this.__proto__).forEach(name => {
-            // console.log(name);
-            if (name.startsWith(eventType)) {
-                // クリックイベントの登録
-                var n = name.substr(prefixSize);
-                // ID で検索
-                var e = pTag.querySelector("#" + n);
-                if (e !== null) {
-                    _pager.addClickEvent(new PagerClickEvent(n, this[name](this)));
-                } else {
-                    // css で検索
-                    e = pTag.querySelector("." + n);
-                    if (e !== null) {
-                        _pager.addClickEvent(new PagerClickEvent(n, this[name](this)));
-                    } else {
-                        console.error(name + " function not assign events");
-                    }
-                }
-            }
-        });
-    }
-    _removeDynamicEvent() {
-        var eventType = '_clicked_';
-        var prefixSize = eventType.length;
-        Object.getOwnPropertyNames(this.__proto__).forEach(name => {
-            if (name.startsWith(eventType)) {
-                var n = name.substr(prefixSize);
-                _pager.removeClickEvent(n);
-            }
-        });
     }
 
     prepareShow(ifData = undefined) {}
