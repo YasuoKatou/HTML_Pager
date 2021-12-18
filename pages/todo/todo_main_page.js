@@ -21,7 +21,6 @@ class TodoMainPage extends TodoPagerController {
     }
 
     pageShown(ifData) {
-        var self = this;
         this.todo_category_id = ifData['category_id'];
         var h = document.getElementById('header-title');
         if (h !== null) {
@@ -29,6 +28,7 @@ class TodoMainPage extends TodoPagerController {
         } else {
             console.error('no header id (header-title)');
         }
+        let self = this;
         setTimeout(function() {
             self._createAjaxParam('read_todo', ifData, self._execute_ShowTodo()).send();
         }, 0);
@@ -325,6 +325,10 @@ class TodoMainPage extends TodoPagerController {
                 this._addTodoTag(event);            // TODOにタグを設定
             } else if (classList.contains('comment-fix')) {
                 this._execute_todoComment(event);   // TODOコメントの編集終了
+            } else if (classList.contains('move-category')) {
+                // カテゴリの移動
+                this._changeCategoryTodoId = this._getTodoID(event.target);
+                super._createAjaxParam('read_category', {'type': '1'}, this._response_readCategory()).send();
             }
         } finally {
             super._clickEvent(event);
@@ -378,13 +382,29 @@ class TodoMainPage extends TodoPagerController {
             super._changeEvent(event);
         }
     }
+
+    _response_readCategory() {
+        var self = this;
+        return function(respData) {
+            let json = JSON.parse(respData);
+            // 現在表示中のカテゴリを選択中にする
+            let num = json['category_list'].length;
+            for (let index = 0; index < num; ++index) {
+                var item = json['category_list'][index];
+                if (item['id'] === self.todo_category_id) {
+                    item['selected'] = true;
+                    break;
+                }
+            }
+            // console.log(movList);
+            _pager.popupPageById('PP0003', json['category_list']);
+        }
+    }
+
     _received_update_status() {
         var self = this;
         return function(respData) {
             let json = JSON.parse(respData);
-            // console.log('status uodate response');
-            // console.log(json);
-
             let date2 = "";             // 未着手は空欄に変更
             // 着手または完了で日時を設定
             if (json['status'] == '10') {
@@ -633,6 +653,10 @@ class TodoMainPage extends TodoPagerController {
         statLabel.innerText = '状態 : ';
         statLabel.appendChild(stat);
         opeDiv.appendChild(statLabel);
+        // カテゴリ移動アイコン
+        let mov = document.createElement('p');
+        mov.classList.add('move-category');
+        opeDiv.appendChild(mov);
         // タグ
         var tagDiv = document.createElement('div');
         todoItemJson.tags.forEach(function(tag) {
@@ -742,8 +766,21 @@ class TodoMainPage extends TodoPagerController {
             tags.push(item.dataset.id);
         }
         var todoId = this._getTodoID(pTag);
-        // console.log('start _addTodoTag todo(' + todoId + ')');
         _pager.popupPageById('PP0001', {'todo-id': todoId, 'tags': tags});
+    }
+
+    _findTodoTagById(todoId) {
+        let liList = super._getMyPage.getElementsByTagName('li');
+        let num = liList.length;
+        for (let index = 0; index < num; ++index) {
+            var li = liList[index];
+            if (!li.classList.contains('todo-item')) continue;
+            if (li.dataset.id === todoId) {
+                return li;
+            }
+        }
+        console.error('there is none todo (id:' + todoId + ')');
+        return null;
     }
 
     closedForm(pid, ifData) {
@@ -752,13 +789,28 @@ class TodoMainPage extends TodoPagerController {
             this._updateTodoTags(ifData);
             this._updateTodoTagServer(ifData);
             this._refreshOtherTodoTags(ifData);
+        } else if (pid === 'PP0003') {
+            let catId = ifData['selected-id'];
+            if (catId === this.todo_category_id) return;
+            let req = {'todo-id': this._changeCategoryTodoId, 'category_id_fm': this.todo_category_id, 'category_id_to': catId};
+            super._createAjaxParam('move_category', req, this._moveCategory()).send();
         } else {
             console.error(pid + ' is not support');
         }
     }
 
+    _moveCategory() {
+        var self = this;
+        return function(respData) {
+            let resp = JSON.parse(respData);
+            let todo = self._findTodoTagById(resp['todo-id']);
+            if (todo) {
+                todo.remove();
+            }
+        }
+    }
+
     _updateTodoTags(tagInfo) {
-        // console.log(tagInfo);
         let todos = this._getElementsByClassName(this._getMyPage, 'todo-item', true);
         let num = todos.length;
         let targetTodo = null;

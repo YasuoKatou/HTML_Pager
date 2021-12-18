@@ -29,7 +29,6 @@ class TagData extends DataModelBase {
     get buttons() {
         let ret = [];
         let p = document.createElement("p");
-        p.id = 'btn_ok';
         p.classList.add('popup_button');
         p.innerText = 'OK';
         ret.push(p);

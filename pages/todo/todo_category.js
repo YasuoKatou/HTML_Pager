@@ -95,7 +95,7 @@ class TodoCategoryPage extends TodoPagerController {
 
     pageShown(ifData) {
         try {
-            super._createAjaxParam('read_category', {}, this._response_readCategory()).send();
+            super._createAjaxParam('read_category', {'type': '2'}, this._response_readCategory()).send();
         } finally {
             super.pageShown(ifData);
         }

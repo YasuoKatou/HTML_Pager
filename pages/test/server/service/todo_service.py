@@ -12,7 +12,19 @@ class TodoService(_service_base.TodoServiceBase):
     def __init__(self):
         super().__init__()
 
-    def _read_category(self):
+    def _read_category1(self):
+        def newCategory(id, name):
+            return {'id': str(id), 'name': name}
+
+        catList = [newCategory(0, '未分類')]
+        with super()._db_connect() as conn:
+            with super()._db_cursor(conn) as cur:
+                cur.execute('select T1.id, T1.name from TODO_CATEGORY T1 order by T1.name')
+                for row in cur:
+                    catList.append(newCategory(row['id'], row['name']))
+        return {"category_list": catList}
+
+    def _read_category2(self):
         def newCategory(id, name):
             return {'id': str(id), 'name': name, 'num1': '0', 'num2': '0', 'num3': '0'}
         def updateNum(row, status, num):
@@ -106,7 +118,11 @@ class TodoService(_service_base.TodoServiceBase):
         return {"todo_list": todoList, 'status_list': statList}
 
     def read_category(self, req):
-        return self._read_category()
+        if req['type'] == '1':
+            return self._read_category1()
+        elif req['type'] == '2':
+            return self._read_category2()
+        # TODO エラー処理
 
     def add_category(self, req):
         #print('request : {}'.format(dir(request)))
@@ -117,7 +133,7 @@ class TodoService(_service_base.TodoServiceBase):
             with conn.cursor() as cur:
                 cur.execute('INSERT INTO TODO_CATEGORY(name,create_ts,update_ts) VALUES(%s, %s, %s)', param)
             conn.commit()
-        return self._read_category()
+        return self._read_category2()
 
     def update_category(self, req):
         now = super()._getNow()
@@ -126,7 +142,7 @@ class TodoService(_service_base.TodoServiceBase):
             with conn.cursor() as cur:
                 cur.execute('UPDATE TODO_CATEGORY SET name = %s, update_ts = %s WHERE id = %s', param)
             conn.commit()
-        return self._read_category()
+        return self._read_category2()
 
     def delete_category(self, req):
         param = (req['id'], )
@@ -135,7 +151,35 @@ class TodoService(_service_base.TodoServiceBase):
                 cur.execute('DELETE FROM TODO_CATEGORIES WHERE category_id = %s', param)
                 cur.execute('DELETE FROM TODO_CATEGORY WHERE id = %s', param)
             conn.commit()
-        return self._read_category()
+        return self._read_category2()
+
+    def move_category(self, req):
+        now = super()._getNow()
+        todoId = req['todo-id']
+        if req['category_id_to'] == '0':
+            # 未分類にする。カテゴリ一覧から削除する
+            with super()._db_connect() as conn:
+                with conn.cursor() as cur:
+                    cur.execute('DELETE FROM TODO_CATEGORIES WHERE todo_id = %s', (todoId, ))
+                conn.commit()
+        else:
+            if req['category_id_fm'] == '0':
+                # 未分類から未分類以外に移動
+                sql = ''' INSERT INTO TODO_CATEGORIES(category_id,todo_id,create_ts,update_ts)
+                          VALUES(%s,%s,%s,%s)'''
+                with super()._db_connect() as conn:
+                    with conn.cursor() as cur:
+                        cur.execute(sql, (req['category_id_to'], todoId, now, now))
+                    conn.commit()
+            else:
+                # 未分類以外から未分類以外に移動
+                sql = ''' UPDATE TODO_CATEGORIES set category_id = %s, update_ts = %s
+                          WHERE todo_id = %s'''
+                with super()._db_connect() as conn:
+                    with conn.cursor() as cur:
+                        cur.execute(sql, (req['category_id_to'], now, todoId))
+                    conn.commit()
+        return req
 
     def read_tags(self, req):
         return {'tags': self._read_tags()}
