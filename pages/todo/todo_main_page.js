@@ -95,8 +95,10 @@ class TodoMainPage extends TodoPagerController {
             if (self._compFlg) return;
             if (event.code.toLowerCase() === 'escape') {
                 self._todoComment.remove();
-                self._hiddenComment.style.display = 'block';
-                self._hiddenComment = null;
+                if (self._hiddenComment) {
+                    self._hiddenComment.style.display = 'block';
+                    self._hiddenComment = null;
+                }
             }
         }
     }
