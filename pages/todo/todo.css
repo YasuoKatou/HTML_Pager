@@ -257,35 +257,38 @@
     width: var(--category-list-finished-width);
 }
 
-.popup-table-body > ul > li {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
+.popup-body li {
+    padding: 0;
+    height: 3em;
+}
+
+.TG001-item-label-container:hover {
+    background: #c4cde9;
 }
 
 /**
  * カテゴリ一覧のカテゴリID
  */
-.popup-table-body > ul > li > p:nth-child(1) {
+.TG001-item-label-container > p:nth-child(1) {
     width: 0;
     display: none;
 }
 
-.popup-table-body > ul > li > p:nth-child(2) {
+.TG001-item-label-container > p:nth-child(2) {
     flex-grow: 1;
 }
 
-.popup-table-body > ul > li > p:nth-child(3) {
+.TG001-item-label-container > p:nth-child(3) {
     width: var(--category-list-noprocess-width);
     text-align: right;
 }
 
-.popup-table-body > ul > li > p:nth-child(4) {
+.TG001-item-label-container > p:nth-child(4) {
     width: var(--category-list-processing-width);
     text-align: right;
 }
 
-.popup-table-body > ul > li > p:nth-child(5) {
+.TG001-item-label-container > p:nth-child(5) {
     width: var(--category-list-finished-width);
     text-align: right;
 }

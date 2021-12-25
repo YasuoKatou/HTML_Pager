@@ -18,22 +18,45 @@ class CategoryData extends DataModelBase {
     }
     get rowTagClassName() { return 'popup-table-body'; }
     get rows() { return this._listDatas.length; }
+
+    _createRowBackMenu() {
+       let div = document.createElement('div');
+       div.classList.add('TG001-back-menu-container');
+       let p = document.createElement('p');
+       p.classList.add('TG001-back-menu-01');
+       p.innerText = '変更';
+       div.appendChild(p);
+       p = document.createElement('p');
+       p.classList.add('TG001-back-menu-02');
+       p.innerText = '削除';
+       div.appendChild(p);
+       return div;
+    }
+
     _createCategoryRowItem(itemString) {
-        let c = document.createElement("p");
+        let c = document.createElement('p');
         c.classList.add('category-row-item');
         c.appendChild(document.createTextNode(itemString));
         return c;
     }
 
     rowColumns(index) {
-        var ret = [];
-        var rowData = this._listDatas[index];
-        ret.push(this._createCategoryRowItem(rowData['id']));
-        ret.push(this._createCategoryRowItem(rowData['name']));
-        ret.push(this._createCategoryRowItem(rowData['num1']));
-        ret.push(this._createCategoryRowItem(rowData['num2']));
-        ret.push(this._createCategoryRowItem(rowData['num3']));
+        let item = document.createElement('div');
+        item.classList.add('TG001-item-body');
+        item.appendChild(this._createRowBackMenu());
 
+        let rowData = this._listDatas[index];
+        let row = document.createElement('div');
+        row.classList.add('TG001-item-label-container');
+        row.appendChild(this._createCategoryRowItem(rowData['id']));
+        row.appendChild(this._createCategoryRowItem(rowData['name']));
+        row.appendChild(this._createCategoryRowItem(rowData['num1']));
+        row.appendChild(this._createCategoryRowItem(rowData['num2']));
+        row.appendChild(this._createCategoryRowItem(rowData['num3']));
+        item.appendChild(row);
+
+        let ret = [];
+        ret.push(item);
         return ret;
     }
     get buttonsOperationClassName() {
@@ -66,10 +89,41 @@ class TodoCategoryPage extends TodoPagerController {
                 this._selectCategory(event);
             } else if (classList.contains('popup_button')) {
                 this._new_category();
-            }    
+            } else if (classList.contains('TG001-back-menu-01')) {
+                this._closeCategorySlide(event.target);
+                let parent = event.target.parentNode.nextElementSibling;
+                let param = this._getSelectedItem(parent, 'category_name');
+                let self = this;
+                self.__param = param;
+                setTimeout(function() {
+                    var value = prompt("カテゴリ名の変更", self.__param['category_name']);
+                    if (value === null) return;
+                    if (value === self.__param['category_name']) return;
+                    let req = {'id': self.__param['category_id'], 'name': value};
+                    self._createAjaxParam('update_category', req, self._response_readCategory()).send();
+                }, 1100);  // 一覧のスライダーが閉じる時間＋100ms
+            } else if (classList.contains('TG001-back-menu-02')) {
+                this._closeCategorySlide(event.target);
+                let parent = event.target.parentNode.nextElementSibling;
+                let param = this._getSelectedItem(parent, 'category_name');
+                let self = this;
+                self.__param = param;
+                setTimeout(function() {
+                    let exec = confirm("「" + self.__param['category_name'] + "」(id:" + self.__param['category_id'] + ") を削除します");
+                    if (!exec) return;
+                    let req = {'id': self.__param['category_id']};
+                    self._createAjaxParam('delete_category', req, self._response_readCategory()).send();
+                }, 1100);  // 一覧のスライダーが閉じる時間＋100ms
+            }
         } finally {
             super._clickEvent(event);
         }
+    }
+
+    _closeCategorySlide(target) {
+        let p = target.closest('.TG001-item-body');
+        let els = p.getElementsByClassName('TG001-item-label-container');
+        els[0].classList.remove('active');
     }
 
     _getOperationTag() {
@@ -120,9 +174,9 @@ class TodoCategoryPage extends TodoPagerController {
         }
     }
 
-    _getSelectedItem(li, keyName) {
-        let items = {'category_id': li.children[0].innerText};
-        items[keyName] = li.children[1].innerText;
+    _getSelectedItem(parent, keyName) {
+        let items = {'category_id': parent.children[0].innerText};
+        items[keyName] = parent.children[1].innerText;
         return items;
     }
 
@@ -132,16 +186,29 @@ class TodoCategoryPage extends TodoPagerController {
             if (opeTag.classList.contains('share-icon')) {
                 this._show_todo(event);
             } else if (opeTag.classList.contains('edit-icon')) {
-                let param = this._getSelectedItem(event.target.parentNode, 'content');
-                param['dialog-title'] = 'カテゴリの更新／削除'
-                _pager.popupPageById('PP0002', param);
+                this._activeEditCategory(event);
             }
         }
     }
 
+    _activeEditCategory(event) {
+        let target = event.target;
+        if (target.classList.contains('category-row-item')) {
+            let parent = target.parentNode;
+            let ul = target.closest('ul');
+            let els = ul.getElementsByClassName('TG001-item-label-container');
+            for (let index = 0; index < els.length; ++index) {
+                if (els[index] !== parent) {
+                    els[index].classList.remove('active');
+                }
+            }
+            parent.classList.toggle('active');
+        }
+    }
+
     _show_todo(event) {
-        var li = event.target.parentNode;
-        _pager.changePageById("todo_main", this._getSelectedItem(li, 'category_name'));
+        let parent = event.target.parentNode;
+        _pager.changePageById("todo_main", this._getSelectedItem(parent, 'category_name'));
     }
 
     _new_category() {
@@ -150,31 +217,5 @@ class TodoCategoryPage extends TodoPagerController {
 
         var req = {'category_name': value};
         super._createAjaxParam('add_category', req, this._response_readCategory()).send();
-    }
-
-    closedForm(pid, ifData = undefined) {
-        let svcId = null;
-        let svcReq = null;
-        if (pid === 'PP0002') {
-            if (ifData !== undefined) {
-                if ('result' in ifData) {
-                    if (ifData['result'] === 'update') {
-                        svcId = 'update_category';
-                        svcReq = {'id': ifData['category_id'], 'name': ifData['content']};
-                    } else if (ifData['result'] === 'delete') {
-                        svcId = 'delete_category';
-                        svcReq = {'id': ifData['category_id']};
-                    } else {
-                        console.error('result string error : ' + ifData['result'] + ' at TodoCategoryPage');
-                    }
-                } else {
-                    console.error('not result attribute at TodoCategoryPage');
-                }
-            }
-        }
-        if (svcId !== null) {
-            super._createAjaxParam(svcId, svcReq, this._response_readCategory()).send();
-        }
-        super.closedForm(ifData);
     }
 }
