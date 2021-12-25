@@ -139,7 +139,7 @@
 
 .PP0001-mode-operation {
     display: flex;
-    margin-bottom: 20px;
+    margin: 10px 0 10px 0;
     justify-content: space-between;
 }
 
@@ -175,14 +175,6 @@
 .PP0003-form {
     width: 20em;
     background-color: white;
-}
-
-.PP0001-form > H3,
-.PP0003-form > H3 {
-    text-align: center;
-    margin-bottom: 0.5em;
-    background-color: #fa4141;
-    color: #fff;
 }
 
 .PP0001-tag-list-container,
@@ -298,15 +290,9 @@
     background-color: white;
 }
 
-.PP0002-dialog-title {
-    text-align: center;
-    margin-bottom: 0.5em;
-    background-color: #fa4141;
-    color: #fff;
-}
-
 .PP0002-input-wrapper {
     text-align: center;
+    margin-top: 10px;
 }
 
 .PP0002-content-string {
