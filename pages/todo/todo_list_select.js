@@ -1,4 +1,4 @@
-class TodoSelectData extends DataModelBase {
+class TodoSelectData extends TodoDataModel {
     constructor() {
         super();
         this._listDatas = [];
@@ -16,21 +16,27 @@ class TodoSelectData extends DataModelBase {
     }
     get rowTagClassName() { return 'popup-table-body'; }
     get rows() { return this._listDatas.length; }
+
     rowColumns(index) {
-        let ret = [];
-        let item = this._listDatas[index];
+        let item = document.createElement('div');
+        item.classList.add('TG001-item-body');
+
+        let rowData = this._listDatas[index];
+        let rowLabel = super._createLabelContainer();
         let p = document.createElement("p");
-        p.innerText = item['id'];
-        ret.push(p);
+        p.innerText = rowData['id'];
+        rowLabel.appendChild(p);
 
         p = document.createElement("p");
-        p.innerText = item['name'];
+        p.innerText = rowData['name'];
         p.classList.add('PP0003-row');
-        if ('selected' in item) {
+        if ('selected' in rowData) {
             p.classList.add('PP0003-selected');
         }
-        ret.push(p);
-        return ret;
+        rowLabel.appendChild(p);
+        item.appendChild(rowLabel);
+
+        return [item];
     }
 }
 
