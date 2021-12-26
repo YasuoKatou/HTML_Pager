@@ -31,3 +31,45 @@ class TodoPagerController extends PagerController {
         return format;
     }
 }
+
+class ListSliderPageController extends TodoPagerController {
+    constructor(p) {
+        super(p);
+    }
+
+    _clickEvent(event) {
+        try {
+            let classList = event.target.classList;
+            if (classList.contains('TG001-back-menu-01')) {
+                this._closeCategorySlide(event.target);
+                this._executeBackMenu01(event);
+            } else if (classList.contains('TG001-back-menu-02')) {
+                this._closeCategorySlide(event.target);
+                this._executeBackMenu02(event);
+            }
+        } finally {
+            super._clickEvent(event);
+        }
+    }
+
+    _executeBackMenu01(event) {}
+    _executeBackMenu02(event) {}
+
+    _setActiveRowSlider(target) {
+        let parent = target.parentNode;
+        let ul = target.closest('ul');
+        let els = ul.getElementsByClassName('TG001-item-label-container');
+        for (let index = 0; index < els.length; ++index) {
+            if (els[index] !== parent) {
+                els[index].classList.remove('active');
+            }
+        }
+        parent.classList.toggle('active');
+    }
+
+    _closeCategorySlide(target) {
+        let p = target.closest('.TG001-item-body');
+        let els = p.getElementsByClassName('TG001-item-label-container');
+        els[0].classList.remove('active');
+    }
+}

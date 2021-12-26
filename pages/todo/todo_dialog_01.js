@@ -21,7 +21,7 @@ class TodoDialog01 extends TodoPagerController {
                 this._deleteButton(event);
             } else if (classList.contains('btn-close')) {
                 this._closeButton(event);
-            }    
+            }
         } finally {
             super._clickEvent(event);
         }

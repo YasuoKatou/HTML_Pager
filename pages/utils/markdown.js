@@ -116,7 +116,7 @@ class MarkdownToHtml extends MarkdownBase {
         if (s.length > 0) ret.push(s);
         return ret;
     }
-    
+
     _getCodeTag(s) {
         let r = s.match(/```[^```]*```/g);
         if (r === null) return [s];
@@ -158,7 +158,7 @@ class MarkdownToHtml extends MarkdownBase {
                 ana.push(w);
             }
         }
-        return ana;    
+        return ana;
     }
 
     setHtml(parent) {
@@ -180,6 +180,6 @@ class MarkdownToHtml extends MarkdownBase {
             } else {
                 console.error(typeof(w));
             }
-        }        
+        }
     }
 }

@@ -62,7 +62,7 @@ class TodoListSelect extends TodoPagerController {
                 _pager.closePopupPage(this.pageId, {'selected-id': target.previousElementSibling.innerText});
             } else if (classList.contains('popup-button-close')) {
                 _pager.closePopupPage(this.pageId);
-            }    
+            }
         } finally {
             super._clickEvent(event);
         }

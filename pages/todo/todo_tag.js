@@ -1,4 +1,4 @@
-class TagData extends DataModelBase {
+class TagData extends TodoDataModel {
     constructor() {
         super();
         this._listDatas = [];
@@ -7,20 +7,24 @@ class TagData extends DataModelBase {
     get rowTagClassName() { return 'PP0001-tag-list-container'; }
     get rows() { return this._listDatas.length; }
     rowColumns(index) {
-        var ret = [];
-        var l = document.createElement("label");
+        let item = super._createRowBackMenu();
+
+        let rowData = this._listDatas[index];
+        let rowLabel = super._createLabelContainer();
+        let l = document.createElement("label");
         l.classList.add('PP0001-tag-list-item');
-        var item = this._listDatas[index];
-        l.innerText = item.name;
-        var cbx = document.createElement("input");
+        l.innerText = rowData.name;
+        let cbx = document.createElement("input");
         cbx.setAttribute('type', 'checkbox');
-        cbx.setAttribute('value', '' + item.id);
-        if (this._selectedItem.tags.includes(item.id)) {
+        cbx.setAttribute('value', '' + rowData.id);
+        if (this._selectedItem.tags.includes(rowData.id)) {
             cbx.setAttribute('checked','checked');
         }
         l.appendChild(cbx);
-        ret.push(l);
-        return ret;
+        rowLabel.appendChild(l);
+        item.appendChild(rowLabel);
+
+        return [item];
     }
 
     get buttonsOperationClassName() {
@@ -36,7 +40,7 @@ class TagData extends DataModelBase {
     }
 }
 
-class TodoTagPage extends TodoPagerController {
+class TodoTagPage extends ListSliderPageController {
     constructor(p) {
         super(p);
         this._dataModel = new TagData();
@@ -92,10 +96,37 @@ class TodoTagPage extends TodoPagerController {
                 this._okButtonClicked();
             } else {
                 this._editTag(event);
-            }    
+            }
         } finally {
             super._clickEvent(event);
         }
+    }
+
+    _executeBackMenu01(event) {
+        let parent = event.target.parentNode.nextElementSibling;
+        let param = this._getSelectedItem(parent);
+        let self = this;
+        self.__param = param;
+        setTimeout(function() {
+            let value = prompt("タグ名の変更", self.__param['content']);
+            if (value === null) return;
+            if (value === self.__param['content']) return;
+            let req = {'id': self.__param['tag-id'], 'name': value};
+            self._createAjaxParam('update_tag', req, self._received_add_tag(true)).send();
+        }, 1100);  // 一覧のスライダーが閉じる時間＋100ms
+    }
+
+    _executeBackMenu02(event) {
+        let parent = event.target.parentNode.nextElementSibling;
+        let param = this._getSelectedItem(parent);
+        let self = this;
+        self.__param = param;
+        setTimeout(function() {
+            let exec = confirm("「" + self.__param['content'] + "」(id:" + self.__param['tag-id'] + ") を削除します");
+            if (!exec) return;
+            let req = {'id': self.__param['tag-id']};
+            self._createAjaxParam('delete_tag', req, self._received_add_tag(true)).send();
+        }, 1100);  // 一覧のスライダーが閉じる時間＋100ms
     }
 
     _received_read_tags() {
@@ -151,43 +182,17 @@ class TodoTagPage extends TodoPagerController {
 
     _editTag(event) {
         if (this._mode !== 'edit') return;
-        let tag = event.target;
-        if (tag.classList.contains('PP0001-tag-list-item')) {
-            tag = tag.parentElement;
-        } else if (tag.tagName.toLowerCase() !== 'li') {
-            return;
+        let target = event.target;
+        if (target.classList.contains('PP0001-tag-list-item')) {
+            super._setActiveRowSlider(target);
         }
-        let param = {'dialog-title': 'タグの更新／削除'};
-        tag = tag.firstElementChild;        // label
-        param['content'] = tag.textContent;
-        tag = tag.firstElementChild;        // input checkbox
-        param['tag-id'] = tag.value;
-        _pager.popupPageById('PP0002', param);
     }
 
-    closedForm(pid, ifData = undefined) {
-        let svcId = null;
-        let svcReq = null;
-        if (pid === 'PP0002') {
-            if (ifData !== undefined) {
-                if ('result' in ifData) {
-                    if (ifData['result'] === 'update') {
-                        svcId = 'update_tag';
-                        svcReq = {'id': ifData['tag-id'], 'name': ifData['content']};
-                    } else if (ifData['result'] === 'delete') {
-                        svcId = 'delete_tag';
-                        svcReq = {'id': ifData['tag-id']};
-                    } else {
-                        console.error('result string error : ' + ifData['result'] + ' at TodoTagPage');
-                    }
-                } else {
-                    console.error('not result attribute at TodoTagPage');
-                }
-            }
-        }
-        if (svcId !== null) {
-            super._createAjaxParam(svcId, svcReq, this._received_add_tag(true)).send();
-        }
-        super.closedForm(ifData);
+    _getSelectedItem(parent) {
+        let tag = parent.firstElementChild; // label
+        let value = tag.textContent;
+        tag = tag.firstElementChild;        // input checkbox
+        let tagId = tag.value;
+        return {'tag-id': tagId, 'content': value};
     }
 }

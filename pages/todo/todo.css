@@ -208,6 +208,7 @@
     チェックボックスを縦方向の中央に配置する（1/2）
 */
 .PP0001-tag-list-item {
+    width: 100%;
     position: relative;
     line-height: 2em;
     padding-left: 1.3em;

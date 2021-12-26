@@ -17,7 +17,7 @@
  * @author Y.Katou <yasuokatou@gmail.com>
  */
 class PagerFunctionKey extends PagerBase {
-    static KEY_ID_NO_MODIFIRE = 0;    
+    static KEY_ID_NO_MODIFIRE = 0;
     static KEY_ID_SHIFT = 1;
     static KEY_ID_CONTRIL = 2;
     static KEY_ID_ALT = 4;

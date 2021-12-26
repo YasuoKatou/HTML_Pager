@@ -1,4 +1,4 @@
-class CategoryData extends DataModelBase {
+class CategoryData extends TodoDataModel {
     constructor() {
         super();
         this._listDatas = [];
@@ -19,20 +19,6 @@ class CategoryData extends DataModelBase {
     get rowTagClassName() { return 'popup-table-body'; }
     get rows() { return this._listDatas.length; }
 
-    _createRowBackMenu() {
-       let div = document.createElement('div');
-       div.classList.add('TG001-back-menu-container');
-       let p = document.createElement('p');
-       p.classList.add('TG001-back-menu-01');
-       p.innerText = '変更';
-       div.appendChild(p);
-       p = document.createElement('p');
-       p.classList.add('TG001-back-menu-02');
-       p.innerText = '削除';
-       div.appendChild(p);
-       return div;
-    }
-
     _createCategoryRowItem(itemString) {
         let c = document.createElement('p');
         c.classList.add('category-row-item');
@@ -41,23 +27,18 @@ class CategoryData extends DataModelBase {
     }
 
     rowColumns(index) {
-        let item = document.createElement('div');
-        item.classList.add('TG001-item-body');
-        item.appendChild(this._createRowBackMenu());
+        let item = super._createRowBackMenu();
 
         let rowData = this._listDatas[index];
-        let row = document.createElement('div');
-        row.classList.add('TG001-item-label-container');
-        row.appendChild(this._createCategoryRowItem(rowData['id']));
-        row.appendChild(this._createCategoryRowItem(rowData['name']));
-        row.appendChild(this._createCategoryRowItem(rowData['num1']));
-        row.appendChild(this._createCategoryRowItem(rowData['num2']));
-        row.appendChild(this._createCategoryRowItem(rowData['num3']));
-        item.appendChild(row);
+        let rowLabel = super._createLabelContainer();
+        rowLabel.appendChild(this._createCategoryRowItem(rowData['id']));
+        rowLabel.appendChild(this._createCategoryRowItem(rowData['name']));
+        rowLabel.appendChild(this._createCategoryRowItem(rowData['num1']));
+        rowLabel.appendChild(this._createCategoryRowItem(rowData['num2']));
+        rowLabel.appendChild(this._createCategoryRowItem(rowData['num3']));
+        item.appendChild(rowLabel);
 
-        let ret = [];
-        ret.push(item);
-        return ret;
+        return [item];
     }
     get buttonsOperationClassName() {
         return 'popup_one_button';
@@ -72,7 +53,7 @@ class CategoryData extends DataModelBase {
         return ret;
     }
 }
-class TodoCategoryPage extends TodoPagerController {
+class TodoCategoryPage extends ListSliderPageController {
     constructor(p) {
         super(p);
         this._dataModel = new CategoryData();
@@ -89,41 +70,37 @@ class TodoCategoryPage extends TodoPagerController {
                 this._selectCategory(event);
             } else if (classList.contains('popup_button')) {
                 this._new_category();
-            } else if (classList.contains('TG001-back-menu-01')) {
-                this._closeCategorySlide(event.target);
-                let parent = event.target.parentNode.nextElementSibling;
-                let param = this._getSelectedItem(parent, 'category_name');
-                let self = this;
-                self.__param = param;
-                setTimeout(function() {
-                    var value = prompt("カテゴリ名の変更", self.__param['category_name']);
-                    if (value === null) return;
-                    if (value === self.__param['category_name']) return;
-                    let req = {'id': self.__param['category_id'], 'name': value};
-                    self._createAjaxParam('update_category', req, self._response_readCategory()).send();
-                }, 1100);  // 一覧のスライダーが閉じる時間＋100ms
-            } else if (classList.contains('TG001-back-menu-02')) {
-                this._closeCategorySlide(event.target);
-                let parent = event.target.parentNode.nextElementSibling;
-                let param = this._getSelectedItem(parent, 'category_name');
-                let self = this;
-                self.__param = param;
-                setTimeout(function() {
-                    let exec = confirm("「" + self.__param['category_name'] + "」(id:" + self.__param['category_id'] + ") を削除します");
-                    if (!exec) return;
-                    let req = {'id': self.__param['category_id']};
-                    self._createAjaxParam('delete_category', req, self._response_readCategory()).send();
-                }, 1100);  // 一覧のスライダーが閉じる時間＋100ms
             }
         } finally {
             super._clickEvent(event);
         }
     }
 
-    _closeCategorySlide(target) {
-        let p = target.closest('.TG001-item-body');
-        let els = p.getElementsByClassName('TG001-item-label-container');
-        els[0].classList.remove('active');
+    _executeBackMenu01(event) {
+        let parent = event.target.parentNode.nextElementSibling;
+        let param = this._getSelectedItem(parent, 'category_name');
+        let self = this;
+        self.__param = param;
+        setTimeout(function() {
+            var value = prompt("カテゴリ名の変更", self.__param['category_name']);
+            if (value === null) return;
+            if (value === self.__param['category_name']) return;
+            let req = {'id': self.__param['category_id'], 'name': value};
+            self._createAjaxParam('update_category', req, self._response_readCategory()).send();
+        }, 1100);  // 一覧のスライダーが閉じる時間＋100ms
+    }
+
+    _executeBackMenu02(event) {
+        let parent = event.target.parentNode.nextElementSibling;
+        let param = this._getSelectedItem(parent, 'category_name');
+        let self = this;
+        self.__param = param;
+        setTimeout(function() {
+            let exec = confirm("「" + self.__param['category_name'] + "」(id:" + self.__param['category_id'] + ") を削除します");
+            if (!exec) return;
+            let req = {'id': self.__param['category_id']};
+            self._createAjaxParam('delete_category', req, self._response_readCategory()).send();
+        }, 1100);  // 一覧のスライダーが閉じる時間＋100ms
     }
 
     _getOperationTag() {
@@ -194,15 +171,7 @@ class TodoCategoryPage extends TodoPagerController {
     _activeEditCategory(event) {
         let target = event.target;
         if (target.classList.contains('category-row-item')) {
-            let parent = target.parentNode;
-            let ul = target.closest('ul');
-            let els = ul.getElementsByClassName('TG001-item-label-container');
-            for (let index = 0; index < els.length; ++index) {
-                if (els[index] !== parent) {
-                    els[index].classList.remove('active');
-                }
-            }
-            parent.classList.toggle('active');
+            super._setActiveRowSlider(target);
         }
     }
 
