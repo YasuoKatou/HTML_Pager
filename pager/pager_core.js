@@ -244,8 +244,63 @@
         return suffix;
     }
 
+    _showSpecialKey(event) {
+        let p = document.getElementById('key-monitor');
+        if (!p) return;
+        if (p.style.display === 'none') return
+
+        let t = p.getElementsByClassName('ctrl');
+        if (t.length === 1) {
+            t[0].textContent = event.ctrlKey ? '●' : '';
+        }
+        t = p.getElementsByClassName('sft');
+        if (t.length === 1) {
+            t[0].textContent = event.shiftKey ? '●' : '';
+        }
+        t = p.getElementsByClassName('alt');
+        if (t.length === 1) {
+            t[0].textContent = event.altKey ? '●' : '';
+        }
+        t = p.getElementsByClassName('meta');
+        if (t.length === 1) {
+            t[0].textContent = event.metaKey ? '●' : '';
+        }
+        t = p.getElementsByClassName('code');
+        if (t.length === 1) {
+            t[0].textContent = event.code;
+        }
+    }
+
+    showStatus(str) {
+        let p = document.getElementById('status-bar');
+        if (!p) return;
+        if (p.style.display === 'none') return
+        p.textContent = str;
+    }
+
+    _compositionEventListener() {
+        let self = this;
+        return function(event) {
+            setTimeout(function() {
+                self._compositionEvent(event);
+            }, 0);
+        }
+    }
+    _compositionEvent(event) {
+        this._compFlg = (event.type.toLowerCase() === 'compositionstart');
+        let p = document.getElementById('key-monitor');
+        if (p.style.display === 'none') return
+
+        let t = p.getElementsByClassName('kanji');
+        if (t.length === 1) {
+            t[0].textContent = this._compFlg ? '●' : '';
+        }
+    }
+    get inIme() { return this._compFlg; }
+
     _keyDown_event(self) {
         return function(event) {
+            self._showSpecialKey(event);
             if (!self._configFKey) return;
             var suffix = self._funcKeyLabels(self, event);
             if (event.code.startsWith("F")) {
@@ -259,6 +314,7 @@
 
     _keyUp_event(self) {
         return function(event) {
+            self._showSpecialKey(event);
             if (!self._configFKey) return;
             self._funcKeyLabels(self, event);
         }
@@ -270,6 +326,10 @@
         //キーボードイベントの設定
         document.addEventListener('keydown', this._keyDown_event(this));
         document.addEventListener('keyup', this._keyUp_event(this));
+        //ime
+        this._compFlg = false;
+        document.addEventListener('compositionstart', this._compositionEventListener());
+        document.addEventListener('compositionend', this._compositionEventListener());
 
         //初期表示するページ
         var x = document.getElementById(this.openningPage.pageId);

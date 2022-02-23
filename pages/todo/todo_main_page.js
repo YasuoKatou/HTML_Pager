@@ -8,7 +8,6 @@ class TodoMainPage extends TodoPagerController {
         this._todo_status_css = [
             {id: '0', css: null}, {id: '10', css: 'todo-doing'}, {id: '20', css: 'todo-done'}
         ]
-        this._compFlg = false;
         this.todo_category_id = '';
         this._setModeFree();
         this._createTodoTitle();
@@ -17,7 +16,6 @@ class TodoMainPage extends TodoPagerController {
         super._addClickEvent();
         super._addDoubleClickEvent();
         super._addChangeEvent();
-        super._addCompositionEvent();
     }
 
     pageShown(ifData) {
@@ -81,7 +79,8 @@ class TodoMainPage extends TodoPagerController {
     _keyInputTodoTitle() {
         var self = this;
         return function(event) {
-            if (self._compFlg) return;
+            if (_pager.inIme) return;
+            //_pager.showStatus('_keyInputTodoTitle １ [' + event.code + ']');
             if ((event.code.toLowerCase() !== 'enter') && (event.code.toLowerCase() !== 'escape')) return;
             setTimeout(function() {
                 self._execute_keyInputTodoTitle(event);
@@ -92,7 +91,7 @@ class TodoMainPage extends TodoPagerController {
     _keyInputComment() {
         var self = this;
         return function(event) {
-            if (self._compFlg) return;
+            if (_pager.inIme) return;
             if (event.code.toLowerCase() === 'escape') {
                 self._todoComment.remove();
                 if (self._hiddenComment) {
@@ -298,14 +297,6 @@ class TodoMainPage extends TodoPagerController {
             }
             console.error('no todo comment at delete response');
         };
-    }
-
-    _compositionEvent(event) {
-        try {
-            this._compFlg = (event.type.toLowerCase() === 'compositionstart');
-        } finally {
-            super._compositionEvent(event);
-        }
     }
 
     _clickEvent(event) {

@@ -235,3 +235,18 @@ body {
 .page_show {
     display: block;
 }
+
+#key-monitor {
+    /*display: block;*/
+    display: none;
+}
+#key-monitor > .km-gp1 > p {
+    display: inline-block;
+}
+#key-monitor > .km-gp1 > p:nth-child(even) {
+    margin-left: 0.5em;
+    color: blue;
+}
+#status-bar {
+    display: none;
+}
