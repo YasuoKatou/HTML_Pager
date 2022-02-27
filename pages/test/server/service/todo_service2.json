@@ -1,0 +1,9 @@
+{
+    "read_category": [
+        {"fqdn": "DBs.PostgreSQL.pgClass",
+            "method": "getDnsByEnv",
+            "param": "DBInfo.pgEnv",
+            "result": "DBInfo.pgEnv.dns"
+        }
+    ]
+}
