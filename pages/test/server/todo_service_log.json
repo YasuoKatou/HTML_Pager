@@ -1,0 +1,39 @@
+{
+    "version": 1,
+    "disable_existing_loggers": false,
+    "formatters": {
+        "simple": {
+            "format": "%(asctime)s %(name)s:%(lineno)s %(funcName)s [%(levelname)s]: %(message)s"
+        }
+    },
+
+    "handlers": {
+        "consoleHandler": {
+            "class": "logging.StreamHandler",
+            "formatter": "simple",
+            "stream": "ext://sys.stdout"
+        }
+    },
+
+    "loggers": {
+        "__main__": {
+            "level": "DEBUG",
+            "handlers": ["consoleHandler"],
+            "propagate": false
+        },
+        "lib_manager": {
+            "level": "DEBUG",
+            "handlers": ["consoleHandler"],
+            "propagate": false
+        },
+        "DBs.PostgreSQL.pgClass": {
+            "level": "DEBUG",
+            "handlers": ["consoleHandler"],
+            "propagate": false
+        }
+    },
+
+    "root": {
+        "level": "INFO"
+    }
+}
