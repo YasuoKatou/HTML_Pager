@@ -2,15 +2,20 @@
 
 import importlib.util
 from importlib import import_module
+import json
+import logging
+import logging.config
 import os
 import pathlib
 import sys
 
 class TodoService2:
     def __init__(self):
+        log_conf = self._initLogger()
         self.libManager = None
         self.myAppDef = {
-            'DBInfo': {'env_name': 'PG_DNS', 'dns': None},
+            'logConfig': log_conf,
+            'DBInfo': {'env_name': 'PG_DNS', 'dns': None, 'connect': None, 'cursor': None},
             'clazzDef': [
                 {'module': 'DBs.PostgreSQL.pgClass', 'classes': []},
                 {'module': 'pages.test.server.service.todo_service2', 'classes': []},
@@ -20,6 +25,15 @@ class TodoService2:
         self.libManager = self.getLibManager2()
         assert self.libManager, 'ライブラリマネージャーの読込に失敗しました.'
         self.libManager.load_classes(self.myAppDef, defPrint=True)
+
+    def _initLogger(self):
+        p = pathlib.Path(__file__)
+        j = p.parent / 'todo_service_log.json'
+        with open(j, 'r') as f:
+            log_conf = json.load(f)
+        logging.config.dictConfig(log_conf)
+        self.logger = logging.getLogger(__name__)
+        return log_conf
 
     def getLibManager(self):
         '''
@@ -60,6 +74,11 @@ class TodoService2:
         > $env:PG_DNS="postgresql://{DB user}:{password}@{hostname}:{port no}/{db name}"
         '''
         self.myAppDef['app'] = [
+            {"comment": "ログ定義を設定",
+                "fqdn": "DBs.PostgreSQL.pgClass.PG",
+                "method": "setLogConfig",
+                "param": "logConfig"
+            },
             {"comment": "環境変数からＤＢ接続文字列を取得する",
                 "fqdn": "DBs.PostgreSQL.pgClass.PG",
                 "method": "getDnsByEnv",
@@ -70,8 +89,25 @@ class TodoService2:
                 "fqdn": "DBs.PostgreSQL.pgClass.PG",
                 "method": "setDnsString",
                 "param": "DBInfo.dns",
+            },
+            {"comment": "ＤＢ接続",
+                "fqdn": "DBs.PostgreSQL.pgClass.PG",
+                "method": "connect",
+                "result": "DBInfo.connect"
+            },
+            {"comment": "ＤＢ接続カーソル取得",
+                "fqdn": "DBs.PostgreSQL.pgClass.PG",
+                "method": "getCursor",
+                "param": "DBInfo.connect",
+                "result": "DBInfo.cursor"
+            },
+            {"comment": "ＤＢ接続カーソル取得",
+                "fqdn": "DBs.PostgreSQL.pgClass.PG",
+                "method": "showServerVersion",
+                "param": "DBInfo.cursor",
             }
         ]
+        self.libManager.setLogConfig(self.myAppDef['logConfig'])
         self.libManager.run_lib_manager(self.myAppDef)
 
 if __name__ == '__main__':
