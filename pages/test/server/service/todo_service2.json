@@ -1,9 +1,34 @@
-{
-    "read_category": [
-        {"fqdn": "DBs.PostgreSQL.pgClass",
-            "method": "getDnsByEnv",
-            "param": "DBInfo.pgEnv",
-            "result": "DBInfo.pgEnv.dns"
-        }
-    ]
-}
+[
+    {"comment": "ログ定義を設定",
+        "fqdn": "DBs.PostgreSQL.pgClass.PG",
+        "method": "setLogConfig",
+        "param": "logConfig"
+    },
+    {"comment": "環境変数からＤＢ接続文字列を取得",
+        "fqdn": "DBs.PostgreSQL.pgClass.PG",
+        "method": "getDnsByEnv",
+        "param": "DBInfo.env_name",
+        "result": "DBInfo.dns"
+    },
+    {"comment": "ＤＢ接続文字列をＤＢクラスに設定",
+        "fqdn": "DBs.PostgreSQL.pgClass.PG",
+        "method": "setDnsString",
+        "param": "DBInfo.dns"
+    },
+    {"comment": "ＤＢ接続",
+        "fqdn": "DBs.PostgreSQL.pgClass.PG",
+        "method": "connect",
+        "result": "DBInfo.connect"
+    },
+    {"comment": "ＤＢ接続カーソル取得",
+        "fqdn": "DBs.PostgreSQL.pgClass.PG",
+        "method": "getCursor",
+        "param": "DBInfo.connect",
+        "result": "DBInfo.cursor"
+    },
+    {"comment": "ＤＢ接続カーソル取得",
+        "fqdn": "DBs.PostgreSQL.pgClass.PG",
+        "method": "showServerVersion",
+        "param": "DBInfo.cursor"
+    }
+]

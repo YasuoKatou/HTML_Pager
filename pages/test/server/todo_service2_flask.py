@@ -73,40 +73,10 @@ class TodoService2:
         windows powershellで環境設定の方法
         > $env:PG_DNS="postgresql://{DB user}:{password}@{hostname}:{port no}/{db name}"
         '''
-        self.myAppDef['app'] = [
-            {"comment": "ログ定義を設定",
-                "fqdn": "DBs.PostgreSQL.pgClass.PG",
-                "method": "setLogConfig",
-                "param": "logConfig"
-            },
-            {"comment": "環境変数からＤＢ接続文字列を取得する",
-                "fqdn": "DBs.PostgreSQL.pgClass.PG",
-                "method": "getDnsByEnv",
-                "param": "DBInfo.env_name",
-                "result": "DBInfo.dns"
-            },
-            {"comment": "ＤＢ接続文字列をＤＢクラスに設定する",
-                "fqdn": "DBs.PostgreSQL.pgClass.PG",
-                "method": "setDnsString",
-                "param": "DBInfo.dns",
-            },
-            {"comment": "ＤＢ接続",
-                "fqdn": "DBs.PostgreSQL.pgClass.PG",
-                "method": "connect",
-                "result": "DBInfo.connect"
-            },
-            {"comment": "ＤＢ接続カーソル取得",
-                "fqdn": "DBs.PostgreSQL.pgClass.PG",
-                "method": "getCursor",
-                "param": "DBInfo.connect",
-                "result": "DBInfo.cursor"
-            },
-            {"comment": "ＤＢ接続カーソル取得",
-                "fqdn": "DBs.PostgreSQL.pgClass.PG",
-                "method": "showServerVersion",
-                "param": "DBInfo.cursor",
-            }
-        ]
+        p = pathlib.Path(__file__)
+        j = p.parent / 'service/todo_service2.json'
+        with open(j, 'r', encoding='utf8') as f:
+            self.myAppDef['app'] = json.load(f)
         self.libManager.setLogConfig(self.myAppDef['logConfig'])
         self.libManager.run_lib_manager(self.myAppDef)
 
