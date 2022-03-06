@@ -1,34 +1,57 @@
-[
-    {"comment": "ログ定義を設定",
-        "fqdn": "DBs.PostgreSQL.pgClass.PG",
-        "method": "setLogConfig",
-        "param": "logConfig"
-    },
-    {"comment": "環境変数からＤＢ接続文字列を取得",
-        "fqdn": "DBs.PostgreSQL.pgClass.PG",
-        "method": "getDnsByEnv",
-        "param": "DBInfo.env_name",
-        "result": "DBInfo.dns"
-    },
-    {"comment": "ＤＢ接続文字列をＤＢクラスに設定",
-        "fqdn": "DBs.PostgreSQL.pgClass.PG",
-        "method": "setDnsString",
-        "param": "DBInfo.dns"
-    },
-    {"comment": "ＤＢ接続",
-        "fqdn": "DBs.PostgreSQL.pgClass.PG",
-        "method": "connect",
-        "result": "DBInfo.connect"
-    },
-    {"comment": "ＤＢ接続カーソル取得",
-        "fqdn": "DBs.PostgreSQL.pgClass.PG",
-        "method": "getCursor",
-        "param": "DBInfo.connect",
-        "result": "DBInfo.cursor"
-    },
-    {"comment": "ＤＢ接続カーソル取得",
-        "fqdn": "DBs.PostgreSQL.pgClass.PG",
-        "method": "showServerVersion",
-        "param": "DBInfo.cursor"
-    }
-]
+{
+    "config": [
+        {"comment": "ログ定義を設定",
+            "fqdn": "DBs.PostgreSQL.pgClass.PG",
+            "method": "setLogConfig",
+            "param": "logConfig"
+        },
+        {"comment": "環境変数からＤＢ接続文字列を取得",
+            "fqdn": "DBs.PostgreSQL.pgClass.PG",
+            "method": "getDnsByEnv",
+            "param": "DBInfo.env_name",
+            "result": "DBInfo.dns"
+        },
+        {"comment": "ＤＢ接続文字列をＤＢクラスに設定",
+            "fqdn": "DBs.PostgreSQL.pgClass.PG",
+            "method": "setDnsString",
+            "param": "DBInfo.dns"
+        },
+        {"comment": "ＤＢ接続",
+            "fqdn": "DBs.PostgreSQL.pgClass.PG",
+            "method": "connect",
+            "result": "DBInfo.connect"
+        },
+        {"comment": "ＤＢ接続カーソル取得",
+            "fqdn": "DBs.PostgreSQL.pgClass.PG",
+            "method": "getCursor",
+            "param": "DBInfo.connect",
+            "result": "DBInfo.cursor"
+        },
+        {"comment": "ＤＢバージョンの表示",
+            "fqdn": "DBs.PostgreSQL.pgClass.PG",
+            "method": "showServerVersion",
+            "param": "DBInfo.cursor"
+        },
+    
+        {"comment": "ログ定義を設定",
+            "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+            "method": "setLogConfig",
+            "param": "logConfig"
+        },
+        {"comment": "ＤＢ接続の設定",
+            "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+            "method": "setConnection",
+            "param": "DBInfo.connect"
+        },
+        {"comment": "カテゴリ一覧の取得",
+            "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+            "method": "getCategoryAll",
+            "result": "app.categories"
+        },
+        {"comment": "カテゴリ一覧の件数",
+            "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+            "method": "setCategoryItems",
+            "param": "app.categories"
+        }
+    ]
+}

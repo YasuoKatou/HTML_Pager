@@ -19,6 +19,7 @@ class TodoService2:
             'clazzDef': [
                 {'module': 'DBs.PostgreSQL.pgClass', 'classes': []},
                 {'module': 'pages.test.server.service.todo_service2', 'classes': []},
+                {'module': 'pages.test.server.service.todoDao.todo_dao', 'classes': []}
             ],
         }
         #self.libManager = self.getLibManager()
