@@ -1,10 +1,5 @@
 {
     "config": [
-        {"comment": "ログ定義を設定",
-            "fqdn": "DBs.PostgreSQL.pgClass.PG",
-            "method": "setLogConfig",
-            "param": "logConfig"
-        },
         {"comment": "環境変数からＤＢ接続文字列を取得",
             "fqdn": "DBs.PostgreSQL.pgClass.PG",
             "method": "getDnsByEnv",
@@ -32,12 +27,7 @@
             "method": "showServerVersion",
             "param": "DBInfo.cursor"
         },
-    
-        {"comment": "ログ定義を設定",
-            "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
-            "method": "setLogConfig",
-            "param": "logConfig"
-        },
+
         {"comment": "ＤＢ接続の設定",
             "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
             "method": "setConnection",

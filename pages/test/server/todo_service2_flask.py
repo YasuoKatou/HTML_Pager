@@ -11,10 +11,9 @@ import sys
 
 class TodoService2:
     def __init__(self):
-        log_conf = self._initLogger()
+        self.log_conf = self._initLogger()
         self.libManager = None
         self.myAppDef = {
-            'logConfig': log_conf,
             'DBInfo': {'env_name': 'PG_DNS', 'dns': None, 'connect': None, 'cursor': None},
             'clazzDef': [
                 {'module': 'DBs.PostgreSQL.pgClass', 'classes': []},
@@ -25,7 +24,12 @@ class TodoService2:
         #self.libManager = self.getLibManager()
         self.libManager = self.getLibManager2()
         assert self.libManager, 'ライブラリマネージャーの読込に失敗しました.'
-        self.libManager.load_classes(self.myAppDef, defPrint=True)
+        self.libManager.setLogConfig(self.log_conf)
+        self.libManager.load_classes(self.myAppDef, defPrint=True, newCallback=self._newCallback)
+
+    def _newCallback(self, instance):
+        if 'setLogConfig' in dir(instance):
+            instance.setLogConfig(self.log_conf)
 
     def _initLogger(self):
         p = pathlib.Path(__file__)
@@ -78,7 +82,6 @@ class TodoService2:
         j = p.parent / 'service/todo_service2.json'
         with open(j, 'r', encoding='utf8') as f:
             self.myAppDef['app'] = json.load(f)
-        self.libManager.setLogConfig(self.myAppDef['logConfig'])
         self.libManager.run_lib_manager(self.myAppDef)
 
 if __name__ == '__main__':
