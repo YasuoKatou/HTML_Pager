@@ -14,7 +14,7 @@ class TodoService2:
         self.log_conf = self._initLogger()
         self.libManager = None
         self.myAppDef = {
-            'DBInfo': {'env_name': 'PG_DNS', 'dns': None, 'connect': None, 'cursor': None},
+            'DBInfo': {'env_name': 'PG_DNS', 'dns': None, 'connect': None, 'cursor': None, 'pool': {'min': 1, 'max': 5}},
             'clazzDef': [
                 {'module': 'DBs.PostgreSQL.pgClass', 'classes': []},
                 {'module': 'pages.test.server.service.todo_service2', 'classes': []},
@@ -30,6 +30,8 @@ class TodoService2:
     def _newCallback(self, instance):
         if 'setLogConfig' in dir(instance):
             instance.setLogConfig(self.log_conf)
+        if 'setConnectionPool' in dir(instance):
+            instance.setConnectionPool(self.myAppDef['DBInfo'])
 
     def _initLogger(self):
         p = pathlib.Path(__file__)
