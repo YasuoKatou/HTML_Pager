@@ -6,20 +6,16 @@
             "result": "DBInfo.connect"
         },
 
-        {"comment": "DaoにＤＢ接続を設定",
-            "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
-            "method": "setConnection",
-            "param": "DBInfo.connect"
-        },
         {"comment": "カテゴリ一覧の取得",
             "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
             "method": "getCategoryAll",
+            "param": "DBInfo.connect",
             "result": "app.categories"
         },
         {"comment": "カテゴリ一覧の件数",
             "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
             "method": "setCategoryItems",
-            "param": "app.categories"
+            "param": ["DBInfo.connect", "app.categories"]
         },
         {"comment": "ＤＢ接続の解放",
             "fqdn": "DBs.PostgreSQL.pgClass.PG",

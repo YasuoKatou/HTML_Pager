@@ -10,23 +10,20 @@ class TodoDao:
         logging.config.dictConfig(log_conf)
         self.logger = logging.getLogger(__name__)
 
-    def setConnection(self, conn):
-        self.conn = conn
-
     def _newCategory(self, id, name):
         return {'id': str(id), 'name': name, 'num1': '0', 'num2': '0', 'num3': '0'}
 
-    def getCategoryAll(self):
+    def getCategoryAll(self, conn):
         sql = 'select T1.id, T1.name from TODO_CATEGORY T1 order by T1.name'
         catList = [self._newCategory(0, '未分類')]
-        with self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+        with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
             cur.execute(sql)
             for row in cur:
                 self.logger.debug('カテゴリ id:%d, name:[%s]' % (row['id'], row['name'], ))
                 catList.append(self._newCategory(row['id'], row['name']))
         return catList
 
-    def setCategoryItems(self, catList):
+    def setCategoryItems(self, conn, catList):
         def updateNum(row, status, num):
             if status == 0:     # 未着手
                 row['num1'] = str(num)
@@ -58,14 +55,14 @@ class TodoDao:
                    on T1.id  =  S.category_id
                    order by T1.name
                 '''
-        with self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+        with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
             cur.execute(sql)
             for row in cur:
                 addCategory(catList, str(row['id']), row['name'], row['status'], row['num'])
 
-    def readTags(self):
+    def readTags(self, conn):
         tags = []
-        with self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+        with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
             cur.execute('SELECT id, tag_name FROM TODO_TAG order by tag_name')
             for row in cur:
                 tags.append({'id': str(row['id']), 'name': row['tag_name']})
