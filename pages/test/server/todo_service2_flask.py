@@ -14,7 +14,8 @@ class TodoService2:
         self.log_conf = self._initLogger()
         self.libManager = None
         self.myAppDef = {
-            'DBInfo': {'env_name': 'PG_DNS', 'dns': None, 'connect': None, 'cursor': None, 'pool': {'min': 1, 'max': 5}},
+            't_ses': None,
+            'DBInfo': {'env_name': 'PG_DNS', 'pool': {'min': 1, 'max': 5}},
             'clazzDef': [
                 {'module': 'DBs.PostgreSQL.pgClass', 'classes': []},
                 {'module': 'pages.test.server.service.todo_service2', 'classes': []},
@@ -75,6 +76,13 @@ class TodoService2:
         sys.path.append(str(p.parent))
         return import_module(p.stem)
 
+    def _prepareLibManager(self):
+        apDef = {'t_ses': {}, }
+        apDef['DBInfo'] = self.myAppDef['DBInfo']
+        apDef['clazzDef'] = self.myAppDef['clazzDef']
+        apDef['app'] = self.myAppDef['app']
+        return apDef
+
     def run(self):
         '''
         windows powershellで環境設定の方法
@@ -84,7 +92,8 @@ class TodoService2:
         j = p.parent / 'service/todo_service2.json'
         with open(j, 'r', encoding='utf8') as f:
             self.myAppDef['app'] = json.load(f)
-        self.libManager.run_lib_manager(self.myAppDef)
+        self.libManager.run_lib_manager(self._prepareLibManager())
+        self.logger.debug('normal end ...')
 
 if __name__ == '__main__':
     app = TodoService2()

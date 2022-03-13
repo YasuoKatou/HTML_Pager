@@ -3,24 +3,24 @@
         {"comment": "ＤＢ接続",
             "fqdn": "DBs.PostgreSQL.pgClass.PG",
             "method": "getConn",
-            "result": "DBInfo.connect"
+            "result": "t_ses.connect"
         },
 
         {"comment": "カテゴリ一覧の取得",
             "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
             "method": "getCategoryAll",
-            "param": "DBInfo.connect",
-            "result": "app.categories"
+            "param": "t_ses.connect",
+            "result": "t_ses.categories"
         },
         {"comment": "カテゴリ一覧の件数",
             "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
             "method": "setCategoryItems",
-            "param": ["DBInfo.connect", "app.categories"]
+            "param": ["t_ses.connect", "t_ses.categories"]
         },
         {"comment": "ＤＢ接続の解放",
             "fqdn": "DBs.PostgreSQL.pgClass.PG",
             "method": "putConn",
-            "param": "DBInfo.connect"
+            "param": "t_ses.connect"
         }
     ]
 }
