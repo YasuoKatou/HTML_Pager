@@ -1,26 +1,78 @@
 {
-    "config": [
-        {"comment": "ＤＢ接続",
-            "fqdn": "DBs.PostgreSQL.pgClass.PG",
-            "method": "getConn",
-            "result": "t_ses.connect"
-        },
-
-        {"comment": "カテゴリ一覧の取得",
-            "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
-            "method": "getCategoryAll",
-            "param": "t_ses.connect",
-            "result": "t_ses.categories"
-        },
-        {"comment": "カテゴリ一覧の件数",
-            "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
-            "method": "setCategoryItems",
-            "param": ["t_ses.connect", "t_ses.categories"]
-        },
-        {"comment": "ＤＢ接続の解放",
-            "fqdn": "DBs.PostgreSQL.pgClass.PG",
-            "method": "putConn",
-            "param": "t_ses.connect"
-        }
-    ]
+    "config": {
+        "read_category": [
+            {"comment": "ＤＢ接続",
+                "fqdn": "DBs.PostgreSQL.pgClass.PG",
+                "method": "getConn",
+                "result": "t_ses.connect"
+            },
+            {"comment": "カテゴリ一覧の取得",
+                "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                "method": "getCategoryAll",
+                "param": "t_ses.connect",
+                "result": "t_ses.categories"
+            },
+            {"comment": "カテゴリ一覧の件数",
+                "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                "method": "setCategoryItems",
+                "param": ["t_ses.connect", "t_ses.categories"]
+            },
+            {"comment": "ＤＢ接続の解放",
+                "fqdn": "DBs.PostgreSQL.pgClass.PG",
+                "method": "putConn",
+                "param": "t_ses.connect"
+            }
+        ],
+        "add_category": [
+            {"comment": "TODO"}
+        ],
+        "update_category": [
+            {"comment": "TODO"}
+        ],
+        "delete_category": [
+            {"comment": "TODO"}
+        ],
+        "move_category": [
+            {"comment": "TODO"}
+        ],
+        "read_todo": [
+            {"comment": "TODO"}
+        ],
+        "add_todo": [
+            {"comment": "TODO"}
+        ],
+        "update_todo": [
+            {"comment": "TODO"}
+        ],
+        "update_status": [
+            {"comment": "TODO"}
+        ],
+        "delete_todo": [
+            {"comment": "TODO"}
+        ],
+        "add_comment": [
+            {"comment": "TODO"}
+        ],
+        "update_comment": [
+            {"comment": "TODO"}
+        ],
+        "delete_comment": [
+            {"comment": "TODO"}
+        ],
+        "read_tags": [
+            {"comment": "TODO"}
+        ],
+        "add_tag": [
+            {"comment": "TODO"}
+        ],
+        "update_tag": [
+            {"comment": "TODO"}
+        ],
+        "delete_tag": [
+            {"comment": "TODO"}
+        ],
+        "set_todo_tag": [
+            {"comment": "TODO"}
+        ]
+    }
 }

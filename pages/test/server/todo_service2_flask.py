@@ -76,11 +76,12 @@ class TodoService2:
         sys.path.append(str(p.parent))
         return import_module(p.stem)
 
-    def _prepareLibManager(self):
+    def _prepareLibManager(self, appConfig):
         apDef = {'t_ses': {}, }
         apDef['DBInfo'] = self.myAppDef['DBInfo']
         apDef['clazzDef'] = self.myAppDef['clazzDef']
-        apDef['app'] = self.myAppDef['app']
+        assert appConfig in self.myAppDef['app']['config'], 'アプリケーション定義[%s]が未定義' % (appConfig, )
+        apDef['app'] = {'config': self.myAppDef['app']['config'][appConfig]}
         return apDef
 
     def run(self):
@@ -92,7 +93,7 @@ class TodoService2:
         j = p.parent / 'service/todo_service2.json'
         with open(j, 'r', encoding='utf8') as f:
             self.myAppDef['app'] = json.load(f)
-        self.libManager.run_lib_manager(self._prepareLibManager())
+        self.libManager.run_lib_manager(self._prepareLibManager('read_category'))
         self.logger.debug('normal end ...')
 
 if __name__ == '__main__':
