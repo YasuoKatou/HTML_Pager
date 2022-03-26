@@ -18,6 +18,7 @@ class TodoService2:
             'DBInfo': {'env_name': 'PG_DNS', 'pool': {'min': 1, 'max': 5}},
             'clazzDef': [
                 {'module': 'DBs.PostgreSQL.pgClass', 'classes': []},
+                {'module': 'condition.condition1', 'classes': []},
                 {'module': 'pages.test.server.service.todo_service2', 'classes': []},
                 {'module': 'pages.test.server.service.todoDao.todo_dao', 'classes': []}
             ],
@@ -93,7 +94,39 @@ class TodoService2:
         j = p.parent / 'service/todo_service2.json'
         with open(j, 'r', encoding='utf8') as f:
             self.myAppDef['app'] = json.load(f)
-        self.libManager.run_lib_manager(self._prepareLibManager('read_category'))
+        # カテゴリの取得を確認
+        #self.libManager.run_lib_manager(self._prepareLibManager('read_category'))
+        # カテゴリの追加を確認
+        #apDef = self._prepareLibManager('add_category')
+        #apDef['t_ses']['request'] = {'category_name': 'new category'}
+        #self.libManager.run_lib_manager(apDef)
+        # カテゴリの更新を確認
+        #apDef = self._prepareLibManager('update_category')
+        #apDef['t_ses']['request'] = {'id': '27', 'name': 'updated category name'}
+        #self.libManager.run_lib_manager(apDef)
+        # カテゴリの削除を確認
+        #apDef = self._prepareLibManager('delete_category')
+        #apDef['t_ses']['request'] = {'id': '28'}
+        #self.libManager.run_lib_manager(apDef)
+        # カテゴリ操作後のカテゴリ一覧を確認
+        #apDef = self._prepareLibManager('read_category2')
+        #self.libManager.run_lib_manager(apDef)
+        # タグの一覧を確認
+        #apDef = self._prepareLibManager('read_tags')
+        #self.libManager.run_lib_manager(apDef)
+        #タグの追加を確認
+        #apDef = self._prepareLibManager('add_tag')
+        #apDef['t_ses']['request'] = {'tag-name': 'new Tag Name'}
+        #self.libManager.run_lib_manager(apDef)
+        #タグの更新を確認
+        #apDef = self._prepareLibManager('update_tag')
+        #apDef['t_ses']['request'] = {'id': '18', 'name': 'updated Tag Name'}
+        #self.libManager.run_lib_manager(apDef)
+        #タグの削除を確認
+        #apDef = self._prepareLibManager('delete_tag')
+        #apDef['t_ses']['request'] = {'id': '18'}
+        #self.libManager.run_lib_manager(apDef)
+
         self.logger.debug('normal end ...')
 
 if __name__ == '__main__':

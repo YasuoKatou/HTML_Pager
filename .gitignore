@@ -133,3 +133,4 @@ dmypy.json
 
 **/todo*.db
 **/*.log.*
+my_env.ps1

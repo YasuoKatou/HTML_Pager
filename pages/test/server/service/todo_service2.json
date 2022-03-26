@@ -24,13 +24,62 @@
             }
         ],
         "add_category": [
-            {"comment": "TODO"}
+            {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
+            {"comment": "カテゴリの登録",
+                "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                "method": "add_category",
+                "param": ["t_ses.connect", "t_ses.request"]
+            },
+            {"comment": "カテゴリ一覧の取得",
+                "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                "method": "read_category2",
+                "param": "t_ses.connect",
+                "result": "t_ses.categories"
+            },
+            {"comment": "commit", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "commit", "param": "t_ses.connect"},
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
+        ],
+        "read_category2": [
+            {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
+            {"comment": "カテゴリ一覧の取得",
+                "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                "method": "read_category2",
+                "param": "t_ses.connect",
+                "result": "t_ses.categories"
+            },
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
         ],
         "update_category": [
-            {"comment": "TODO"}
+            {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
+            {"comment": "カテゴリ一覧の取得",
+                "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                "method": "update_category",
+                "param": ["t_ses.connect", "t_ses.request"]
+            },
+            {"comment": "カテゴリ名の変更",
+                "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                "method": "read_category2",
+                "param": "t_ses.connect",
+                "result": "t_ses.categories"
+            },
+            {"comment": "commit", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "commit", "param": "t_ses.connect"},
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
         ],
         "delete_category": [
-            {"comment": "TODO"}
+            {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
+            {"comment": "カテゴリの削除",
+                "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                "method": "delete_category",
+                "param": ["t_ses.connect", "t_ses.request"]
+            },
+            {"comment": "カテゴリ一覧の取得",
+                "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                "method": "read_category2",
+                "param": "t_ses.connect",
+                "result": "t_ses.categories"
+            },
+            {"comment": "commit", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "commit", "param": "t_ses.connect"},
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
         ],
         "move_category": [
             {"comment": "TODO"}
@@ -60,16 +109,62 @@
             {"comment": "TODO"}
         ],
         "read_tags": [
-            {"comment": "TODO"}
+            {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
+            {"comment": "タグ一覧の取得",
+                "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                "method": "read_tags",
+                "param": "t_ses.connect",
+                "result": "t_ses.tags"
+            },
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
         ],
         "add_tag": [
-            {"comment": "TODO"}
+            {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
+            {"comment": "タグの登録",
+                "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                "method": "add_tag",
+                "param": ["t_ses.connect", "t_ses.request"]
+            },
+            {"comment": "タグ一覧の取得",
+                "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                "method": "read_tags",
+                "param": "t_ses.connect",
+                "result": "t_ses.tags"
+            },
+            {"comment": "commit", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "commit", "param": "t_ses.connect"},
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
         ],
         "update_tag": [
-            {"comment": "TODO"}
+            {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
+            {"comment": "タグの更新",
+                "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                "method": "update_tag",
+                "param": ["t_ses.connect", "t_ses.request"]
+            },
+            {"comment": "タグ一覧の取得",
+                "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                "method": "read_tags",
+                "param": "t_ses.connect",
+                "result": "t_ses.tags"
+            },
+            {"comment": "commit", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "commit", "param": "t_ses.connect"},
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
         ],
         "delete_tag": [
-            {"comment": "TODO"}
+            {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
+            {"comment": "タグの削除",
+                "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                "method": "delete_tag",
+                "param": ["t_ses.connect", "t_ses.request"]
+            },
+            {"comment": "タグ一覧の取得",
+                "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                "method": "read_tags",
+                "param": "t_ses.connect",
+                "result": "t_ses.tags"
+            },
+            {"comment": "commit", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "commit", "param": "t_ses.connect"},
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
         ],
         "set_todo_tag": [
             {"comment": "TODO"}

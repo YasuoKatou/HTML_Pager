@@ -26,12 +26,12 @@
             "handlers": ["consoleHandler"],
             "propagate": false
         },
-        "DBs.PostgreSQL.pgClass": {
+        "pgClass": {
             "level": "DEBUG",
             "handlers": ["consoleHandler"],
             "propagate": false
         },
-        "pages.test.server.service.todoDao.todo_dao": {
+        "todo_dao": {
             "level": "DEBUG",
             "handlers": ["consoleHandler"],
             "propagate": false
