@@ -155,13 +155,37 @@
             {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
         ],
         "add_comment": [
-            {"comment": "TODO"}
+            {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
+            {"comment": "TODOコメントの登録",
+                "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                "method": "add_comment",
+                "param": ["t_ses.connect", "t_ses.request"],
+                "result": "t_ses.todo_comment"
+            },
+            {"comment": "commit", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "commit", "param": "t_ses.connect"},
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
         ],
         "update_comment": [
-            {"comment": "TODO"}
+            {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
+            {"comment": "TODOコメントの更新",
+                "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                "method": "update_comment",
+                "param": ["t_ses.connect", "t_ses.request"],
+                "result": "t_ses.todo_comment_updated"
+            },
+            {"comment": "commit", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "commit", "param": "t_ses.connect"},
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
         ],
         "delete_comment": [
-            {"comment": "TODO"}
+            {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
+            {"comment": "TODOコメントの削除",
+                "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                "method": "delete_comment",
+                "param": ["t_ses.connect", "t_ses.request"],
+                "result": "t_ses.delete_todo_comment"
+            },
+            {"comment": "commit", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "commit", "param": "t_ses.connect"},
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
         ],
         "read_tags": [
             {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},

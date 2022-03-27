@@ -150,6 +150,18 @@ class TodoService2:
         #apDef = self._prepareLibManager('delete_todo')
         #apDef['t_ses']['request'] = {'id': '51'}
         #self.libManager.run_lib_manager(apDef)
+        #TODOコメントの登録を確認
+        #apDef = self._prepareLibManager('add_comment')
+        #apDef['t_ses']['request'] = {'todo-id': '-1', 'comment': 'new todo comment', 'temp-id': 'abcde'}
+        #self.libManager.run_lib_manager(apDef)
+        #TODOコメントの更新を確認
+        #apDef = self._prepareLibManager('update_comment')
+        #apDef['t_ses']['request'] = {'todo-id': '-1', 'id': '61', 'comment': 'updated todo comment'}
+        #self.libManager.run_lib_manager(apDef)
+        #TODOコメントの削除を確認
+        #apDef = self._prepareLibManager('delete_comment')
+        #apDef['t_ses']['request'] = {'todo-id': '-1', 'id': '61'}
+        #self.libManager.run_lib_manager(apDef)
 
 
         # TODO コネクションの再利用を確認

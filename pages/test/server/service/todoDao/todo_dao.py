@@ -263,4 +263,31 @@ class TodoDao(DaoBase):
         # TODO 戻り値をなしにする
         return {'id': req['id']}
 
+    def add_comment(self, conn, req):
+        now = super()._getNow()
+        sql = 'INSERT INTO TODO_COMMENT(todo_id, comment,create_ts,update_ts) VALUES(%s,%s,%s,%s) RETURNING id'
+        with conn.cursor() as cur:
+            cur.execute(sql, (req['todo-id'], req['comment'], now, now))
+            comment_id = cur.fetchone()[0]
+
+        # TODO 戻り値は、comment_id にする
+        return {'todo-id': req['todo-id'], 'temp-id': req['temp-id'], 'id': comment_id}
+
+    def update_comment(self, conn, req):
+        now = super()._getNow()
+        sql = 'UPDATE TODO_COMMENT set comment = %s , update_ts = %s WHERE id = %s'
+        with conn.cursor() as cur:
+            cur.execute(sql, (req['comment'], now, req['id']))
+
+        # TODO 戻り値をなしにする
+        return {'todo-id': req['todo-id'], 'id': req['id']}
+
+    def delete_comment(self, conn, req):
+        delParam = (req['id'], )
+        with conn.cursor() as cur:
+            cur.execute('delete from TODO_COMMENT where id = %s', delParam)
+
+        # TODO 戻り値をなしにする
+        return {'todo-id': req['todo-id'], 'id': req['id']}
+
 #[EOF]
