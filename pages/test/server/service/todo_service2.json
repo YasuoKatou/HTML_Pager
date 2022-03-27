@@ -85,7 +85,28 @@
             {"comment": "TODO"}
         ],
         "read_todo": [
-            {"comment": "TODO"}
+            {"comment": "TODO一覧を取得",
+                "fqdn": "condition.condition1.Condition1",
+                "method": "isZero",
+                "param": "t_ses.request.category_id",
+                "true": [
+                    {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
+                    {"comment": "カテゴリ未割当のTODO一覧を取得",
+                        "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                        "method": "read_todo_without_category",
+                        "param": "t_ses.connect"},
+                    {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
+            
+                ],
+                "false": [
+                    {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
+                    {"comment": "カテゴリ未割当のTODO一覧を取得",
+                        "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                        "method": "read_todo_with_category",
+                        "param": ["t_ses.connect", "t_ses.request"]},
+                    {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
+                ]
+            }
         ],
         "add_todo": [
             {"comment": "TODO"}

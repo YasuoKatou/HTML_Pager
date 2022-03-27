@@ -168,4 +168,12 @@ class TodoDao(DaoBase):
         with conn.cursor() as cur:
             cur.execute('DELETE FROM TODO_TAGS WHERE tag_id = %s', param)
             cur.execute('DELETE FROM TODO_TAG WHERE id = %s', param)
+
+    def read_todo_without_category(self, conn):
+        self.logger.debug('カテゴリ未割当のTODO一覧を取得')
+
+    def read_todo_with_category(self, conn, req):
+        categoryId = req['category_id']
+        self.logger.debug('カテゴリに割当てたTODO一覧を取得 category id:[%s]' % (categoryId, ))
+
 #[EOF]

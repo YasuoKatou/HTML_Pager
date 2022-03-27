@@ -126,6 +126,17 @@ class TodoService2:
         #apDef = self._prepareLibManager('delete_tag')
         #apDef['t_ses']['request'] = {'id': '18'}
         #self.libManager.run_lib_manager(apDef)
+        #カテゴリ未割当のTODO一覧取得を確認
+        #apDef = self._prepareLibManager('read_todo')
+        #apDef['t_ses']['request'] = {'category_id': '0'}
+        #self.libManager.run_lib_manager(apDef)
+        #カテゴリ割当ありのTODO一覧取得を確認
+        apDef = self._prepareLibManager('read_todo')
+        apDef['t_ses']['request'] = {'category_id': '3'}
+        self.libManager.run_lib_manager(apDef)
+
+
+        # TODO コネクションの再利用を確認
 
         self.logger.debug('normal end ...')
 
