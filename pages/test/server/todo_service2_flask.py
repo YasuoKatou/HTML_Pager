@@ -131,9 +131,25 @@ class TodoService2:
         #apDef['t_ses']['request'] = {'category_id': '0'}
         #self.libManager.run_lib_manager(apDef)
         #カテゴリ割当ありのTODO一覧取得を確認
-        apDef = self._prepareLibManager('read_todo')
-        apDef['t_ses']['request'] = {'category_id': '3'}
-        self.libManager.run_lib_manager(apDef)
+        #apDef = self._prepareLibManager('read_todo')
+        #apDef['t_ses']['request'] = {'category_id': '3'}
+        #self.libManager.run_lib_manager(apDef)
+        #TODOの新規登録を確認
+        #apDef = self._prepareLibManager('add_todo')
+        #apDef['t_ses']['request'] = {'title': 'new todo for test', 'category-id': '3', 'temp-id': 'abc'}
+        #self.libManager.run_lib_manager(apDef)
+        #TODOの更新を確認
+        #apDef = self._prepareLibManager('update_todo')
+        #apDef['t_ses']['request'] = {'id': '51', 'title': 'updated todo for test'}
+        #self.libManager.run_lib_manager(apDef)
+        #TODOのステータス更新を確認
+        #apDef = self._prepareLibManager('update_status')
+        #apDef['t_ses']['request'] = {'id': '51', 'status': '30'}
+        #self.libManager.run_lib_manager(apDef)
+        #TODOの削除を確認
+        #apDef = self._prepareLibManager('delete_todo')
+        #apDef['t_ses']['request'] = {'id': '51'}
+        #self.libManager.run_lib_manager(apDef)
 
 
         # TODO コネクションの再利用を確認
