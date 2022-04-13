@@ -18,7 +18,8 @@ class TodoService2:
             'DBInfo': {'env_name': 'PG_DNS', 'pool': {'min': 1, 'max': 5}},
             'clazzDef': [
                 {'module': 'DBs.PostgreSQL.pgClass', 'classes': []},
-                {'module': 'condition.condition1', 'classes': []},
+                {'module': 'Conditions.condition1', 'classes': []},
+                {'module': 'Conditions.loop1', 'classes': []},
                 {'module': 'pages.test.server.service.todo_service2', 'classes': []},
                 {'module': 'pages.test.server.service.todoDao.todo_dao', 'classes': []}
             ],
@@ -102,11 +103,11 @@ class TodoService2:
         #self.libManager.run_lib_manager(apDef)
         # カテゴリの更新を確認
         #apDef = self._prepareLibManager('update_category')
-        #apDef['t_ses']['request'] = {'id': '27', 'name': 'updated category name'}
+        #apDef['t_ses']['request'] = {'id': '29', 'name': 'updated category name'}
         #self.libManager.run_lib_manager(apDef)
         # カテゴリの削除を確認
         #apDef = self._prepareLibManager('delete_category')
-        #apDef['t_ses']['request'] = {'id': '28'}
+        #apDef['t_ses']['request'] = {'id': '29'}
         #self.libManager.run_lib_manager(apDef)
         # カテゴリ操作後のカテゴリ一覧を確認
         #apDef = self._prepareLibManager('read_category2')
@@ -163,6 +164,12 @@ class TodoService2:
         #apDef['t_ses']['request'] = {'todo-id': '-1', 'id': '61'}
         #self.libManager.run_lib_manager(apDef)
 
+        # TODO カテゴリの移動を確認
+        # タグの設定を確認
+        #apDef = self._prepareLibManager('set_todo_tag')
+        ##apDef['t_ses']['request'] = {'todo-id': '-1', 'tags': [-2, -3]}
+        #apDef['t_ses']['request'] = {'todo-id': '-1', 'tags': []}
+        #self.libManager.run_lib_manager(apDef)
 
         # TODO コネクションの再利用を確認
 

@@ -86,7 +86,7 @@
         ],
         "read_todo": [
             {"comment": "TODO一覧を取得",
-                "fqdn": "condition.condition1.Condition1",
+                "fqdn": "Conditions.condition1.Condition1",
                 "method": "isZero",
                 "param": "t_ses.request.category_id",
                 "true": [
@@ -97,7 +97,7 @@
                         "param": "t_ses.connect",
                         "result": "t_ses.todo_list"},
                     {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
-            
+
                 ],
                 "false": [
                     {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
@@ -246,7 +246,40 @@
             {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
         ],
         "set_todo_tag": [
-            {"comment": "TODO"}
+            {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
+            {"comment": "現在設定されている対象TODOのタグを一旦全削除する",
+                "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                "method": "clear_todo_tag",
+                "param": ["t_ses.connect", "t_ses.request.todo-id"]
+            },
+            {"comment": "タグの一覧を登録",
+                "loop-init": {"comment": "タグ一覧の登録準備(ループ処理の初期処理)",
+                    "fqdn": "Conditions.loop1.Loop1",
+                    "method": "initListObject",
+                    "param": "t_ses.request.tags",
+                    "result": "t_ses.tag_iter"
+                },
+                "loop-next": {
+                    "fqdn": "Conditions.loop1.Loop1",
+                    "method": "next",
+                    "param": "t_ses.tag_iter",
+                    "result": "t_ses.tagId"
+                },
+                "loop-check": {
+                    "fqdn": "Conditions.condition1.Condition1",
+                    "method": "isNotEmpty",
+                    "param": "t_ses.tagId"
+                },
+                "do-loop": [
+                    {"comment": "TODOのタグ一覧を登録",
+                        "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
+                        "method": "set_todo_tag",
+                        "param": ["t_ses.connect", "t_ses.request.todo-id", "t_ses.tagId"]
+                    }
+                ]
+            },
+            {"comment": "commit", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "commit", "param": "t_ses.connect"},
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
         ]
     }
 }

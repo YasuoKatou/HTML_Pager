@@ -290,4 +290,15 @@ class TodoDao(DaoBase):
         # TODO 戻り値をなしにする
         return {'todo-id': req['todo-id'], 'id': req['id']}
 
+    def clear_todo_tag(self, conn, todoId):
+        with conn.cursor() as cur:
+            # 一旦登録内容を全削除
+            cur.execute('DELETE FROM TODO_TAGS WHERE todo_id = %s', (todoId,))
+
+    def set_todo_tag(self, conn, todoId, tagId):
+        now = super()._getNow()
+        with conn.cursor() as cur:
+            cur.execute('''INSERT INTO TODO_TAGS(todo_id,tag_id,create_ts,update_ts)
+                            VALUES(%s,%s,%s,%s)''', (todoId, tagId, now, now))
+
 #[EOF]
