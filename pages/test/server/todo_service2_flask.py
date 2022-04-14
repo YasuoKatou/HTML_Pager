@@ -163,12 +163,16 @@ class TodoService2:
         #apDef = self._prepareLibManager('delete_comment')
         #apDef['t_ses']['request'] = {'todo-id': '-1', 'id': '61'}
         #self.libManager.run_lib_manager(apDef)
-
-        # TODO カテゴリの移動を確認
         # タグの設定を確認
         #apDef = self._prepareLibManager('set_todo_tag')
         ##apDef['t_ses']['request'] = {'todo-id': '-1', 'tags': [-2, -3]}
         #apDef['t_ses']['request'] = {'todo-id': '-1', 'tags': []}
+        #self.libManager.run_lib_manager(apDef)
+        # カテゴリの移動を確認
+        #apDef = self._prepareLibManager('move_category')
+        ##apDef['t_ses']['request'] = {'todo-id': '-1', 'category_id_fm': '0', 'category_id_to': '-2'}    #未分類から未分類以外に移動
+        ##apDef['t_ses']['request'] = {'todo-id': '-1', 'category_id_fm': '-2', 'category_id_to': '-3'}    #未分類以外から未分類以外に移動
+        #apDef['t_ses']['request'] = {'todo-id': '-1', 'category_id_fm': '-2', 'category_id_to': '0'}    #未分類にする
         #self.libManager.run_lib_manager(apDef)
 
         # TODO コネクションの再利用を確認

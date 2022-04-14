@@ -301,4 +301,21 @@ class TodoDao(DaoBase):
             cur.execute('''INSERT INTO TODO_TAGS(todo_id,tag_id,create_ts,update_ts)
                             VALUES(%s,%s,%s,%s)''', (todoId, tagId, now, now))
 
+    def free_todo_category(self, conn, req):
+        with conn.cursor() as cur:
+            cur.execute('DELETE FROM TODO_CATEGORIES WHERE todo_id = %s', (req['todo-id'], ))
+
+    def set_todo_category(self, conn, req):
+        now = super()._getNow()
+        sql = ''' INSERT INTO TODO_CATEGORIES(category_id,todo_id,create_ts,update_ts)
+                    VALUES(%s,%s,%s,%s)'''
+        with conn.cursor() as cur:
+            cur.execute(sql, (req['category_id_to'], req['todo-id'], now, now))
+
+    def move_todo_category(self, conn, req):
+        now = super()._getNow()
+        sql = ''' UPDATE TODO_CATEGORIES set category_id = %s, update_ts = %s
+                    WHERE todo_id = %s'''
+        with conn.cursor() as cur:
+            cur.execute(sql, (req['category_id_to'], now, req['todo-id']))
 #[EOF]
