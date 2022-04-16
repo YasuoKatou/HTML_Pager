@@ -20,6 +20,7 @@ class TodoService2:
                 {'module': 'DBs.PostgreSQL.pgClass', 'classes': []},
                 {'module': 'Conditions.condition1', 'classes': []},
                 {'module': 'Conditions.loop1', 'classes': []},
+                {'module': 'Bean.beanClass', 'classes': [], 'ignoreClasses': ['XNoSupportedBeanMapTypeError', 'XNoSupportedConvertTypeError', ]},
                 {'module': 'pages.test.server.service.todo_service2', 'classes': []},
                 {'module': 'pages.test.server.service.todoDao.todo_dao', 'classes': []}
             ],
@@ -95,23 +96,68 @@ class TodoService2:
         j = p.parent / 'service/todo_service2.json'
         with open(j, 'r', encoding='utf8') as f:
             self.myAppDef['app'] = json.load(f)
-        # カテゴリの取得を確認
-        #self.libManager.run_lib_manager(self._prepareLibManager('read_category'))
-        # カテゴリの追加を確認
-        #apDef = self._prepareLibManager('add_category')
-        #apDef['t_ses']['request'] = {'category_name': 'new category'}
-        #self.libManager.run_lib_manager(apDef)
-        # カテゴリの更新を確認
-        #apDef = self._prepareLibManager('update_category')
-        #apDef['t_ses']['request'] = {'id': '29', 'name': 'updated category name'}
-        #self.libManager.run_lib_manager(apDef)
-        # カテゴリの削除を確認
-        #apDef = self._prepareLibManager('delete_category')
-        #apDef['t_ses']['request'] = {'id': '29'}
-        #self.libManager.run_lib_manager(apDef)
-        # カテゴリ操作後のカテゴリ一覧を確認
-        #apDef = self._prepareLibManager('read_category2')
-        #self.libManager.run_lib_manager(apDef)
+
+        #testName = 'read_category_type1'
+        #testName = 'read_category_type2'
+        #testName = 'add_category'
+        #testName = 'update_category'
+        #testName = 'delete_category'
+        #testName = 'move_category1'
+        #testName = 'move_category2'
+        #testName = 'move_category3'
+        #testName = 'read_todo1'
+        #testName = 'read_todo2'
+        testName = ''
+        if testName == 'read_category_type1':
+            # カテゴリ一覧の取得を確認
+            apDef = self._prepareLibManager('read_category')
+            apDef['t_ses']['request'] = {'type': '1'}
+            self.libManager.run_lib_manager(apDef)
+        elif testName == 'read_category_type2':
+            # カテゴリ一覧+TODO件数の取得を確認
+            apDef = self._prepareLibManager('read_category')
+            apDef['t_ses']['request'] = {'type': '2'}
+            self.libManager.run_lib_manager(apDef)
+        elif testName == 'add_category':
+            # カテゴリの追加を確認
+            apDef = self._prepareLibManager('add_category')
+            apDef['t_ses']['request'] = {'category_name': 'new category'}
+            self.libManager.run_lib_manager(apDef)
+        elif testName == 'update_category':
+            # カテゴリの更新を確認
+            apDef = self._prepareLibManager('update_category')
+            apDef['t_ses']['request'] = {'id': '31', 'name': 'updated category name'}
+            self.libManager.run_lib_manager(apDef)
+        elif testName == 'delete_category':
+            # カテゴリの削除を確認
+            apDef = self._prepareLibManager('delete_category')
+            apDef['t_ses']['request'] = {'id': '31'}
+            self.libManager.run_lib_manager(apDef)
+        elif testName == 'move_category1':
+            # カテゴリの移動を確認
+            apDef = self._prepareLibManager('move_category')
+            apDef['t_ses']['request'] = {'todo-id': '-1', 'category_id_fm': '0', 'category_id_to': '-2'}    #未分類から未分類以外に移動
+            self.libManager.run_lib_manager(apDef)
+        elif testName == 'move_category2':
+            # カテゴリの移動を確認
+            apDef = self._prepareLibManager('move_category')
+            apDef['t_ses']['request'] = {'todo-id': '-1', 'category_id_fm': '-2', 'category_id_to': '-3'}    #未分類以外から未分類以外に移動
+            self.libManager.run_lib_manager(apDef)
+        elif testName == 'move_category3':
+            # カテゴリ操作後のカテゴリ一覧を確認
+            apDef = self._prepareLibManager('move_category')
+            apDef['t_ses']['request'] = {'todo-id': '-1', 'category_id_fm': '-2', 'category_id_to': '0'}    #未分類にする
+            self.libManager.run_lib_manager(apDef)
+        elif testName == 'read_todo1':
+            #カテゴリ未割当のTODO一覧取得を確認
+            apDef = self._prepareLibManager('read_todo')
+            apDef['t_ses']['request'] = {'category_id': '0'}
+            self.libManager.run_lib_manager(apDef)
+        elif testName == 'read_todo2':
+            #カテゴリ割当ありのTODO一覧取得を確認
+            apDef = self._prepareLibManager('read_todo')
+            apDef['t_ses']['request'] = {'category_id': '3'}
+            self.libManager.run_lib_manager(apDef)
         # タグの一覧を確認
         #apDef = self._prepareLibManager('read_tags')
         #self.libManager.run_lib_manager(apDef)
@@ -126,14 +172,6 @@ class TodoService2:
         #タグの削除を確認
         #apDef = self._prepareLibManager('delete_tag')
         #apDef['t_ses']['request'] = {'id': '18'}
-        #self.libManager.run_lib_manager(apDef)
-        #カテゴリ未割当のTODO一覧取得を確認
-        #apDef = self._prepareLibManager('read_todo')
-        #apDef['t_ses']['request'] = {'category_id': '0'}
-        #self.libManager.run_lib_manager(apDef)
-        #カテゴリ割当ありのTODO一覧取得を確認
-        #apDef = self._prepareLibManager('read_todo')
-        #apDef['t_ses']['request'] = {'category_id': '3'}
         #self.libManager.run_lib_manager(apDef)
         #TODOの新規登録を確認
         #apDef = self._prepareLibManager('add_todo')
@@ -168,15 +206,12 @@ class TodoService2:
         ##apDef['t_ses']['request'] = {'todo-id': '-1', 'tags': [-2, -3]}
         #apDef['t_ses']['request'] = {'todo-id': '-1', 'tags': []}
         #self.libManager.run_lib_manager(apDef)
-        # カテゴリの移動を確認
-        #apDef = self._prepareLibManager('move_category')
-        ##apDef['t_ses']['request'] = {'todo-id': '-1', 'category_id_fm': '0', 'category_id_to': '-2'}    #未分類から未分類以外に移動
-        ##apDef['t_ses']['request'] = {'todo-id': '-1', 'category_id_fm': '-2', 'category_id_to': '-3'}    #未分類以外から未分類以外に移動
-        #apDef['t_ses']['request'] = {'todo-id': '-1', 'category_id_fm': '-2', 'category_id_to': '0'}    #未分類にする
-        #self.libManager.run_lib_manager(apDef)
+        else:
+            assert False, 'テストが指定していない.'
 
         # TODO コネクションの再利用を確認
 
+        print(json.dumps(apDef['t_ses']['response']))
         self.logger.debug('normal end ...')
 
 if __name__ == '__main__':
