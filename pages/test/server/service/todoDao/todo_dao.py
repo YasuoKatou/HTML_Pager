@@ -182,10 +182,10 @@ class TodoDao(DaoBase):
         with conn.cursor() as cur:
             cur.execute(sql1, (req['title'], now, now))
             todo_id = cur.fetchone()[0]
+            # TODO TODOの新規登録とカテゴリの登録は、Daoを分離すること
             if req['category-id'] != '0':
                 cur.execute(sql2, (req['category-id'], todo_id, now, now))
-        # TODO temp-id は、Daoとは関連しないので、処理を移動させること.
-        return {'temp-id': req['temp-id'], 'id': todo_id, 'date1': now}
+        return {'id': todo_id, 'date1': now}
 
     def update_todo(self, conn, req):
         sql = 'UPDATE TODO_TITLE set title = %s WHERE id = %s'

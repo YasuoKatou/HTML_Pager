@@ -168,7 +168,13 @@
                 "result": "t_ses.new_todo"
             },
             {"comment": "commit", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "commit", "param": "t_ses.connect"},
-            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"},
+            {"comment": "レスポンスの編集",
+                "fqdn": "Bean.beanClass.BeanCopy",
+                "method": "beanEdit",
+                "param": ["t_ses", {"request.temp-id": "temp-id", "new_todo.id": "id", "new_todo.date1": "date1"}],
+                "result": "t_ses.response"
+            }
         ],
         "update_todo": [
             {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
