@@ -181,66 +181,98 @@
             {"comment": "TODOの更新",
                 "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
                 "method": "update_todo",
-                "param": ["t_ses.connect", "t_ses.request"],
-                "result": "t_ses.updated_todo"
+                "param": ["t_ses.connect", "t_ses.request.id", "t_ses.request.title"]
             },
             {"comment": "commit", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "commit", "param": "t_ses.connect"},
-            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"},
+            {"comment": "レスポンスの編集",
+                "fqdn": "Bean.beanClass.BeanCopy",
+                "method": "beanEdit",
+                "param": ["t_ses", {"request.id": "id"}],
+                "result": "t_ses.response"
+            }
         ],
         "update_status": [
             {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
             {"comment": "TODOのステータス更新",
                 "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
                 "method": "update_status",
-                "param": ["t_ses.connect", "t_ses.request"],
-                "result": "t_ses.todo_status"
+                "param": ["t_ses.connect", "t_ses.request.id", "t_ses.request.status"],
+                "result": "t_ses.updated_time"
             },
             {"comment": "commit", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "commit", "param": "t_ses.connect"},
-            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"},
+            {"comment": "レスポンスの編集",
+                "fqdn": "Bean.beanClass.BeanCopy",
+                "method": "beanEdit",
+                "param": ["t_ses", {"request.id": "id", "request.status": "status", "updated_time": "date2"}],
+                "result": "t_ses.response"
+            }
         ],
         "delete_todo": [
             {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
             {"comment": "TODOの削除",
                 "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
                 "method": "delete_todo",
-                "param": ["t_ses.connect", "t_ses.request"],
-                "result": "t_ses.delete_todo"
+                "param": ["t_ses.connect", "t_ses.request.id"]
             },
             {"comment": "commit", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "commit", "param": "t_ses.connect"},
-            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"},
+            {"comment": "レスポンスの編集",
+                "fqdn": "Bean.beanClass.BeanCopy",
+                "method": "beanEdit",
+                "param": ["t_ses", {"request.id": "id"}],
+                "result": "t_ses.response"
+            }
         ],
         "add_comment": [
             {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
             {"comment": "TODOコメントの登録",
                 "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
                 "method": "add_comment",
-                "param": ["t_ses.connect", "t_ses.request"],
-                "result": "t_ses.todo_comment"
+                "param": ["t_ses.connect", "t_ses.request.todo-id", "t_ses.request.comment"],
+                "result": "t_ses.todo_comment_id"
             },
             {"comment": "commit", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "commit", "param": "t_ses.connect"},
-            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"},
+            {"comment": "レスポンスの編集",
+                "fqdn": "Bean.beanClass.BeanCopy",
+                "method": "beanEdit",
+                "param": ["t_ses", {"request.todo-id": "todo-id", "request.temp-id": "temp-id", "todo_comment_id": "id"}],
+                "result": "t_ses.response"
+            }
         ],
         "update_comment": [
             {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
             {"comment": "TODOコメントの更新",
                 "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
                 "method": "update_comment",
-                "param": ["t_ses.connect", "t_ses.request"],
-                "result": "t_ses.todo_comment_updated"
+                "param": ["t_ses.connect", "t_ses.request.id", "t_ses.request.comment"]
             },
             {"comment": "commit", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "commit", "param": "t_ses.connect"},
-            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"},
+            {"comment": "レスポンスの編集",
+                "fqdn": "Bean.beanClass.BeanCopy",
+                "method": "beanEdit",
+                "param": ["t_ses", {"request.todo-id": "todo-id", "request.id": "id"}],
+                "result": "t_ses.response"
+            }
         ],
         "delete_comment": [
             {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
             {"comment": "TODOコメントの削除",
                 "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
                 "method": "delete_comment",
-                "param": ["t_ses.connect", "t_ses.request"],
-                "result": "t_ses.delete_todo_comment"
+                "param": ["t_ses.connect", "t_ses.request.id"]
             },
             {"comment": "commit", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "commit", "param": "t_ses.connect"},
-            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"},
+            {"comment": "レスポンスの編集",
+                "fqdn": "Bean.beanClass.BeanCopy",
+                "method": "beanEdit",
+                "param": ["t_ses", {"request.todo-id": "todo-id", "request.id": "id"}],
+                "result": "t_ses.response"
+            }
         ],
         "read_tags": [
             {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
@@ -250,14 +282,20 @@
                 "param": "t_ses.connect",
                 "result": "t_ses.tags"
             },
-            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"},
+            {"comment": "レスポンスの編集",
+                "fqdn": "Bean.beanClass.BeanCopy",
+                "method": "beanEdit",
+                "param": ["t_ses", {"tags": "tags"}],
+                "result": "t_ses.response"
+            }
         ],
         "add_tag": [
             {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
             {"comment": "タグの登録",
                 "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
                 "method": "add_tag",
-                "param": ["t_ses.connect", "t_ses.request"]
+                "param": ["t_ses.connect", "t_ses.request.tag-name"]
             },
             {"comment": "タグ一覧の取得",
                 "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
@@ -266,14 +304,20 @@
                 "result": "t_ses.tags"
             },
             {"comment": "commit", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "commit", "param": "t_ses.connect"},
-            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"},
+            {"comment": "レスポンスの編集",
+                "fqdn": "Bean.beanClass.BeanCopy",
+                "method": "beanEdit",
+                "param": ["t_ses", {"tags": "tags"}],
+                "result": "t_ses.response"
+            }
         ],
         "update_tag": [
             {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
             {"comment": "タグの更新",
                 "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
                 "method": "update_tag",
-                "param": ["t_ses.connect", "t_ses.request"]
+                "param": ["t_ses.connect", "t_ses.request.id", "t_ses.request.name"]
             },
             {"comment": "タグ一覧の取得",
                 "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
@@ -282,14 +326,20 @@
                 "result": "t_ses.tags"
             },
             {"comment": "commit", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "commit", "param": "t_ses.connect"},
-            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"},
+            {"comment": "レスポンスの編集",
+                "fqdn": "Bean.beanClass.BeanCopy",
+                "method": "beanEdit",
+                "param": ["t_ses", {"tags": "tags"}],
+                "result": "t_ses.response"
+            }
         ],
         "delete_tag": [
             {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
             {"comment": "タグの削除",
                 "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
                 "method": "delete_tag",
-                "param": ["t_ses.connect", "t_ses.request"]
+                "param": ["t_ses.connect", "t_ses.request.id"]
             },
             {"comment": "タグ一覧の取得",
                 "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
@@ -298,7 +348,13 @@
                 "result": "t_ses.tags"
             },
             {"comment": "commit", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "commit", "param": "t_ses.connect"},
-            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"},
+            {"comment": "レスポンスの編集",
+                "fqdn": "Bean.beanClass.BeanCopy",
+                "method": "beanEdit",
+                "param": ["t_ses", {"tags": "tags"}],
+                "result": "t_ses.response"
+            }
         ],
         "set_todo_tag": [
             {"comment": "ＤＢ接続", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "getConn", "result": "t_ses.connect"},
@@ -334,7 +390,13 @@
                 ]
             },
             {"comment": "commit", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "commit", "param": "t_ses.connect"},
-            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
+            {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"},
+            {"comment": "レスポンスの編集",
+                "fqdn": "Bean.beanClass.BeanCopy",
+                "method": "beanEdit",
+                "param": ["t_ses", {"request.todo-id": "todo-id", "request.tags": "tags"}],
+                "result": "t_ses.response"
+            }
         ]
     }
 }

@@ -109,122 +109,119 @@ class TodoService2:
         #testName = 'read_todo2'
         #testName = 'add_todo1'
         #testName = 'add_todo2'
-        testName = ''
+        #testName = 'update_todo'
+        #testName = 'update_status'
+        #testName = 'delete_todo'
+        #testName = 'add_comment'
+        #testName = 'update_comment'
+        #testName = 'delete_comment'
+        #testName = 'read_tags'
+        #testName = 'add_tag'
+        #testName = 'update_tag'
+        #testName = 'delete_tag'
+        testName = 'set_todo_tag'
+        #testName = ''
         if testName == 'read_category_type1':
             # カテゴリ一覧の取得を確認
             apDef = self._prepareLibManager('read_category')
             apDef['t_ses']['request'] = {'type': '1'}
-            self.libManager.run_lib_manager(apDef)
         elif testName == 'read_category_type2':
             # カテゴリ一覧+TODO件数の取得を確認
             apDef = self._prepareLibManager('read_category')
             apDef['t_ses']['request'] = {'type': '2'}
-            self.libManager.run_lib_manager(apDef)
         elif testName == 'add_category':
             # カテゴリの追加を確認
             apDef = self._prepareLibManager('add_category')
             apDef['t_ses']['request'] = {'category_name': 'new category'}
-            self.libManager.run_lib_manager(apDef)
         elif testName == 'update_category':
             # カテゴリの更新を確認
             apDef = self._prepareLibManager('update_category')
             apDef['t_ses']['request'] = {'id': '31', 'name': 'updated category name'}
-            self.libManager.run_lib_manager(apDef)
         elif testName == 'delete_category':
             # カテゴリの削除を確認
             apDef = self._prepareLibManager('delete_category')
             apDef['t_ses']['request'] = {'id': '31'}
-            self.libManager.run_lib_manager(apDef)
         elif testName == 'move_category1':
             # カテゴリの移動を確認
             apDef = self._prepareLibManager('move_category')
             apDef['t_ses']['request'] = {'todo-id': '-1', 'category_id_fm': '0', 'category_id_to': '-2'}    #未分類から未分類以外に移動
-            self.libManager.run_lib_manager(apDef)
         elif testName == 'move_category2':
             # カテゴリの移動を確認
             apDef = self._prepareLibManager('move_category')
             apDef['t_ses']['request'] = {'todo-id': '-1', 'category_id_fm': '-2', 'category_id_to': '-3'}    #未分類以外から未分類以外に移動
-            self.libManager.run_lib_manager(apDef)
         elif testName == 'move_category3':
             # カテゴリ操作後のカテゴリ一覧を確認
             apDef = self._prepareLibManager('move_category')
             apDef['t_ses']['request'] = {'todo-id': '-1', 'category_id_fm': '-2', 'category_id_to': '0'}    #未分類にする
-            self.libManager.run_lib_manager(apDef)
         elif testName == 'read_todo1':
             #カテゴリ未割当のTODO一覧取得を確認
             apDef = self._prepareLibManager('read_todo')
             apDef['t_ses']['request'] = {'category_id': '0'}
-            self.libManager.run_lib_manager(apDef)
         elif testName == 'read_todo2':
             #カテゴリ割当ありのTODO一覧取得を確認
             apDef = self._prepareLibManager('read_todo')
             apDef['t_ses']['request'] = {'category_id': '3'}
-            self.libManager.run_lib_manager(apDef)
         elif testName == 'add_todo1':
             #TODOの新規登録(カテゴリ未割当)を確認
             apDef = self._prepareLibManager('add_todo')
             apDef['t_ses']['request'] = {'title': 'new todo for test', 'category-id': '0', 'temp-id': 'abc'}
-            self.libManager.run_lib_manager(apDef)
         elif testName == 'add_todo2':
             #TODOの新規登録(カテゴリ未割当)を確認
             apDef = self._prepareLibManager('add_todo')
             apDef['t_ses']['request'] = {'title': 'new todo for test', 'category-id': '1', 'temp-id': 'abc'}
-            self.libManager.run_lib_manager(apDef)
-        # タグの一覧を確認
-        #apDef = self._prepareLibManager('read_tags')
-        #self.libManager.run_lib_manager(apDef)
-        #タグの追加を確認
-        #apDef = self._prepareLibManager('add_tag')
-        #apDef['t_ses']['request'] = {'tag-name': 'new Tag Name'}
-        #self.libManager.run_lib_manager(apDef)
-        #タグの更新を確認
-        #apDef = self._prepareLibManager('update_tag')
-        #apDef['t_ses']['request'] = {'id': '18', 'name': 'updated Tag Name'}
-        #self.libManager.run_lib_manager(apDef)
-        #タグの削除を確認
-        #apDef = self._prepareLibManager('delete_tag')
-        #apDef['t_ses']['request'] = {'id': '18'}
-        #self.libManager.run_lib_manager(apDef)
-        #TODOの新規登録を確認
-        #apDef = self._prepareLibManager('add_todo')
-        #apDef['t_ses']['request'] = {'title': 'new todo for test', 'category-id': '3', 'temp-id': 'abc'}
-        #self.libManager.run_lib_manager(apDef)
-        #TODOの更新を確認
-        #apDef = self._prepareLibManager('update_todo')
-        #apDef['t_ses']['request'] = {'id': '51', 'title': 'updated todo for test'}
-        #self.libManager.run_lib_manager(apDef)
-        #TODOのステータス更新を確認
-        #apDef = self._prepareLibManager('update_status')
-        #apDef['t_ses']['request'] = {'id': '51', 'status': '30'}
-        #self.libManager.run_lib_manager(apDef)
-        #TODOの削除を確認
-        #apDef = self._prepareLibManager('delete_todo')
-        #apDef['t_ses']['request'] = {'id': '53'}
-        #self.libManager.run_lib_manager(apDef)
-        #TODOコメントの登録を確認
-        #apDef = self._prepareLibManager('add_comment')
-        #apDef['t_ses']['request'] = {'todo-id': '-1', 'comment': 'new todo comment', 'temp-id': 'abcde'}
-        #self.libManager.run_lib_manager(apDef)
-        #TODOコメントの更新を確認
-        #apDef = self._prepareLibManager('update_comment')
-        #apDef['t_ses']['request'] = {'todo-id': '-1', 'id': '61', 'comment': 'updated todo comment'}
-        #self.libManager.run_lib_manager(apDef)
-        #TODOコメントの削除を確認
-        #apDef = self._prepareLibManager('delete_comment')
-        #apDef['t_ses']['request'] = {'todo-id': '-1', 'id': '61'}
-        #self.libManager.run_lib_manager(apDef)
-        # タグの設定を確認
-        #apDef = self._prepareLibManager('set_todo_tag')
-        ##apDef['t_ses']['request'] = {'todo-id': '-1', 'tags': [-2, -3]}
-        #apDef['t_ses']['request'] = {'todo-id': '-1', 'tags': []}
-        #self.libManager.run_lib_manager(apDef)
+        elif testName == 'update_todo':
+            #TODOの更新を確認
+            apDef = self._prepareLibManager('update_todo')
+            apDef['t_ses']['request'] = {'id': '54', 'title': 'updated todo for test'}
+        elif testName == 'update_status':
+            #TODOのステータス更新を確認
+            apDef = self._prepareLibManager('update_status')
+            apDef['t_ses']['request'] = {'id': '54', 'status': '30'}
+        elif testName == 'delete_todo':
+            #TODOの削除を確認
+            apDef = self._prepareLibManager('delete_todo')
+            apDef['t_ses']['request'] = {'id': '54'}
+        elif testName == 'add_comment':
+            #TODOコメントの登録を確認
+            apDef = self._prepareLibManager('add_comment')
+            apDef['t_ses']['request'] = {'todo-id': '-1', 'comment': 'new todo comment', 'temp-id': 'abcde'}
+        elif testName == 'update_comment':
+            #TODOコメントの更新を確認
+            apDef = self._prepareLibManager('update_comment')
+            apDef['t_ses']['request'] = {'todo-id': '-1', 'id': '62', 'comment': 'updated todo comment'}
+        elif testName == 'delete_comment':
+            #TODOコメントの削除を確認
+            apDef = self._prepareLibManager('delete_comment')
+            apDef['t_ses']['request'] = {'todo-id': '-1', 'id': '62'}
+        elif testName == 'read_tags':
+            # タグの一覧を確認
+            apDef = self._prepareLibManager('read_tags')
+        elif testName == 'add_tag':
+            #タグの追加を確認
+            apDef = self._prepareLibManager('add_tag')
+            apDef['t_ses']['request'] = {'tag-name': 'new Tag Name'}
+        elif testName == 'update_tag':
+            #タグの更新を確認
+            apDef = self._prepareLibManager('update_tag')
+            apDef['t_ses']['request'] = {'id': '19', 'name': 'updated Tag Name'}
+        elif testName == 'delete_tag':
+            #タグの削除を確認
+            apDef = self._prepareLibManager('delete_tag')
+            apDef['t_ses']['request'] = {'id': '19'}
+        elif testName == 'set_todo_tag':
+            # タグの設定を確認
+            apDef = self._prepareLibManager('set_todo_tag')
+            #apDef['t_ses']['request'] = {'todo-id': '-1', 'tags': [-2, -3]}
+            apDef['t_ses']['request'] = {'todo-id': '-1', 'tags': []}
         else:
             assert False, 'テストが指定していない.'
+
+        self.libManager.run_lib_manager(apDef)
 
         # TODO コネクションの再利用を確認
 
         print(json.dumps(apDef['t_ses']['response']))
-        self.logger.debug('normal end ...')
+        self.logger.debug('normal end ... [%s]' % (testName, ))
 
 if __name__ == '__main__':
     app = TodoService2()

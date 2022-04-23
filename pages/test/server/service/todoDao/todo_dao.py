@@ -19,7 +19,7 @@ class TodoDao(DaoBase):
             cur.execute('SELECT id, tag_name FROM TODO_TAG order by tag_name')
             for row in cur:
                 tags.append({'id': str(row['id']), 'name': row['tag_name']})
-        return {'tags': tags}
+        return tags
 
     def getCategoryAll(self, conn):
         sql = 'select T1.id, T1.name from TODO_CATEGORY T1 order by T1.name'
@@ -99,24 +99,23 @@ class TodoDao(DaoBase):
             cur.execute('DELETE FROM TODO_CATEGORIES WHERE category_id = %s', param)
             cur.execute('DELETE FROM TODO_CATEGORY WHERE id = %s', param)
 
-    def add_tag(self, conn, req):
-        self.logger.info('タグ追加 name:[%s]' % (req['tag-name'], ))
+    def add_tag(self, conn, tag_name):
         now = super()._getNow()
         sql = 'INSERT INTO TODO_TAG(tag_name,create_ts,update_ts) VALUES(%s,%s,%s) returning id'
         with conn.cursor() as cur:
-            cur.execute(sql, (req['tag-name'], now, now))
+            cur.execute(sql, (tag_name, now, now))
             tag_id = cur.fetchone()[0]
             self.logger.info('タグid:[%d]' % (tag_id, ))
-            return tag_id
+        return tag_id
 
-    def update_tag(self, conn, req):
+    def update_tag(self, conn, tag_id, tag_name):
         now = super()._getNow()
-        param = (req['name'], now, req['id'], )
+        param = (tag_name, now, tag_id, )
         with conn.cursor() as cur:
             cur.execute('UPDATE TODO_TAG SET tag_name = %s, update_ts = %s WHERE id = %s', param)
 
-    def delete_tag(self, conn, req):
-        param = (req['id'], )
+    def delete_tag(self, conn, tag_id):
+        param = (tag_id, )
         with conn.cursor() as cur:
             cur.execute('DELETE FROM TODO_TAGS WHERE tag_id = %s', param)
             cur.execute('DELETE FROM TODO_TAG WHERE id = %s', param)
@@ -187,60 +186,45 @@ class TodoDao(DaoBase):
                 cur.execute(sql2, (req['category-id'], todo_id, now, now))
         return {'id': todo_id, 'date1': now}
 
-    def update_todo(self, conn, req):
-        sql = 'UPDATE TODO_TITLE set title = %s WHERE id = %s'
+    def update_todo(self, conn, todo_id, todo_title):
+        now = super()._getNow()
+        sql = 'UPDATE TODO_TITLE set title = %s , update_ts = %s WHERE id = %s'
         with conn.cursor() as cur:
-            cur.execute(sql, (req['title'], req['id']))
+            cur.execute(sql, (todo_title, now, todo_id))
 
-        # TODO id は、Daoとは関連しないので、処理を移動させること(結果、戻り値なしになる).
-        return {'id': req['id']}
-
-    def update_status(self, conn, req):
+    def update_status(self, conn, todo_id, todo_status):
         now = super()._getNow()
         sql = 'UPDATE TODO_TITLE set status = %s , update_ts = %s WHERE id = %s'
         with conn.cursor() as cur:
-            cur.execute(sql, (req['status'], now, req['id']))
-        # TODO 戻り値は、now のみにする
-        req['date2'] = now
-        return req
+            cur.execute(sql, (todo_status, now, todo_id))
+        return now
 
-    def delete_todo(self, conn, req):
-        delParam = (req['id'], )
+    def delete_todo(self, conn, todo_id):
+        delParam = (todo_id, )
         with conn.cursor() as cur:
             cur.execute('delete from TODO_TITLE where id = %s', delParam)
             cur.execute('delete from TODO_COMMENT where todo_id = %s', delParam)
             cur.execute('delete from TODO_CATEGORIES where todo_id = %s', delParam)
             cur.execute('delete from TODO_TAGS where todo_id = %s', delParam)
 
-        # TODO 戻り値をなしにする
-        return {'id': req['id']}
-
-    def add_comment(self, conn, req):
+    def add_comment(self, conn, todo_id, todo_comment):
         now = super()._getNow()
         sql = 'INSERT INTO TODO_COMMENT(todo_id, comment,create_ts,update_ts) VALUES(%s,%s,%s,%s) RETURNING id'
         with conn.cursor() as cur:
-            cur.execute(sql, (req['todo-id'], req['comment'], now, now))
+            cur.execute(sql, (todo_id, todo_comment, now, now))
             comment_id = cur.fetchone()[0]
 
-        # TODO 戻り値は、comment_id にする
-        return {'todo-id': req['todo-id'], 'temp-id': req['temp-id'], 'id': comment_id}
+        return comment_id
 
-    def update_comment(self, conn, req):
+    def update_comment(self, conn, comment_id, contents):
         now = super()._getNow()
         sql = 'UPDATE TODO_COMMENT set comment = %s , update_ts = %s WHERE id = %s'
         with conn.cursor() as cur:
-            cur.execute(sql, (req['comment'], now, req['id']))
+            cur.execute(sql, (contents, now, comment_id))
 
-        # TODO 戻り値をなしにする
-        return {'todo-id': req['todo-id'], 'id': req['id']}
-
-    def delete_comment(self, conn, req):
-        delParam = (req['id'], )
+    def delete_comment(self, conn, comment_id):
         with conn.cursor() as cur:
-            cur.execute('delete from TODO_COMMENT where id = %s', delParam)
-
-        # TODO 戻り値をなしにする
-        return {'todo-id': req['todo-id'], 'id': req['id']}
+            cur.execute('delete from TODO_COMMENT where id = %s', (comment_id, ))
 
     def clear_todo_tag(self, conn, todoId):
         with conn.cursor() as cur:
