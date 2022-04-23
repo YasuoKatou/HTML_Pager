@@ -86,7 +86,7 @@ class TodoService2:
         apDef['app'] = {'config': self.myAppDef['app']['config'][appConfig]}
         return apDef
 
-    def run(self):
+    def read_service_config(self):
         '''
         windows powershellで環境設定の方法
         > $env:PG_DNS="postgresql://{DB user}:{password}@{hostname}:{port no}/{db name}"
@@ -96,6 +96,16 @@ class TodoService2:
         with open(j, 'r', encoding='utf8') as f:
             self.myAppDef['app'] = json.load(f)
 
+    def execute_service(self, action, req):
+        apDef = self._prepareLibManager(action)
+        apDef['t_ses']['request'] = req
+        self.libManager.run_lib_manager(apDef)
+        return json.dumps(apDef['t_ses']['response'])
+
+    def execute_test(self):
+        self.read_service_config()
+
+        testName = ''
         #testName = 'read_category_type1'
         #testName = 'read_category_type2'
         #testName = 'add_category'
@@ -114,116 +124,116 @@ class TodoService2:
         #testName = 'add_comment'
         #testName = 'update_comment'
         #testName = 'delete_comment'
-        testName = 'read_tags'
+        #testName = 'read_tags'
         #testName = 'add_tag'
         #testName = 'update_tag'
         #testName = 'delete_tag'
         #testName = 'set_todo_tag'
-        #testName = ''
+        action = ''
+        req = {}
         if testName == 'read_category_type1':
             # カテゴリ一覧の取得を確認
-            apDef = self._prepareLibManager('read_category')
-            apDef['t_ses']['request'] = {'type': '1'}
+            action = 'read_category'
+            req = {'type': '1'}
         elif testName == 'read_category_type2':
             # カテゴリ一覧+TODO件数の取得を確認
-            apDef = self._prepareLibManager('read_category')
-            apDef['t_ses']['request'] = {'type': '2'}
+            action = 'read_category'
+            req = {'type': '2'}
         elif testName == 'add_category':
             # カテゴリの追加を確認
-            apDef = self._prepareLibManager('add_category')
-            apDef['t_ses']['request'] = {'category_name': 'new category'}
+            action = 'add_category'
+            req = {'category_name': 'new category'}
         elif testName == 'update_category':
             # カテゴリの更新を確認
-            apDef = self._prepareLibManager('update_category')
-            apDef['t_ses']['request'] = {'id': '31', 'name': 'updated category name'}
+            action = 'update_category'
+            req = {'id': '31', 'name': 'updated category name'}
         elif testName == 'delete_category':
             # カテゴリの削除を確認
-            apDef = self._prepareLibManager('delete_category')
-            apDef['t_ses']['request'] = {'id': '31'}
+            action = 'delete_category'
+            req = {'id': '31'}
         elif testName == 'move_category1':
             # カテゴリの移動を確認
-            apDef = self._prepareLibManager('move_category')
-            apDef['t_ses']['request'] = {'todo-id': '-1', 'category_id_fm': '0', 'category_id_to': '-2'}    #未分類から未分類以外に移動
+            action = 'move_category'
+            req = {'todo-id': '-1', 'category_id_fm': '0', 'category_id_to': '-2'}    #未分類から未分類以外に移動
         elif testName == 'move_category2':
             # カテゴリの移動を確認
-            apDef = self._prepareLibManager('move_category')
-            apDef['t_ses']['request'] = {'todo-id': '-1', 'category_id_fm': '-2', 'category_id_to': '-3'}    #未分類以外から未分類以外に移動
+            action = 'move_category'
+            req = {'todo-id': '-1', 'category_id_fm': '-2', 'category_id_to': '-3'}    #未分類以外から未分類以外に移動
         elif testName == 'move_category3':
             # カテゴリ操作後のカテゴリ一覧を確認
-            apDef = self._prepareLibManager('move_category')
-            apDef['t_ses']['request'] = {'todo-id': '-1', 'category_id_fm': '-2', 'category_id_to': '0'}    #未分類にする
+            action = 'move_category'
+            req = {'todo-id': '-1', 'category_id_fm': '-2', 'category_id_to': '0'}    #未分類にする
         elif testName == 'read_todo1':
             #カテゴリ未割当のTODO一覧取得を確認
-            apDef = self._prepareLibManager('read_todo')
-            apDef['t_ses']['request'] = {'category_id': '0'}
+            action = 'read_todo'
+            req = {'category_id': '0'}
         elif testName == 'read_todo2':
             #カテゴリ割当ありのTODO一覧取得を確認
-            apDef = self._prepareLibManager('read_todo')
-            apDef['t_ses']['request'] = {'category_id': '3'}
+            action = 'read_todo'
+            req = {'category_id': '3'}
         elif testName == 'add_todo1':
             #TODOの新規登録(カテゴリ未割当)を確認
-            apDef = self._prepareLibManager('add_todo')
-            apDef['t_ses']['request'] = {'title': 'new todo for test', 'category-id': '0', 'temp-id': 'abc'}
+            action = 'add_todo'
+            req = {'title': 'new todo for test', 'category-id': '0', 'temp-id': 'abc'}
         elif testName == 'add_todo2':
             #TODOの新規登録(カテゴリ未割当)を確認
-            apDef = self._prepareLibManager('add_todo')
-            apDef['t_ses']['request'] = {'title': 'new todo for test', 'category-id': '1', 'temp-id': 'abc'}
+            action = 'add_todo'
+            req = {'title': 'new todo for test', 'category-id': '1', 'temp-id': 'abc'}
         elif testName == 'update_todo':
             #TODOの更新を確認
-            apDef = self._prepareLibManager('update_todo')
-            apDef['t_ses']['request'] = {'id': '54', 'title': 'updated todo for test'}
+            action = 'update_todo'
+            req = {'id': '54', 'title': 'updated todo for test'}
         elif testName == 'update_status':
             #TODOのステータス更新を確認
-            apDef = self._prepareLibManager('update_status')
-            apDef['t_ses']['request'] = {'id': '54', 'status': '30'}
+            action = 'update_status'
+            req = {'id': '54', 'status': '30'}
         elif testName == 'delete_todo':
             #TODOの削除を確認
-            apDef = self._prepareLibManager('delete_todo')
-            apDef['t_ses']['request'] = {'id': '54'}
+            action = 'delete_todo'
+            req = {'id': '54'}
         elif testName == 'add_comment':
             #TODOコメントの登録を確認
-            apDef = self._prepareLibManager('add_comment')
-            apDef['t_ses']['request'] = {'todo-id': '-1', 'comment': 'new todo comment', 'temp-id': 'abcde'}
+            action = 'add_comment'
+            req = {'todo-id': '-1', 'comment': 'new todo comment', 'temp-id': 'abcde'}
         elif testName == 'update_comment':
             #TODOコメントの更新を確認
-            apDef = self._prepareLibManager('update_comment')
-            apDef['t_ses']['request'] = {'todo-id': '-1', 'id': '62', 'comment': 'updated todo comment'}
+            action = 'update_comment'
+            req = {'todo-id': '-1', 'id': '62', 'comment': 'updated todo comment'}
         elif testName == 'delete_comment':
             #TODOコメントの削除を確認
-            apDef = self._prepareLibManager('delete_comment')
-            apDef['t_ses']['request'] = {'todo-id': '-1', 'id': '62'}
+            action = 'delete_comment'
+            req = {'todo-id': '-1', 'id': '62'}
         elif testName == 'read_tags':
             # タグの一覧を確認
-            apDef = self._prepareLibManager('read_tags')
+            action = 'read_tags'
         elif testName == 'add_tag':
             #タグの追加を確認
-            apDef = self._prepareLibManager('add_tag')
-            apDef['t_ses']['request'] = {'tag-name': 'new Tag Name'}
+            action = 'add_tag'
+            req = {'tag-name': 'new Tag Name'}
         elif testName == 'update_tag':
             #タグの更新を確認
-            apDef = self._prepareLibManager('update_tag')
-            apDef['t_ses']['request'] = {'id': '19', 'name': 'updated Tag Name'}
+            action = 'update_tag'
+            req = {'id': '19', 'name': 'updated Tag Name'}
         elif testName == 'delete_tag':
             #タグの削除を確認
-            apDef = self._prepareLibManager('delete_tag')
-            apDef['t_ses']['request'] = {'id': '19'}
+            action = 'delete_tag'
+            req = {'id': '19'}
         elif testName == 'set_todo_tag':
             # タグの設定を確認
-            apDef = self._prepareLibManager('set_todo_tag')
-            #apDef['t_ses']['request'] = {'todo-id': '-1', 'tags': [-2, -3]}
-            apDef['t_ses']['request'] = {'todo-id': '-1', 'tags': []}
+            action = 'set_todo_tag'
+            #req = {'todo-id': '-1', 'tags': [-2, -3]}
+            req = {'todo-id': '-1', 'tags': []}
         else:
             assert False, 'テストが指定していない.'
 
-        self.libManager.run_lib_manager(apDef)
-
         # TODO コネクションの再利用を確認
 
-        print(json.dumps(apDef['t_ses']['response']))
+        self.logger.debug('start [%s]' % (testName, ))
+        print(self.execute_service(action, req))
         self.logger.debug('normal end ... [%s]' % (testName, ))
 
 if __name__ == '__main__':
     app = TodoService2()
-    app.run()
+    app.execute_test()
 
 #[EOF]
