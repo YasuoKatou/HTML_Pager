@@ -12,33 +12,41 @@
             "class": "logging.StreamHandler",
             "formatter": "simple",
             "stream": "ext://sys.stdout"
+        },
+        "logFileHandler": {
+            "class": "logging.FileHandler",
+            "filename": "pages/test/server/log/todo-service.log",
+            "formatter": "simple",
+            "mode": "a",
+            "encoding": "utf-8"
         }
     },
 
     "loggers": {
         "__main__": {
             "level": "DEBUG",
-            "handlers": ["consoleHandler"],
+            "handlers": ["consoleHandler", "logFileHandler"],
             "propagate": false
         },
         "lib_manager": {
             "level": "DEBUG",
-            "handlers": ["consoleHandler"],
+            "handlers": ["consoleHandler", "logFileHandler"],
             "propagate": false
         },
         "pgClass": {
             "level": "DEBUG",
-            "handlers": ["consoleHandler"],
+            "handlers": ["consoleHandler", "logFileHandler"],
             "propagate": false
         },
         "todo_dao": {
             "level": "DEBUG",
-            "handlers": ["consoleHandler"],
+            "handlers": ["consoleHandler", "logFileHandler"],
             "propagate": false
         }
     },
 
     "root": {
-        "level": "INFO"
+        "level": "INFO",
+        "handlers": ["consoleHandler", "logFileHandler"]
     }
 }

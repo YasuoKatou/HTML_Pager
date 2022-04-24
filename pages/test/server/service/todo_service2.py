@@ -38,7 +38,7 @@ class TodoService2:
 
     def _initLogger(self):
         p = pathlib.Path(__file__)
-        j = p.parent.parent / 'todo_service_log.json'
+        j = p.parent / 'todo_service_log.json'
         with open(j, 'r') as f:
             log_conf = json.load(f)
         logging.config.dictConfig(log_conf)
@@ -100,7 +100,7 @@ class TodoService2:
         apDef = self._prepareLibManager(action)
         apDef['t_ses']['request'] = req
         self.libManager.run_lib_manager(apDef)
-        return json.dumps(apDef['t_ses']['response'])
+        return apDef['t_ses']['response']
 
     def execute_test(self):
         self.read_service_config()
@@ -124,7 +124,7 @@ class TodoService2:
         #testName = 'add_comment'
         #testName = 'update_comment'
         #testName = 'delete_comment'
-        #testName = 'read_tags'
+        testName = 'read_tags'
         #testName = 'add_tag'
         #testName = 'update_tag'
         #testName = 'delete_tag'
@@ -229,7 +229,7 @@ class TodoService2:
         # TODO コネクションの再利用を確認
 
         self.logger.debug('start [%s]' % (testName, ))
-        print(self.execute_service(action, req))
+        print(json.dumps(self.execute_service(action, req)))
         self.logger.debug('normal end ... [%s]' % (testName, ))
 
 if __name__ == '__main__':

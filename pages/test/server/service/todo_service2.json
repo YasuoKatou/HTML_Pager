@@ -6,7 +6,7 @@
                 "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
                 "method": "getCategoryAll",
                 "param": "t_ses.connect",
-                "result": "t_ses.response"
+                "result": "t_ses.response.category_list"
             },
             {"comment": "TODO件数の取得",
                 "fqdn": "Conditions.condition1.Condition1",
@@ -16,7 +16,7 @@
                     {
                         "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
                         "method": "setCategoryItems",
-                        "param": ["t_ses.connect", "t_ses.response"]
+                        "param": ["t_ses.connect", "t_ses.response.category_list"]
                     }
                 ]
             },
@@ -34,12 +34,12 @@
                 "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
                 "method": "getCategoryAll",
                 "param": "t_ses.connect",
-                "result": "t_ses.response"
+                "result": "t_ses.response.category_list"
             },
             {"comment": "TODO件数の取得",
                 "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
                 "method": "setCategoryItems",
-                "param": ["t_ses.connect", "t_ses.response"]
+                "param": ["t_ses.connect", "t_ses.response.category_list"]
             },
             {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
         ],
@@ -55,12 +55,12 @@
                 "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
                 "method": "getCategoryAll",
                 "param": "t_ses.connect",
-                "result": "t_ses.response"
+                "result": "t_ses.response.category_list"
             },
             {"comment": "TODO件数の取得",
                 "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
                 "method": "setCategoryItems",
-                "param": ["t_ses.connect", "t_ses.response"]
+                "param": ["t_ses.connect", "t_ses.response.category_list"]
             },
             {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
         ],
@@ -76,12 +76,12 @@
                 "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
                 "method": "getCategoryAll",
                 "param": "t_ses.connect",
-                "result": "t_ses.response"
+                "result": "t_ses.response.category_list"
             },
             {"comment": "TODO件数の取得",
                 "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
                 "method": "setCategoryItems",
-                "param": ["t_ses.connect", "t_ses.response"]
+                "param": ["t_ses.connect", "t_ses.response.category_list"]
             },
             {"comment": "ＤＢ接続の解放", "fqdn": "DBs.PostgreSQL.pgClass.PG", "method": "putConn", "param": "t_ses.connect"}
         ],
@@ -374,18 +374,18 @@
                     "fqdn": "Conditions.loop1.Loop1",
                     "method": "next",
                     "param": "t_ses.tag_iter",
-                    "result": "t_ses.tagId"
+                    "result": "t_ses.tagInfo"
                 },
                 "loop-check": {
                     "fqdn": "Conditions.condition1.Condition1",
                     "method": "isNotEmpty",
-                    "param": "t_ses.tagId"
+                    "param": "t_ses.tagInfo"
                 },
                 "do-loop": [
                     {"comment": "TODOのタグ一覧を登録",
                         "fqdn": "pages.test.server.service.todoDao.todo_dao.TodoDao",
                         "method": "set_todo_tag",
-                        "param": ["t_ses.connect", "t_ses.request.todo-id", "t_ses.tagId"]
+                        "param": ["t_ses.connect", "t_ses.request.todo-id", "t_ses.tagInfo.id"]
                     }
                 ]
             },
