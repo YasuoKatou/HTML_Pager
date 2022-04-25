@@ -3,9 +3,9 @@
 今回本格的なサーバ構築の実装を試みました。その内容を下記に備忘録として残します。
 
 テーマ１：静的ファイルは、Web サーバで処理（クライアントに戻す）  
-テーマ２：クライアントからのPOSTリクエスト（JSON）のみをしょりする  
+テーマ２：クライアントからのPOSTリクエスト（JSON）のみを処理する  
+テーマ３：[ライブラリマネージャー](https://github.com/YasuoKatou/pyLibManager "ライブラリマネージャー")を使ったアプリケーション
 
-[リンク](http://localhost/HTML_Pager/)
 
 ## 関連図
 
@@ -20,6 +20,12 @@ TODO サーバ
 　　↓　　　　↑   (psycopg2)
 PostgreSQL
 ```
+
+## 各種ライブラリの配置先
+
+/cygdrive/z/nginx/nginx-1.20.1/html/HTML_Pager   このプロジェクトの配置先
+
+/cygdrive/z/workspace/GitHub/pyLibManager/       [ライブラリマネージャー](https://github.com/YasuoKatou/pyLibManager "ライブラリマネージャー")
 
 ### nginx の設定（nginx.conf）
 
@@ -43,9 +49,23 @@ PostgreSQL
 セキュリティ上ＤＢの接続情報は掲載しません。
 
 ```
-$ export TODO_DB_DNS=postgresql://{DB user}:{password}@{hostname}:{port no}/{db name}
-$ export TARGET_APP_ROOT=/cygdrive/z/nginx/nginx-1.20.1/html/HTML_Pager
-$ uwsgi --http 0.0.0.0:9090 --wsgi-file $TARGET_APP_ROOT/pages/test/server/todo_server_flask.py --callable todoApp
+$ export PY_LIB_MANAGER="/cygdrive/z/workspace/GitHub/pyLibManager/pyLibManager/lib_manager.py"
+$ export PG_DNS="postgresql://{DB user}:{password}@{hostname}:{port no}/{db name}"
+$ export LIB_MANAGER_PATH="/cygdrive/z/workspace/GitHub/pyLibManager/pyLibManager:/cygdrive/z/nginx/nginx-1.20.1/html/HTML_Pager:/cygdrive/z/nginx/nginx-1.20.1/html/HTML_Pager/pages/test/server/service/todoDao"
+$ uwsgi --ini /home/YasuoKatou/uwsgi/todo/uwsgi_todo2.ini
+```
+
+uwsgi_todo2.ini の内容
+
+```
+[uwsgi]
+http=0.0.0.0:9090
+chdir=/cygdrive/z/nginx/nginx-1.20.1/html/HTML_Pager
+wsgi-file=/cygdrive/z/nginx/nginx-1.20.1/html/HTML_Pager/pages/test/server/todo_server2_flask.py
+callable=todoApp
+vacuum=true
+pidfile=/home/YasuoKatou/uwsgi/todo/uwsgi_todo.pid
+logto=/home/YasuoKatou/uwsgi/todo/uwsgi_todo.log
 ```
 
 ### ＤＢ
