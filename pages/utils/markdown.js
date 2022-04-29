@@ -3,7 +3,7 @@
  */
  class MarkdownBase {
     constructor(source) {
-        this._source = source.replaceAll(/\<br\>/g, '\n');
+        this._source = source;
     }
     get newLine() {
         if (this._source.endsWith('  ')) {
@@ -48,18 +48,45 @@ class MarkdownPreTag extends MarkdownBase {
      * コンストラクタ.
      * @param {String} source マークダウンで記述した文字列（書式：```文字列```）
      */
-     constructor(source) {
+    constructor(source) {
         super(source);
+    }
+
+    _edit() {
+        let flag = false
+        let wk1 = this._source.substring(3, this._source.length - 3).trim().split(/\n/);
+        let wk2 = '';
+        for (let idx = 0; idx < wk1.length - 1; ++idx) {
+            if (wk1[idx] !== '' || flag) {
+                flag = true;
+                wk2 += wk1[idx] + '\n';
+            }
+        }
+        wk2 += wk1[wk1.length - 1];
+        return wk2;
     }
 
     /**
      * html タグを取得する.
-     * @returns <pre class="md-pretag">文字列</pre>
+     * @returns <pre class="md-pretag"><code class="md-pre-codetag">文字列</code></pre>
      */
-     get htmlTag() {
+    get htmlTag() {
+        let tagStyleName;
+        let codeStyleName;
+        if (this._source.search(/\n/) < 0) {
+            tagStyleName = 'md-pretag_2';
+            codeStyleName = 'md-pre-codetag_2';
+        } else {
+            tagStyleName = 'md-pretag_1';
+            codeStyleName = 'md-pre-codetag_1';
+        }
+        let code = document.createElement('code');
+        code.classList.add(codeStyleName);
+        code.innerText = this._edit();
+
         let pre = document.createElement('pre');
-        pre.classList.add('md-pretag');
-        pre.innerText = this._source.substring(3, this._source.length - 3);
+        pre.classList.add(tagStyleName);
+        pre.appendChild(code);
         return pre;
     }
 }
@@ -85,7 +112,9 @@ class MarkdownTextTag extends MarkdownBase {
         // <span class="md-spantag">{string}</span>
         let span = document.createElement('span');
         span.classList.add('md-spantag');
-        span.innerHTML = this._source.replace(/\s{2}/g, '<br>');
+        let html = "";
+        for (const line of this._source.split(/\n/)) html += line.replace(/\s{2}$/, '<br>');
+        span.innerHTML = html;
         return span;
     }
 }
@@ -116,7 +145,7 @@ class MarkdownToHtml extends MarkdownBase {
         if (s.length > 0) ret.push(s);
         return ret;
     }
-
+    
     _getCodeTag(s) {
         let r = s.match(/```[^```]*```/g);
         if (r === null) return [s];
@@ -158,7 +187,7 @@ class MarkdownToHtml extends MarkdownBase {
                 ana.push(w);
             }
         }
-        return ana;
+        return ana;    
     }
 
     setHtml(parent) {
@@ -180,6 +209,6 @@ class MarkdownToHtml extends MarkdownBase {
             } else {
                 console.error(typeof(w));
             }
-        }
+        }        
     }
 }

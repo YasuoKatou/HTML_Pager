@@ -1,0 +1,31 @@
+
+
+.md-spantag {
+    
+}
+
+.md-atag {
+    color:blue;
+    background-color:rgb(217, 235, 243);
+    margin-right: 0.25em;
+    margin-left: 0.25em;
+}
+
+.md-pretag_1 {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.md-pretag_2 {
+    display: inline-block;
+}
+
+.md-pre-codetag_1 {
+    
+}
+
+.md-pre-codetag_2 {
+    margin-right: 0.25em;
+    margin-left: 0.25em;    
+}

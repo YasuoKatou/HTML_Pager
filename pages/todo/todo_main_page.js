@@ -198,7 +198,7 @@ class TodoMainPage extends TodoPagerController {
         md.setHtml(target);
 
         let s = target.nextElementSibling;
-        s.innerText = content;
+        s.textContent = content;
     }
 
     _execute_todoComment(event) {
@@ -208,7 +208,7 @@ class TodoMainPage extends TodoPagerController {
         var isNewComment = this._mode === this._MODE.ADD_COMMENT;
         this._setModeFree();
 
-        var content = this._commentValue.trim().replaceAll(/</g, '&lt;').replaceAll(/>/g, '&gt;').replaceAll(/\n/g, '<br>');
+        var content = this._commentValue.trim();
         if (isNewComment) {
             let tempId = this._getTempId();
             let c = this._createCommentTag({'id': tempId, 'content': content});
@@ -219,7 +219,7 @@ class TodoMainPage extends TodoPagerController {
             super._createAjaxParam('add_comment', req, this._received_new_comment()).send();
         } else {
             let srcTag = this._hiddenComment.nextElementSibling;
-            var changed = (srcTag.innerText !== content);
+            var changed = (srcTag.textContent !== content);
             var empty = (this._commentValue.trim() === '');
             this._setCommentHtml(this._hiddenComment, content);
             this._hiddenComment.style.display = 'block';
@@ -455,8 +455,7 @@ class TodoMainPage extends TodoPagerController {
         this._removeInputTags();
 
         let p = this._getParentNodeByClassName(event.target, 'todo-comment');
-        let s = p.nextElementSibling.innerText;
-        this._commentValue = s.replaceAll('<br>', '\n').replaceAll('&lt;', '<').replaceAll('&gt;', '>');
+        this._commentValue = p.nextElementSibling.innerText;
         event.target.style.display = 'none';
         event.target.parentNode.insertBefore(this._todoComment, event.target);
         this._commentTextarea.focus();
@@ -535,7 +534,7 @@ class TodoMainPage extends TodoPagerController {
         pv.dataset.id = comment.id;
         c.appendChild(pv);
         // 非表示のタグは、表示用タグの後に配置する
-        let ps = document.createElement('p');
+        let ps = document.createElement('pre');
         ps.classList.add('todo-comment-source');
         c.appendChild(ps);
 
