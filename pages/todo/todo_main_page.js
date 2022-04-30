@@ -330,7 +330,9 @@ class TodoMainPage extends TodoPagerController {
             let target = event.target;
             let classList = target.classList;
             if (classList.contains('todo-comment')) {
-                this._editCommentStart(event);      // TODOコメントを編集
+                this._editCommentStart(target);      // TODOコメントを編集
+            } else if (target.parentNode.classList.contains('todo-comment')) {
+                this._editCommentStart(target.parentNode);      // TODOコメントを編集
             } else if (classList.contains('summary-title')) {
                 this._editTodoTitleStart(event);    // TODOタイトルを編集
             } else if (target.id === 'new_todo_comment') {
@@ -450,17 +452,17 @@ class TodoMainPage extends TodoPagerController {
         this._setMode(this._MODE.ADD_COMMENT);
     }
 
-    _editCommentStart(event) {
+    _editCommentStart(target) {
         // 入力用のタグを非表示にする
         this._removeInputTags();
 
-        let p = this._getParentNodeByClassName(event.target, 'todo-comment');
+        let p = this._getParentNodeByClassName(target, 'todo-comment');
         this._commentValue = p.nextElementSibling.innerText;
-        event.target.style.display = 'none';
-        event.target.parentNode.insertBefore(this._todoComment, event.target);
+        target.style.display = 'none';
+        target.parentNode.insertBefore(this._todoComment, target);
         this._commentTextarea.focus();
         this._setMode(this._MODE.EDIT_COMMENT);
-        this._hiddenComment = event.target;
+        this._hiddenComment = target;
     }
 
     _restoreComment() {
