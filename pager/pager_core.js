@@ -289,7 +289,8 @@
     _compositionEvent(event) {
         this._compFlg = (event.type.toLowerCase() === 'compositionstart');
         let p = document.getElementById('key-monitor');
-        if (p.style.display === 'none') return
+        if (p === null) return;
+        if (p.style.display === 'none') return;
 
         let t = p.getElementsByClassName('kanji');
         if (t.length === 1) {
