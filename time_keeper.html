@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="pager/pager.css">
+        <link rel="stylesheet" href="pages/time_keeper/time_keeper.css">
+        <link rel="stylesheet" href="pages/utils/TG001.css">
+        <link rel="stylesheet" href="pages/utils/markdown.css">
+    </head>
+    <body>
+        <section id="header">
+            <h1 id="header-title">タイムキーパー</h1>
+        </section>
+        <!--
+        <section id="key-monitor">
+            <div class="km-gp1">
+                <p>ctrl : </p><p class="ctrl"></p>
+                <p>shift : </p><p class='sft'></p>
+                <p>alt : </p><p class="alt"></p>
+                <p>meta : </p><p class="meta"></p>
+                <p>kanji : </p><p class="kanji"></p>
+                <p>code : </p><p class="code"></p>
+            </div>
+        </section>
+        -->
+        <section id="page_root">
+            <div id="PP1001" class="page_hidden">
+                <div>
+                    <h4 class="move-time-keeper">作業記録へ</h4>
+                </div>
+                <form name="add-task-form" action="#" onsubmit="return false;" class="inp-today-task">
+                    <ul>
+                        <li>
+                            <h3>新しいタスク</h3>
+                        </li>
+                        <li>
+                            <label for="new-task-name">タスク</label>
+                            <input type="text" id="new-task-name" name="new-task-name" required />
+                        </li>
+                        <li>
+                            <label for="new-task-priority">優先順位</label>
+                            <select id="new-task-priority" name="new-task-priority">
+                                <option value="1">高</option>
+                                <option value="10">やや高</option>
+                                <option value="20" selected>普通</option>
+                                <option value="30">低</option>
+                                <option value="100">そのうち</option>
+                            </select>
+                        </li>
+                        <li>
+                            <label for="new-task-remarks">備考</label>
+                            <input type="text" id="new-task-remarks" name="new-task-remarks" />
+                        </li>
+                        <li>
+                            <input type="submit" id="add-new-task" value="登録"/><input type="reset" id="reset-new-task" value="クリア"/>
+                        </li>
+                    </ul>
+                </form>
+                <div class="task-list-block">
+                    <h3>タスク一覧</h3>
+                    <ul class="task-list">
+                        <!--
+                        <li data-task-id="1">
+                            <label><input type="checkbox" checked="checked"><span>タスク #1</span></label>
+                            <span class="task-remarks">タスク#1 コメント</span>
+                        </li>
+                        <li data-task-id="2">
+                            <label><input type="checkbox" checked="checked"><span>タスク #2</span></label>
+                            <span class="task-remarks">タスク#2 コメント</span>
+                        </li>
+                        -->
+                    </ul>
+                </div>
+            </div>
+            <div id="PP1002" class="page_hidden">
+                <div>
+                    <h4 class="move-task-manage">タスク管理へ</h4>
+                </div>
+            </div>
+        </section>
+
+        <script type="text/javascript" src="pager/pager_class.js"></script>
+        <script type="text/javascript" src="pager/pager_controller.js"></script>
+        <script type="text/javascript" src="pager/pager_core.js"></script>
+        <script type="text/javascript" src="pages/time_keeper/TimeKeeperTaskDataModel.js"></script>
+        <script type="text/javascript" src="pages/time_keeper/TimeKeeperControllerBase.js"></script>
+        <script type="text/javascript" src="pages/time_keeper/task_manager.js"></script>
+        <script type="text/javascript" src="pages/time_keeper/time_keeper.js"></script>
+        <script type="text/javascript" src="pages/time_keeper/time_keeper_config.js"></script>
+        <script type="text/javascript" src="pager/pager.js"></script>
+    </body>
+</html>

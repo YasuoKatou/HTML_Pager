@@ -1,0 +1,86 @@
+h4 {
+    text-align: right;
+    color: blue;
+    margin: 5px 10px 0 0;
+}
+
+h4, label, input[type='checkbox'] {
+    cursor: pointer;
+}
+
+#PP1001 {
+    display: flex;
+    flex-direction: column;
+}
+
+.inp-today-task li {
+    margin: 10px 0px;
+}
+
+.inp-today-task li:last-child {
+    margin: 30px auto 0 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 3em;
+}
+
+.inp-today-task input[type='submit'], input[type='reset'] {
+    width: 5em;
+}
+
+.inp-today-task label {
+    text-align: right;
+    margin-right: 1em;      /* input(text)タグの枠線（左）が消える対応 */
+    width: 8em;
+    float: left;
+}
+
+input#new-task-name {
+    width: 50%;
+}
+
+input#new-task-remarks {
+    width: 75%;
+}
+
+#PP1001 {
+    background-color: cornsilk;
+}
+
+#PP1001 .task-remarks {
+    display: none;
+}
+
+#PP1001 .task-list {
+    width: 80%;
+    margin: 0 auto;
+}
+
+#PP1001 .task-list li:hover {
+    background-color: aqua;
+}
+
+#PP1001 .task-list label {
+    position: relative;
+}
+
+#PP1001 .task-list input[type='checkbox'] {
+    position: absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    margin: auto;
+}
+
+#PP1001 .task-list label span {
+    margin-left: 1.5em;    /*チェックボックスのサイズ(幅)も含む*/
+}
+
+.task-list-block {
+    margin-top: 50px;
+}
+
+#PP1002 {
+    background-color: antiquewhite;
+}
