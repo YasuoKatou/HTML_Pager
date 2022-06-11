@@ -34,7 +34,7 @@
                             <h3>新しいタスク</h3>
                         </li>
                         <li>
-                            <label for="new-task-name">タスク</label>
+                            <label for="new-task-name">タイトル</label>
                             <input type="text" id="new-task-name" name="new-task-name" required />
                         </li>
                         <li>
@@ -58,6 +58,12 @@
                 </form>
                 <div class="task-list-block">
                     <h3>タスク一覧</h3>
+                    <section class="task-list-header">
+                        <div>
+                            <span>選択</span>
+                            <span>タイトル</span>
+                        </div>
+                    </section>
                     <ul class="task-list">
                         <!--
                         <li data-task-id="1">

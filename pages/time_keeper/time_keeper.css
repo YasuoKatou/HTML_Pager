@@ -41,7 +41,7 @@ input#new-task-name {
 }
 
 input#new-task-remarks {
-    width: 75%;
+    width: 50%;
 }
 
 #PP1001 {
@@ -49,10 +49,11 @@ input#new-task-remarks {
 }
 
 #PP1001 .task-remarks {
-    display: none;
+    font-size: x-small;
+    padding-left: 2em;
 }
 
-#PP1001 .task-list {
+#PP1001 .task-list-header, .task-list {
     width: 80%;
     margin: 0 auto;
 }
@@ -83,4 +84,8 @@ input#new-task-remarks {
 
 #PP1002 {
     background-color: antiquewhite;
+}
+
+.task-list label {
+    display: block;
 }
