@@ -1,0 +1,150 @@
+
+.TG001-list-container {
+    margin-top: 2em;
+    display: flex;
+    flex-direction: column;
+}
+
+.TG001-list-title {
+    display: flex;
+    flex-direction: column;
+}
+
+.TG001-list-title > div {
+    display: flex;
+    flex-direction: row;
+}
+
+.TG001-list-title p {
+    box-sizing: border-box;
+    border: solid 1px gray;
+    text-align: center;
+    font-weight: bolder;
+    font-size: small;
+    background-color: blanchedalmond;
+}
+
+.TG001-list-title .item-title {
+    flex-basis: 12rem;
+}
+
+.TG001-list-title .item-remarks {
+    flex: 1;
+}
+
+.TG001-list-title .item-select {
+    flex-basis: 2rem;
+}
+
+.TG001-list-title .item-priority {
+    flex-basis: 5rem;
+}
+
+.TG001-list-title .item-status {
+    flex-basis: 5rem;
+}
+
+.TG001-list-title .item-todo-start {
+    flex: 1;
+}
+
+.TG001-list-title .item-todo-end {
+    flex: 1;
+}
+
+.TG001-list-title .item-todo-update {
+    flex: 1;
+}
+
+
+
+
+
+.TG001-list-body ul, li {
+    list-style: none;
+}
+
+.TG001-item-body {
+    position: relative;
+    height: 3em;
+    background-color: orange;
+}
+
+.TG001-item-label-container {
+    width: 100%;
+    height: 100%;
+    padding-top: 0.8em;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: 500ms;
+    background-color: white;
+}
+
+.TG001-item-label-container.active {
+    left: -10em;
+}
+/*
+.TG001-item-label-container > p {
+    flex-grow: 1;
+    height: 1em;
+}
+*/
+.TG001-item-label-container > div {
+    display: flex;
+    flex-direction: row;
+}
+
+.TG001-item-label-container p {
+    padding: 0 0.2em;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.TG001-item-label-container .item-title {
+    flex-basis: 12rem;
+}
+
+.TG001-item-label-container .item-remarks {
+    flex: 1;
+}
+
+.TG001-item-label-container .item-select {
+    flex-basis: 2rem;
+}
+
+.TG001-item-label-container .item-priority {
+    flex-basis: 5rem;
+}
+
+.TG001-item-label-container .item-status {
+    flex-basis: 5rem;
+}
+
+.TG001-item-label-container .item-todo-start {
+    flex: 1;
+}
+
+.TG001-item-label-container .item-todo-end {
+    flex: 1;
+}
+
+.TG001-item-label-container .item-todo-update {
+    flex: 1;
+}
+
+.TG001-back-menu-container {
+    width: 100%;
+    padding-top: 0.8em;
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+}
+
+.TG001-back-menu-container > p {
+    width: 5em;
+    height: 1em;
+    text-align: center;
+}
