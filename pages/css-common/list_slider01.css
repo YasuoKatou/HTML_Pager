@@ -1,21 +1,21 @@
 
-.TG001-list-container {
+.TG002-list-container {
     margin-top: 2em;
     display: flex;
     flex-direction: column;
 }
 
-.TG001-list-title {
+.TG002-list-title {
     display: flex;
     flex-direction: column;
 }
 
-.TG001-list-title > div {
+.TG002-list-title > div {
     display: flex;
     flex-direction: row;
 }
 
-.TG001-list-title p {
+.TG002-list-title p {
     box-sizing: border-box;
     border: solid 1px gray;
     text-align: center;
@@ -24,35 +24,35 @@
     background-color: blanchedalmond;
 }
 
-.TG001-list-title .item-title {
+.TG002-list-title .item-title {
     flex-basis: 12rem;
 }
 
-.TG001-list-title .item-remarks {
+.TG002-list-title .item-remarks {
     flex: 1;
 }
 
-.TG001-list-title .item-select {
+.TG002-list-title .item-select {
     flex-basis: 2rem;
 }
 
-.TG001-list-title .item-priority {
+.TG002-list-title .item-priority {
     flex-basis: 5rem;
 }
 
-.TG001-list-title .item-status {
+.TG002-list-title .item-status {
     flex-basis: 5rem;
 }
 
-.TG001-list-title .item-todo-start {
+.TG002-list-title .item-todo-start {
     flex: 1;
 }
 
-.TG001-list-title .item-todo-end {
+.TG002-list-title .item-todo-end {
     flex: 1;
 }
 
-.TG001-list-title .item-todo-update {
+.TG002-list-title .item-todo-update {
     flex: 1;
 }
 
@@ -60,20 +60,29 @@
 
 
 
-.TG001-list-body ul, li {
+.TG002-list-body ul, li {
     list-style: none;
+    font-size: small;
 }
 
-.TG001-item-body {
+.TG002-item-body {
     position: relative;
-    height: 3em;
+    height: 3rem;
     background-color: orange;
 }
 
-.TG001-item-label-container {
+.TG002-item-vert-middle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    flex-basis: 2rem;
+}
+
+.TG002-list-item-container {
     width: 100%;
-    height: 100%;
-    padding-top: 0.8em;
+    height: 2rem;
+    padding: 0.5rem 0;
     display: flex;
     flex-direction: column;
     position: absolute;
@@ -83,68 +92,68 @@
     background-color: white;
 }
 
-.TG001-item-label-container.active {
-    left: -10em;
-}
-/*
-.TG001-item-label-container > p {
-    flex-grow: 1;
-    height: 1em;
-}
-*/
-.TG001-item-label-container > div {
-    display: flex;
-    flex-direction: row;
+.TG002-item-body:nth-child(2n) .TG002-list-item-container {
+    background-color: seashell;
 }
 
-.TG001-item-label-container p {
+.TG002-list-item-container.active {
+    left: -10em;
+}
+
+.TG002-list-item-container > div {
+    display: flex;
+    flex-direction: row;
+    height: 1rem;
+}
+
+.TG002-list-item-container p {
     padding: 0 0.2em;
     white-space: nowrap;
     overflow: hidden;
 }
 
-.TG001-item-label-container .item-title {
+.TG002-list-item-container .item-title {
     flex-basis: 12rem;
 }
 
-.TG001-item-label-container .item-remarks {
+.TG002-list-item-container .item-remarks {
     flex: 1;
 }
 
-.TG001-item-label-container .item-select {
-    flex-basis: 2rem;
+.TG002-list-item-container .item-select {
 }
 
-.TG001-item-label-container .item-priority {
+.TG002-list-item-container .item-priority {
     flex-basis: 5rem;
 }
 
-.TG001-item-label-container .item-status {
+.TG002-list-item-container .item-status {
     flex-basis: 5rem;
 }
 
-.TG001-item-label-container .item-todo-start {
+.TG002-list-item-container .item-todo-start {
     flex: 1;
 }
 
-.TG001-item-label-container .item-todo-end {
+.TG002-list-item-container .item-todo-end {
     flex: 1;
 }
 
-.TG001-item-label-container .item-todo-update {
+.TG002-list-item-container .item-todo-update {
     flex: 1;
 }
 
-.TG001-back-menu-container {
+.TG002-back-menu-container {
     width: 100%;
-    padding-top: 0.8em;
+    height: 100%;
     display: flex;
     flex-direction: row;
     justify-content: end;
 }
 
-.TG001-back-menu-container > p {
+.TG002-back-menu-container > p {
     width: 5em;
-    height: 1em;
+    height: 2rem;
+    padding: 1rem 0;
     text-align: center;
 }

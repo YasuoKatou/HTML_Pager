@@ -5,7 +5,6 @@
         <link rel="stylesheet" href="pager/pager.css">
         <link rel="stylesheet" href="pages/css-common/list_slider01.css">
         <link rel="stylesheet" href="pages/time_keeper/time_keeper.css">
-        <link rel="stylesheet" href="pages/utils/TG001.css">
         <link rel="stylesheet" href="pages/utils/markdown.css">
     </head>
     <body>
@@ -35,8 +34,8 @@
                             <h3>新しいタスク</h3>
                         </li>
                         <li>
-                            <label for="new-task-name">タイトル</label>
-                            <input type="text" id="new-task-name" name="new-task-name" required />
+                            <label for="new-task-title">タイトル</label>
+                            <input type="text" id="new-task-title" name="new-task-title" required />
                         </li>
                         <li>
                             <label for="new-task-priority">優先順位</label>
@@ -59,7 +58,7 @@
                 </form>
                 <div class="task-list-block">
                     <h3>タスク一覧</h3>
-                    <section class="TG001-list-title">
+                    <section class="TG002-list-title">
                         <div>
                             <p class="item-title">タイトル</p>
                             <p class="item-remarks">備考</p>    
@@ -74,16 +73,6 @@
                         </div>
                     </section>
                     <ul class="task-list">
-                        <!--
-                        <li data-task-id="1">
-                            <label><input type="checkbox" checked="checked"><span>タスク #1</span></label>
-                            <span class="task-remarks">タスク#1 コメント</span>
-                        </li>
-                        <li data-task-id="2">
-                            <label><input type="checkbox" checked="checked"><span>タスク #2</span></label>
-                            <span class="task-remarks">タスク#2 コメント</span>
-                        </li>
-                        -->
                     </ul>
                 </div>
             </div>

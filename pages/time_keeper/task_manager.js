@@ -65,26 +65,13 @@ class TaskManagerPage extends TimeKeeperControllerBase {
             console.error('can not get the task list element ...');
         }
         form.reset();
-        form.elements['new-task-name'].focus();
+        form.elements['new-task-title'].focus();
     }
 
     _createNewTaskList(dm) {
         let item = document.createElement('li');
         item.dataset.taskId = dm.taskId;
-        let tnc = document.createElement('input');
-        tnc.setAttribute('type','checkbox');
-        tnc.setAttribute('checked','checked');
-        let tnl = document.createElement('label');
-        tnl.appendChild(tnc);
-        let tns = document.createElement('span');
-        tns.classList.add('task-name');
-        tns.textContent = dm.taskName;
-        tnl.appendChild(tns);
-        item.appendChild(tnl);
-        let tr = document.createElement('span');
-        tr.classList.add('task-remarks');
-        tr.textContent = dm.taskRemarks;
-        item.appendChild(tr);
+        dm.setTaskListItem(item);
         return item;
     }
 

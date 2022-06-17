@@ -36,7 +36,7 @@ h4, label, input[type='checkbox'] {
     float: left;
 }
 
-input#new-task-name {
+input#new-task-title {
     width: 50%;
 }
 
@@ -53,39 +53,11 @@ input#new-task-remarks {
     padding-left: 2em;
 }
 
-#PP1001 .TG001-list-title, .task-list {
+#PP1001 .TG002-list-title, .task-list {
     width: 80%;
     margin: 0 auto;
 }
 
-#PP1001 .task-list li:hover {
-    background-color: aqua;
-}
-
-#PP1001 .task-list label {
-    position: relative;
-}
-
-#PP1001 .task-list input[type='checkbox'] {
-    position: absolute;
-    top:0;
-    bottom:0;
-    left:0;
-    margin: auto;
-}
-
-#PP1001 .task-list label span {
-    margin-left: 1.5em;    /*チェックボックスのサイズ(幅)も含む*/
-}
-
-.task-list-block {
-    margin-top: 50px;
-}
-
 #PP1002 {
     background-color: antiquewhite;
-}
-
-.task-list label {
-    display: block;
 }
