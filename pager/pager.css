@@ -1,17 +1,16 @@
 	
 *{ margin:0; padding:0;}
 
-html, body {
+html {
     height: 100%;
 }
 
-html {
-    padding-top: 10px;
-    padding-left: 10px;
-    padding-right: 10px;
+body {
+    height: calc(100% - 20px);
 }
 
 body {
+    padding: 10px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
