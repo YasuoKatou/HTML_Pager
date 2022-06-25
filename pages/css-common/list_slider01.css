@@ -87,8 +87,7 @@
 
 .TG002-list-item-container {
     width: 100%;
-    height: 2rem;
-    padding: 0.5rem 0;
+    height: 3rem;
     display: flex;
     flex-direction: column;
     position: absolute;
@@ -123,6 +122,11 @@
     height: 1rem;
 }
 
+.TG002-item-upper-row > p{
+    height: 2rem;
+    line-height: 2rem;
+}
+
 .TG002-list-item-container .item-title {
     flex-basis: 12rem;
     font-weight: bolder;
@@ -130,6 +134,11 @@
 
 .TG002-list-item-container .item-remarks {
     flex: 1;
+}
+
+.TG002-item-tail-row > p {
+    font-size: smaller;
+    line-height: 1rem;
 }
 
 .TG002-list-item-container .item-select {

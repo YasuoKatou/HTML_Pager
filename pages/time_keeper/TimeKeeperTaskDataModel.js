@@ -75,6 +75,7 @@ class TimeKeeperTaskDataModel {
 
     _editListItem_upperRow() {
         let div = document.createElement('div');
+        div.classList.add('TG002-item-upper-row');
 
         let p = document.createElement('p');
         p.classList.add('TG002-item-label');
@@ -93,6 +94,7 @@ class TimeKeeperTaskDataModel {
 
     _editListItem_tailRow() {
         let div = document.createElement('div');
+        div.classList.add('TG002-item-tail-row');
 
         let cbx = document.createElement('input');
         cbx.type = 'checkbox';
