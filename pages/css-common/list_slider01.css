@@ -1,8 +1,8 @@
-
 .TG002-list-container {
-    margin-top: 2em;
+    margin-top: 1rem;
     display: flex;
     flex-direction: column;
+    height: calc(100% - 15rem);
 }
 
 .TG002-list-title {
@@ -13,6 +13,7 @@
 .TG002-list-title > div {
     display: flex;
     flex-direction: row;
+    height: 1rem;
 }
 
 .TG002-list-title p {
@@ -20,7 +21,7 @@
     border: solid 1px gray;
     text-align: center;
     font-weight: bolder;
-    font-size: small;
+    font-size: smaller;
     background-color: blanchedalmond;
 }
 
@@ -57,7 +58,12 @@
 }
 
 
-
+.TG002-list-body {
+    flex: 1;
+    background-color: lightgray;
+    overflow-y: overlay;
+    height: 100%;
+}
 
 
 .TG002-list-body ul, li {
@@ -99,21 +105,27 @@
 .TG002-list-item-container.active {
     left: -10em;
 }
-
+/*
+.TG002-list-item-container > p {
+    flex-grow: 1;
+    height: 1em;
+}
+*/
 .TG002-list-item-container > div {
     display: flex;
     flex-direction: row;
-    height: 1rem;
 }
 
 .TG002-list-item-container p {
     padding: 0 0.2em;
     white-space: nowrap;
     overflow: hidden;
+    height: 1rem;
 }
 
 .TG002-list-item-container .item-title {
     flex-basis: 12rem;
+    font-weight: bolder;
 }
 
 .TG002-list-item-container .item-remarks {
@@ -149,11 +161,10 @@
     display: flex;
     flex-direction: row;
     justify-content: end;
+    align-items: center;
 }
 
 .TG002-back-menu-container > p {
     width: 5em;
-    height: 2rem;
-    padding: 1rem 0;
     text-align: center;
 }

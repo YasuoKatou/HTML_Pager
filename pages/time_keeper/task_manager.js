@@ -61,6 +61,21 @@ class TaskManagerPage extends TimeKeeperControllerBase {
         if (elmts.length === 1) {
             let li = this._createNewTaskList(dm);
             elmts[0].appendChild(li);
+
+            // 一覧の表示領域を確認するため、一度に多くの行を追加するする
+            li = this._createNewTaskList(dm);
+            elmts[0].appendChild(li);
+            li = this._createNewTaskList(dm);
+            elmts[0].appendChild(li);
+            li = this._createNewTaskList(dm);
+            elmts[0].appendChild(li);
+            li = this._createNewTaskList(dm);
+            elmts[0].appendChild(li);
+            li = this._createNewTaskList(dm);
+            elmts[0].appendChild(li);
+            li = this._createNewTaskList(dm);
+            elmts[0].appendChild(li);
+            // ▲ 以上
         } else {
             console.error('can not get the task list element ...');
         }
