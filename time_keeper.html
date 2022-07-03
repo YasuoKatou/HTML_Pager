@@ -25,59 +25,66 @@
         <section id="page_root">
             <div id="PP1001" class="page_hidden">
                 <div>
-                    <h4 class="move-time-keeper">作業記録へ</h4>
+                    <div>
+                        <h4 class="move-time-keeper">作業記録へ</h4>
+                    </div>
+                    <form name="add-task-form" action="#" onsubmit="return false;" class="inp-today-task">
+                        <ul>
+                            <li>
+                                <h3>新しいタスク</h3>
+                            </li>
+                            <li>
+                                <label for="new-task-title">タイトル</label>
+                                <input type="text" id="new-task-title" name="new-task-title" required />
+                            </li>
+                            <li>
+                                <label for="new-task-priority">優先順位</label>
+                                <select id="new-task-priority" name="new-task-priority">
+                                    <option value="1">高</option>
+                                    <option value="10">やや高</option>
+                                    <option value="20" selected>普通</option>
+                                    <option value="30">低</option>
+                                    <option value="100">そのうち</option>
+                                </select>
+                            </li>
+                            <li>
+                                <label for="new-task-remarks">備考</label>
+                                <input type="text" id="new-task-remarks" name="new-task-remarks" />
+                            </li>
+                            <li>
+                                <input type="submit" id="add-new-task" value="登録"/><input type="reset" id="reset-new-task" value="クリア"/>
+                            </li>
+                        </ul>
+                    </form>
+                    <div class="task-list-block">
+                        <h3>タスク一覧</h3>
+                        <section class="TG002-list-title">
+                            <div>
+                                <p class="item-title">タイトル</p>
+                                <p class="item-remarks">備考</p>    
+                            </div>
+                            <div>
+                                <p class="item-select">選</p>
+                                <p class="item-priority">優先順位</p>
+                                <p class="item-status">状態</p>
+                                <p class="item-todo-start">作業開始日時</p>
+                                <p class="item-todo-end">作業終了日時</p>
+                                <p class="item-todo-update">更新日時</p>                                    
+                            </div>
+                        </section>
+                        <ul class="task-list"></ul>
+                    </div>
+                    <div class="footer"></div>    
                 </div>
-                <form name="add-task-form" action="#" onsubmit="return false;" class="inp-today-task">
-                    <ul>
-                        <li>
-                            <h3>新しいタスク</h3>
-                        </li>
-                        <li>
-                            <label for="new-task-title">タイトル</label>
-                            <input type="text" id="new-task-title" name="new-task-title" required />
-                        </li>
-                        <li>
-                            <label for="new-task-priority">優先順位</label>
-                            <select id="new-task-priority" name="new-task-priority">
-                                <option value="1">高</option>
-                                <option value="10">やや高</option>
-                                <option value="20" selected>普通</option>
-                                <option value="30">低</option>
-                                <option value="100">そのうち</option>
-                            </select>
-                        </li>
-                        <li>
-                            <label for="new-task-remarks">備考</label>
-                            <input type="text" id="new-task-remarks" name="new-task-remarks" />
-                        </li>
-                        <li>
-                            <input type="submit" id="add-new-task" value="登録"/><input type="reset" id="reset-new-task" value="クリア"/>
-                        </li>
-                    </ul>
-                </form>
-                <div class="task-list-block">
-                    <h3>タスク一覧</h3>
-                    <section class="TG002-list-title">
-                        <div>
-                            <p class="item-title">タイトル</p>
-                            <p class="item-remarks">備考</p>    
-                        </div>
-                        <div>
-                            <p class="item-select">選</p>
-                            <p class="item-priority">優先順位</p>
-                            <p class="item-status">状態</p>
-                            <p class="item-todo-start">作業開始日時</p>
-                            <p class="item-todo-end">作業終了日時</p>
-                            <p class="item-todo-update">更新日時</p>                                    
-                        </div>
-                    </section>
-                    <ul class="task-list"></ul>
-                </div>
-                <div class="footer"></div>
             </div>
             <div id="PP1002" class="page_hidden">
                 <div>
-                    <h4 class="move-task-manage">タスク管理へ</h4>
+                    <div>
+                        <h4 class="move-task-manage">タスク管理へ</h4>
+                    </div>
+                    <ul class="today-task-list">
+    
+                    </ul>    
                 </div>
             </div>
         </section>

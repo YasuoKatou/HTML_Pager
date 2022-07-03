@@ -12,12 +12,6 @@ p {
     height: 1rem;
 }
 
-#PP1001 {
-    display: flex;
-    flex-direction: column;
-    background-color: cornsilk;
-}
-
 .inp-today-task li {
     margin: 10px 0px;
 }
@@ -49,6 +43,16 @@ input#new-task-remarks {
     width: 50%;
 }
 
+#PP1001 > div, #PP1002 > div {
+    height: 100%;
+}
+
+#PP1001 > div {
+    display: flex;
+    flex-direction: column;
+    background-color: cornsilk;
+}
+
 #PP1001 .task-remarks {
     font-size: x-small;
     padding-left: 2em;
@@ -77,6 +81,12 @@ input#new-task-remarks {
     height: 2rem;
 }
 
-#PP1002 {
+#PP1002 > div {
+    display: flex;
+    flex-direction: column;
     background-color: antiquewhite;
+}
+
+#PP1002 .today-task-list {
+    flex: 1;
 }
